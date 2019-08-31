@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import { Namespace } from './namespace';
 
 let editor: vscode.TextEditor;
 export function activate(context: vscode.ExtensionContext) {
@@ -16,7 +17,11 @@ export function activate(context: vscode.ExtensionContext) {
 // this method is called when your extension is deactivated
 export function deactivate() {}
 
-function search(path: string)
+/**
+ * quick open by path
+ * @param path
+ */
+function search(path: string) : void
 {
 	if (isController(path)) {
 		path = path + '.php';
@@ -27,28 +32,43 @@ function search(path: string)
 	vscode.commands.executeCommand('workbench.action.quickOpen', path);
 }
 
-function getPath(selection: vscode.Range)
+/**
+ * get path by selection
+ * @param selection
+ */
+function getPath(selection: vscode.Range) : string
 {
 	let path = editor.document.getText(selection);
-	if (isController(path))
-	{
-		// namespace = self.get_namespace(selection)
-		// if namespace:
-		path = path;
+	if (isController(path)) {
+		let splited = path.split('@');
+        path = splited[0];
+
+		let namespace = (new Namespace).find(editor.document, selection);
+		if (namespace) {
+			path = namespace + '\\' + path;
+		}
 	} else {
 		let splited = path.split(':');
         path = splited[splited.length - 1];
 	}
 
-	return path
+	return path;
 }
 
-function isController(path: string)
+/**
+ * check if a path is a controller path
+ * @param path
+ */
+function isController(path: string) : boolean
 {
 	return (-1 !== path.indexOf('@') || -1 !== path.indexOf('Controller'));
 }
 
-function getSelection(selected: vscode.Selection) {
+/**
+ * get selection from cursor or first selection
+ * @param selected
+ */
+function getSelection(selected: vscode.Selection) : vscode.Range {
 	let start = selected.start;
 	let end = selected.end;
 
@@ -77,4 +97,3 @@ function getSelection(selected: vscode.Selection) {
 
 	return new vscode.Range(start, end);
 }
-
