@@ -37,12 +37,12 @@ suite('Extension Test Suite', () => {
 		assertPath(285, "52\\HelloController.php");
 	});
 
-	test('Controller with $router->group()', async () => {
-		assertPath(410, "Lumen\\HelloController.php");
+	test('Controller with Route::resource', async () => {
+		assertPath(405, "Resource\\HelloController.php");
 	});
 
-	test('Controller with Route::resource', async () => {
-		assertPath(530, "Resource\\HelloController.php");
+	test('Controller with $router->group()', async () => {
+		assertPath(570, "Lumen\\HelloController.php");
 	});
 
 });
