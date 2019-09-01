@@ -1,14 +1,11 @@
 import * as vscode from 'vscode';
 import { Namespace } from './namespace';
 
-let editor: vscode.TextEditor;
 export function activate(context: vscode.ExtensionContext) {
 	let disposable = vscode.commands.registerTextEditorCommand('extension.vscode-laravel-goto',
-	(textEditor: vscode.TextEditor, edit: vscode.TextEditorEdit, args: any[]) => {
-		editor = textEditor;
-		let selection = getSelection(editor.selection);
-		let path = getPath(selection);
-		search(path);
+	(editor: vscode.TextEditor, edit: vscode.TextEditorEdit, args: any[]) => {
+		let selection = getSelection(editor, editor.selection);
+		vscode.commands.executeCommand('workbench.action.quickOpen', getPath(editor, selection));
 	});
 
 	context.subscriptions.push(disposable);
@@ -18,25 +15,10 @@ export function activate(context: vscode.ExtensionContext) {
 export function deactivate() {}
 
 /**
- * quick open by path
- * @param path
- */
-function search(path: string) : void
-{
-	if (isController(path)) {
-		path = path + '.php';
-	} else {
-		path = path.replace(/\./g, '/') + '.blade.php';
-	}
-
-	vscode.commands.executeCommand('workbench.action.quickOpen', path);
-}
-
-/**
  * get path by selection
  * @param selection
  */
-function getPath(selection: vscode.Range) : string
+export function getPath(editor: vscode.TextEditor, selection: vscode.Range) : string
 {
 	let path = editor.document.getText(selection);
 	if (isController(path)) {
@@ -47,11 +29,13 @@ function getPath(selection: vscode.Range) : string
 		if (namespace) {
 			path = namespace + '\\' + path;
 		}
+		path = path + '.php';
+
 	} else {
 		let splited = path.split(':');
-        path = splited[splited.length - 1];
+		path = splited[splited.length - 1];
+		path = path.replace(/\./g, '/') + '.blade.php';
 	}
-
 	return path;
 }
 
@@ -68,7 +52,7 @@ function isController(path: string) : boolean
  * get selection from cursor or first selection
  * @param selected
  */
-function getSelection(selected: vscode.Selection) : vscode.Range {
+export function getSelection(editor: vscode.TextEditor, selected: vscode.Selection) : vscode.Range {
 	let start = selected.start;
 	let end = selected.end;
 

@@ -30,6 +30,9 @@
 			"outFiles": [
 				"${workspaceFolder}/out/test/**/*.js"
 			],
+			"env": {
+                "EXTENSION_PATH": "${workspaceFolder}"
+            },
 			"preLaunchTask": "npm: watch"
 		}
 	]
