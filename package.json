@@ -21,7 +21,21 @@
 				"command": "extension.vscode-laravel-goto",
 				"title": "Laravel Goto"
 			}
-		]
+		],
+        "menus": {
+            "editor/context": [
+                {
+                    "command": "extension.vscode-laravel-goto",
+                    "when": "editorTextFocus && editorLangId == php && resourceExtname == .php",
+                    "group": "navigation"
+                }
+            ]
+		},
+		"keybindings": [{
+			"command": "extension.vscode-laravel-goto",
+			"key": "alt+;",
+			"when": "editorTextFocus && editorLangId == php && resourceExtname == .php"
+		}]
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
