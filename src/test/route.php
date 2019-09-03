@@ -23,3 +23,6 @@ $router->group(['namespace' => 'Lumen'], function () use ($router) {
     Route::get('/', 'HelloController@index');
 });
 
+Route::group(['namespace' => 'Abc'], function () {
+    Route::get('/', '\Absolute\HelloController@index');
+});

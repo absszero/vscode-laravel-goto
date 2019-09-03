@@ -40,10 +40,14 @@ export function getPlace(editor: vscode.TextEditor, selection: vscode.Range) : {
 			path = splited[0];
 			place.method = splited[1];
 		}
-		let namespace = (new Namespace).find(editor.document, selection);
-		if (namespace) {
-			path = namespace + '\\' + path;
+		// it's not a absoulte path namespace
+		if ('\\' !== path[0]) {
+			let namespace = (new Namespace).find(editor.document, selection);
+			if (namespace) {
+				path = namespace + '\\' + path;
+			}
 		}
+
 		place.path = path + '.php';
 
 	} else {

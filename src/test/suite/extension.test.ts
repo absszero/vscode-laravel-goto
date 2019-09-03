@@ -45,6 +45,10 @@ suite('Extension Test Suite', () => {
 		assertPath(570, "Lumen\\HelloController.php", "index");
 	});
 
+	test('Controller with absoulte path namespace', async () => {
+		assertPath(680, "\\Absolute\\HelloController.php", "index");
+	});
+
 });
 
 function assertPath(position: number, expected: string, method?: string) {
