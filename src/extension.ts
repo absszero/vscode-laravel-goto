@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { Namespace } from './namespace';
-import * as path from 'path';
+import { basename } from 'path';
 
 export function activate(context: vscode.ExtensionContext) {
 	let disposable = vscode.commands.registerTextEditorCommand('extension.vscode-laravel-goto',
@@ -10,7 +10,7 @@ export function activate(context: vscode.ExtensionContext) {
 		if (place.method) {
 			const registration = vscode.workspace.onDidOpenTextDocument(doc => {
 				// if opened document is selected document, go to symbol
-				if (path.basename(place.path) === path.basename(doc.uri.path)) {
+				if (basename(place.path) === basename(doc.uri.path)) {
 					vscode.commands.executeCommand('workbench.action.quickOpen', '@' + place.method);
 				}
 				registration.dispose();
