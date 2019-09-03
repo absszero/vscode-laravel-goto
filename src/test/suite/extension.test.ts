@@ -4,7 +4,7 @@ import { before } from 'mocha';
 // You can import and use all API from the 'vscode' module
 // as well as import your extension to test it
 import * as vscode from 'vscode';
-import { getSelection, getPath } from '../../extension';
+import { getSelection, getPlace } from '../../extension';
 
 import * as path from "path";
 
@@ -26,15 +26,15 @@ suite('Extension Test Suite', () => {
 	});
 
 	test('Controller', async () => {
-		assertPath(86, "HelloController.php");
+		assertPath(86, "HelloController.php", "index");
 	});
 
 	test('Controller with Route::namespace', async () => {
-		assertPath(180, "58\\HelloController.php");
+		assertPath(180, "58\\HelloController.php", "index");
 	});
 
 	test('Controller with Route::group()', async () => {
-		assertPath(285, "52\\HelloController.php");
+		assertPath(285, "52\\HelloController.php", "index");
 	});
 
 	test('Controller with Route::resource', async () => {
@@ -42,14 +42,17 @@ suite('Extension Test Suite', () => {
 	});
 
 	test('Controller with $router->group()', async () => {
-		assertPath(570, "Lumen\\HelloController.php");
+		assertPath(570, "Lumen\\HelloController.php", "index");
 	});
 
 });
 
-function assertPath(position: number, expected: string) {
+function assertPath(position: number, expected: string, method?: string) {
 	editor.selection = new vscode.Selection(editor.document.positionAt(position), editor.document.positionAt(position));
 	const selection = getSelection(editor, editor.selection);
-	const path = getPath(editor, selection);
-	assert.equal(path, expected)
+	const place = getPlace(editor, selection);
+	assert.equal(place.path, expected)
+	if (method) {
+		assert.equal(place.method, method)
+	}
 }

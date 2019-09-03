@@ -1,11 +1,23 @@
 import * as vscode from 'vscode';
 import { Namespace } from './namespace';
+import * as path from 'path';
 
 export function activate(context: vscode.ExtensionContext) {
 	let disposable = vscode.commands.registerTextEditorCommand('extension.vscode-laravel-goto',
 	(editor: vscode.TextEditor, edit: vscode.TextEditorEdit, args: any[]) => {
-		let selection = getSelection(editor, editor.selection);
-		vscode.commands.executeCommand('workbench.action.quickOpen', getPath(editor, selection));
+		const selection = getSelection(editor, editor.selection);
+		const place = getPlace(editor, selection);
+		if (place.method) {
+			const registration = vscode.workspace.onDidOpenTextDocument(doc => {
+				// if opened document is selected document, go to symbol
+				if (path.basename(place.path) === path.basename(doc.uri.path)) {
+					vscode.commands.executeCommand('workbench.action.quickOpen', '@' + place.method);
+				}
+				registration.dispose();
+			});
+		}
+
+		vscode.commands.executeCommand('workbench.action.quickOpen', place.path);
 	});
 
 	context.subscriptions.push(disposable);
@@ -15,28 +27,31 @@ export function activate(context: vscode.ExtensionContext) {
 export function deactivate() {}
 
 /**
- * get path by selection
+ * get place by selection
  * @param selection
  */
-export function getPath(editor: vscode.TextEditor, selection: vscode.Range) : string
+export function getPlace(editor: vscode.TextEditor, selection: vscode.Range) : { path: string; method: string; }
 {
+	let place = {path: "", method: ""};
 	let path = editor.document.getText(selection);
 	if (isController(path)) {
-		let splited = path.split('@');
-        path = splited[0];
-
+		if (-1 !== path.indexOf('@')) {
+			let splited = path.split('@');
+			path = splited[0];
+			place.method = splited[1];
+		}
 		let namespace = (new Namespace).find(editor.document, selection);
 		if (namespace) {
 			path = namespace + '\\' + path;
 		}
-		path = path + '.php';
+		place.path = path + '.php';
 
 	} else {
 		let splited = path.split(':');
 		path = splited[splited.length - 1];
-		path = path.replace(/\./g, '/') + '.blade.php';
+		place.path = path.replace(/\./g, '/') + '.blade.php';
 	}
-	return path;
+	return place;
 }
 
 /**
@@ -45,7 +60,7 @@ export function getPath(editor: vscode.TextEditor, selection: vscode.Range) : st
  */
 function isController(path: string) : boolean
 {
-	return (-1 !== path.indexOf('@') || -1 !== path.indexOf('Controller'));
+	return (-1 !== path.indexOf('Controller'));
 }
 
 /**
