@@ -14,8 +14,8 @@ export function activate(context: vscode.ExtensionContext) {
 					if (basename(place.path) === basename(e.document.uri.path)) {
 						vscode.commands.executeCommand('workbench.action.quickOpen', '@' + place.method);
 					}
-					event.dispose();
 				}
+				event.dispose();
 			});
 		}
 
