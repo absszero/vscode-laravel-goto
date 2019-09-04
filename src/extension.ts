@@ -8,12 +8,14 @@ export function activate(context: vscode.ExtensionContext) {
 		const selection = getSelection(editor, editor.selection);
 		const place = getPlace(editor, selection);
 		if (place.method) {
-			const registration = vscode.workspace.onDidOpenTextDocument(doc => {
-				// if opened document is selected document, go to symbol
-				if (basename(place.path) === basename(doc.uri.path)) {
-					vscode.commands.executeCommand('workbench.action.quickOpen', '@' + place.method);
+			const event = vscode.window.onDidChangeActiveTextEditor(e => {
+				if (undefined !== e) {
+					// if opened document is selected document, go to symbol
+					if (basename(place.path) === basename(e.document.uri.path)) {
+						vscode.commands.executeCommand('workbench.action.quickOpen', '@' + place.method);
+					}
+					event.dispose();
 				}
-				registration.dispose();
 			});
 		}
 
@@ -32,13 +34,13 @@ export function deactivate() {}
  */
 export function getPlace(editor: vscode.TextEditor, selection: vscode.Range) : { path: string; method: string; }
 {
-	let place = {path: "", method: ""};
+	let method = "";
 	let path = editor.document.getText(selection);
 	if (isController(path)) {
 		if (-1 !== path.indexOf('@')) {
 			let splited = path.split('@');
 			path = splited[0];
-			place.method = splited[1];
+			method = splited[1];
 		}
 		// it's not an absoulte path namespace
 		if ('\\' !== path[0]) {
@@ -48,14 +50,14 @@ export function getPlace(editor: vscode.TextEditor, selection: vscode.Range) : {
 			}
 		}
 
-		place.path = path.replace(/\\/g, '/') + '.php';
+		path = path.replace(/\\/g, '/') + '.php';
 
 	} else {
 		let splited = path.split(':');
 		path = splited[splited.length - 1];
-		place.path = path.replace(/\./g, '/') + '.blade.php';
+		path = path.replace(/\./g, '/') + '.blade.php';
 	}
-	return place;
+	return {path: path, method: method};
 }
 
 /**
