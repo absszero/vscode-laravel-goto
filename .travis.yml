@@ -12,5 +12,8 @@ install:
     fi
 script:
   - |
+    npm install
     npm run test
-cache: yarn
+cache:
+  directories:
+  - .vscode-test
