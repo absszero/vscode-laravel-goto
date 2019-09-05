@@ -11,7 +11,8 @@ import * as path from "path";
 let editor : vscode.TextEditor;
 suite('Extension Test Suite', () => {
 	before(async () => {
-		let file = path.resolve(process.env.EXTENSION_PATH + '/src/test/route.php');
+		const folder = process.env.EXTENSION_PATH || process.env.INIT_CWD;
+		let file = path.resolve(folder + '/src/test/route.php');
 		const document = await vscode.workspace.openTextDocument(file);
 		editor = await vscode.window.showTextDocument(document);
 		vscode.window.showInformationMessage('Start all tests.');
