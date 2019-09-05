@@ -39,15 +39,15 @@ suite('Extension Test Suite', () => {
 	});
 
 	test('Controller with Route::resource', async () => {
-		assertPath(405, "Resource/HelloController.php");
+		assertPath(390, "Resource/HelloController.php");
 	});
 
 	test('Controller with $router->group()', async () => {
-		assertPath(570, "Lumen/HelloController.php", "index");
+		assertPath(550, "Lumen/HelloController.php", "index");
 	});
 
 	test('Controller with absoulte path namespace', async () => {
-		assertPath(680, "/Absolute/HelloController.php", "index");
+		assertPath(660, "/Absolute/HelloController.php", "index");
 	});
 
 });
