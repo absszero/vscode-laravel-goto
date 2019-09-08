@@ -3,6 +3,7 @@
 	"displayName": "Laravel Goto",
 	"description": "",
 	"version": "0.0.1",
+	"publisher": "absszero",
 	"license": "MIT",
 	"repository": "https://github.com/absszero/vscode-laravel-goto",
 	"engines": {

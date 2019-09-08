@@ -1,5 +1,7 @@
 # Laravel Goto for VS Code
 
+[![Build Status](https://travis-ci.com/absszero/vscode-laravel-goto.svg?branch=master)](https://travis-ci.com/absszero/vscode-laravel-goto)
+
 Goto `*.blade.php`  or `Controller@Method` by `Alt`+`;`
 
 ![](example.gif)
