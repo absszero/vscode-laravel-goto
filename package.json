@@ -1,8 +1,8 @@
 {
 	"name": "vscode-laravel-goto",
 	"displayName": "Laravel Goto",
-	"description": "",
-	"version": "0.0.1",
+	"description": "opening view files and controller files with namespace from text",
+	"version": "0.0.2",
 	"publisher": "absszero",
 	"license": "MIT",
 	"repository": "https://github.com/absszero/vscode-laravel-goto",
@@ -12,6 +12,14 @@
 	"categories": [
 		"Other"
 	],
+    "keywords": [
+        "PHP",
+		"Laravel",
+		"Blade",
+		"View",
+		"Namespace",
+		"Controller"
+    ],
 	"activationEvents": [
 		"onCommand:extension.vscode-laravel-goto"
 	],
