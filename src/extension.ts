@@ -2,6 +2,11 @@ import * as vscode from 'vscode';
 import { Namespace } from './namespace';
 import { basename } from 'path';
 
+let extensions : Array<string> = vscode.workspace.getConfiguration().get('laravelGoto.staticFileExtensions', []);
+if (extensions) {
+	extensions = extensions.map(ext => ext.toLowerCase());
+}
+
 export function activate(context: vscode.ExtensionContext) {
 	let disposable = vscode.commands.registerTextEditorCommand('extension.vscode-laravel-goto',
 	(editor: vscode.TextEditor, edit: vscode.TextEditorEdit, args: any[]) => {
@@ -51,6 +56,8 @@ export function getPlace(editor: vscode.TextEditor, selection: vscode.Range) : {
 		}
 
 		path = path.replace(/\\/g, '/') + '.php';
+	} else if (isStaticFile(path)) {
+
 
 	} else {
 		let splited = path.split(':');
@@ -61,12 +68,23 @@ export function getPlace(editor: vscode.TextEditor, selection: vscode.Range) : {
 }
 
 /**
- * check if a path is a controller path
+ * check if the path is a controller path
  * @param path
  */
 function isController(path: string) : boolean
 {
 	return (-1 !== path.indexOf('Controller'));
+}
+
+/**
+ * check if the path ends with an specified extenstion
+ * @param path
+ */
+function isStaticFile(path: string) : boolean
+{
+	const splited = path.split('.');
+	const ext = splited[splited.length - 1].toLocaleLowerCase();
+	return (-1 !== extensions.indexOf(ext));
 }
 
 /**

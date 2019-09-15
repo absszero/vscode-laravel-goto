@@ -12,7 +12,7 @@ let editor : vscode.TextEditor;
 suite('Extension Test Suite', () => {
 	before(async () => {
 		const folder = process.env.EXTENSION_PATH || process.env.INIT_CWD;
-		let file = path.resolve(folder + '/src/test/route.php');
+		let file = path.resolve(folder + '/src/test/sample.php');
 		const document = await vscode.workspace.openTextDocument(file);
 		editor = await vscode.window.showTextDocument(document);
 		vscode.window.showInformationMessage('Start all tests.');
@@ -48,6 +48,10 @@ suite('Extension Test Suite', () => {
 
 	test('Controller with absoulte path namespace', async () => {
 		assertPath(660, "/Absolute/HelloController.php", "index");
+	});
+
+	test('Static file', async () => {
+		assertPath(690, "hello.JS");
 	});
 
 });

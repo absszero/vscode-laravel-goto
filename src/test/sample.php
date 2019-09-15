@@ -26,3 +26,5 @@ $router->group(['namespace' => 'Lumen'], function () use ($router) {
 Route::group(['namespace' => 'Abc'], function () {
     Route::get('/', '\Absolute\HelloController@index');
 });
+
+'hello.JS';

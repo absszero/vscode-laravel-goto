@@ -46,6 +46,37 @@
 				"key": "alt+;",
 				"when": "editorTextFocus && editorLangId == php && resourceExtname == .php"
 			}
+		],
+		"configuration": [
+			{
+				"title": "Laravel Goto",
+				"properties": {
+					"laravelGoto.staticFileExtensions": {
+						"description": "Specifies static file extensions",
+						"scope": "window",
+						"type": "array",
+						"default": [
+							"js",
+							"ts",
+							"jsx",
+							"vue",
+
+							"css",
+							"scss",
+							"sass",
+							"less",
+							"styl",
+
+							"htm",
+							"html",
+							"xhtml",
+							"xml",
+
+							"log"
+						]
+					}
+				}
+			}
 		]
 	},
 	"scripts": {
