@@ -12,12 +12,12 @@ export function activate(context: vscode.ExtensionContext) {
 	(editor: vscode.TextEditor, edit: vscode.TextEditorEdit, args: any[]) => {
 		const selection = getSelection(editor, editor.selection);
 		const place = getPlace(editor, selection);
-		if (place.method) {
+		if ('@' ===  place.location[0]) {
 			const event = vscode.window.onDidChangeActiveTextEditor(e => {
 				if (undefined !== e) {
 					// if opened document is selected document, go to symbol
 					if (basename(place.path) === basename(e.document.uri.path)) {
-						vscode.commands.executeCommand('workbench.action.quickOpen', '@' + place.method);
+						vscode.commands.executeCommand('workbench.action.quickOpen', place.location);
 					}
 				}
 				event.dispose();
@@ -37,15 +37,17 @@ export function deactivate() {}
  * get place by selection
  * @param selection
  */
-export function getPlace(editor: vscode.TextEditor, selection: vscode.Range) : { path: string; method: string; }
+export function getPlace(editor: vscode.TextEditor, selection: vscode.Range) : { path: string; location: string; }
 {
-	let method = "";
+	let location = "";
 	let path = editor.document.getText(selection);
+	const line = editor.document.getText(editor.document.lineAt(selection.start).range);
+
 	if (isController(path)) {
 		if (-1 !== path.indexOf('@')) {
 			let splited = path.split('@');
 			path = splited[0];
-			method = splited[1];
+			location = '@' + splited[1];
 		}
 		// it's not an absoulte path namespace
 		if ('\\' !== path[0]) {
@@ -58,13 +60,18 @@ export function getPlace(editor: vscode.TextEditor, selection: vscode.Range) : {
 		path = path.replace(/\\/g, '/') + '.php';
 	} else if (isStaticFile(path)) {
 
-
+	} else if (isConfig(line, path)) {
+		let splited = path.split('.');
+		path = 'config/' + splited[0] + '.php'
+		if (2 <= splited.length) {
+			location = splited[1];
+		}
 	} else {
 		let splited = path.split(':');
 		path = splited[splited.length - 1];
 		path = path.replace(/\./g, '/') + '.blade.php';
 	}
-	return {path: path, method: method};
+	return {path: path, location: location};
 }
 
 /**
@@ -85,6 +92,28 @@ function isStaticFile(path: string) : boolean
 	const splited = path.split('.');
 	const ext = splited[splited.length - 1].toLocaleLowerCase();
 	return (-1 !== extensions.indexOf(ext));
+}
+
+/**
+ * check if the path is config file
+ * @param line
+ * @param path
+ */
+function isConfig(line: string, path: string) : boolean
+{
+	const patterns = [
+		/Config::[^'"]*(['"])([^'"]*)\1/,
+		/config\([^'"]*(['"])([^'"]*)\1/
+	];
+
+	for (const pattern of patterns) {
+		let match = pattern.exec(line);
+		if (match && match[2] == path) {
+			return true;
+		}
+	}
+
+	return false;
 }
 
 /**

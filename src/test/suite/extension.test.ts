@@ -27,15 +27,15 @@ suite('Extension Test Suite', () => {
 	});
 
 	test('Controller', async () => {
-		assertPath(86, "HelloController.php", "index");
+		assertPath(86, "HelloController.php", "@index");
 	});
 
 	test('Controller with Route::namespace', async () => {
-		assertPath(180, "58/HelloController.php", "index");
+		assertPath(180, "58/HelloController.php", "@index");
 	});
 
 	test('Controller with Route::group()', async () => {
-		assertPath(285, "52/HelloController.php", "index");
+		assertPath(285, "52/HelloController.php", "@index");
 	});
 
 	test('Controller with Route::resource', async () => {
@@ -43,25 +43,44 @@ suite('Extension Test Suite', () => {
 	});
 
 	test('Controller with $router->group()', async () => {
-		assertPath(550, "Lumen/HelloController.php", "index");
+		assertPath(550, "Lumen/HelloController.php", "@index");
 	});
 
 	test('Controller with absoulte path namespace', async () => {
-		assertPath(660, "/Absolute/HelloController.php", "index");
+		assertPath(660, "/Absolute/HelloController.php", "@index");
 	});
 
 	test('Static file', async () => {
 		assertPath(690, "hello.JS");
 	});
 
+	test('Facade config get', async () => {
+		assertPath(715, "config/app.php");
+	});
+
+	test('Facade config set', async () => {
+		assertPath(750, "config/app.php");
+	});
+
+	test('config get only file', async () => {
+		assertPath(777, "config/app.php");
+	});
+
+	test('config get', async () => {
+		assertPath(800, "config/app.php");
+	});
+
+	test('config set', async () => {
+		assertPath(830, "config/app.php");
+	});
 });
 
-function assertPath(position: number, expected: string, method?: string) {
+function assertPath(position: number, expected: string, location?: string) {
 	editor.selection = new vscode.Selection(editor.document.positionAt(position), editor.document.positionAt(position));
 	const selection = getSelection(editor, editor.selection);
 	const place = getPlace(editor, selection);
 	assert.equal(place.path, expected)
-	if (method) {
-		assert.equal(place.method, method)
+	if (location) {
+		assert.equal(place.location, location)
 	}
 }

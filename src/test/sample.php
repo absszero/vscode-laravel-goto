@@ -28,3 +28,13 @@ Route::group(['namespace' => 'Abc'], function () {
 });
 
 'hello.JS';
+
+Config::get('app.timezone');
+
+Config::set(   'app.timezone', 'UTC');
+
+config('app');
+
+config('app.timezone');
+
+config(     ['app.timezone' => 'UTC']);
