@@ -12,15 +12,26 @@ export function activate(context: vscode.ExtensionContext) {
 	(editor: vscode.TextEditor, edit: vscode.TextEditorEdit, args: any[]) => {
 		const selection = getSelection(editor, editor.selection);
 		const place = getPlace(editor, selection);
-		if ('@' ===  place.location[0]) {
+		if (place.location) {
 			const event = vscode.window.onDidChangeActiveTextEditor(e => {
-				if (undefined !== e) {
-					// if opened document is selected document, go to symbol
-					if (basename(place.path) === basename(e.document.uri.path)) {
-						vscode.commands.executeCommand('workbench.action.quickOpen', place.location);
+				event.dispose();
+				if (undefined === e) {
+					return;
+				}
+				if (basename(place.path) !== basename(e.document.uri.path)) {
+					return;
+				}
+
+				// is controller method
+				if ('@' === place.location[0]) {
+					vscode.commands.executeCommand('workbench.action.quickOpen', place.location);
+				} else {
+					const range = locationRange(e.document, place.location);
+					if (range) {
+						e.selection = new vscode.Selection(range.start, range.end);
+						e.revealRange(range);
 					}
 				}
-				event.dispose();
 			});
 		}
 
@@ -33,6 +44,22 @@ export function activate(context: vscode.ExtensionContext) {
 // this method is called when your extension is deactivated
 export function deactivate() {}
 
+/**
+ * return the range of location
+ * @param doc
+ * @param location
+ */
+function locationRange(doc: vscode.TextDocument, location: string) : vscode.Range | undefined {
+	const regx = new RegExp(location);
+	const match = regx.exec(doc.getText());
+
+	if (match) {
+		return new vscode.Range(
+			doc.positionAt(match.index),
+			doc.positionAt(match.index + match[0].length),
+		);
+	}
+}
 /**
  * get place by selection
  * @param selection
@@ -64,7 +91,7 @@ export function getPlace(editor: vscode.TextEditor, selection: vscode.Range) : {
 		let splited = path.split('.');
 		path = 'config/' + splited[0] + '.php'
 		if (2 <= splited.length) {
-			location = splited[1];
+			location = "(['\"]{1})" + splited[1] + "\\1\\s*=>";
 		}
 	} else {
 		let splited = path.split(':');
