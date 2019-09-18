@@ -73,6 +73,10 @@ suite('Extension Test Suite', () => {
 	test('config set', async () => {
 		assertPath(830, "config/app.php");
 	});
+
+	test('.env', async () => {
+		assertPath(865, ".env");
+	});
 });
 
 function assertPath(position: number, expected: string, location?: string) {
@@ -84,3 +88,4 @@ function assertPath(position: number, expected: string, location?: string) {
 		assert.equal(place.location, location)
 	}
 }
+

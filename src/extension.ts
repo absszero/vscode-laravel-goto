@@ -52,7 +52,6 @@ export function deactivate() {}
 function locationRange(doc: vscode.TextDocument, location: string) : vscode.Range | undefined {
 	const regx = new RegExp(location);
 	const match = regx.exec(doc.getText());
-
 	if (match) {
 		return new vscode.Range(
 			doc.positionAt(match.index),
@@ -93,6 +92,9 @@ export function getPlace(editor: vscode.TextEditor, selection: vscode.Range) : {
 		if (2 <= splited.length) {
 			location = "(['\"]{1})" + splited[1] + "\\1\\s*=>";
 		}
+	} else if (isEnv(line, path)) {
+		location = path
+		path = '.env'
 	} else {
 		let splited = path.split(':');
 		path = splited[splited.length - 1];
@@ -141,6 +143,18 @@ function isConfig(line: string, path: string) : boolean
 	}
 
 	return false;
+}
+
+/**
+ * check if the path is .env file
+ * @param line
+ * @param path
+ */
+function isEnv(line: string, path: string) : boolean
+{
+	const pattern = /env\(\s*(['"])([^'"]*)\1/;
+	const match = pattern.exec(line);
+	return (Boolean)(match && match[2] === path);
 }
 
 /**
