@@ -2,14 +2,32 @@
 
 [![Build Status](https://travis-ci.com/absszero/vscode-laravel-goto.svg?branch=master)](https://travis-ci.com/absszero/vscode-laravel-goto)
 
-Goto `*.blade.php`  or `Controller@Method` by `Alt`+`;`
+Goto various Laravel files by `Alt`+`;`
 
 ![](example.gif)
 
 ## Features
 
 - Open Blade Template files *(EX. hello.blade.php)*
-- Open Controller with Method *(EX. \Namespace\Controller.php@Method)*
+- Open Controller and highlight method *(EX. \Namespace\Controller.php@Method)*
+- Open Static files (*EX. hello.js*)
+- Open Config files and highlight option (EX. config\app.php)
+- Open .env and highlight option 
+- Default supported static file extensions
+    - js
+    - ts
+    - jsx
+    - vue
+    - css
+    - scss
+    - sass
+    - less
+    - styl
+    - htm
+    - html
+    - xhtml
+    - xml
+    - log
 
 ## Requirements
 
