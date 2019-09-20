@@ -2,7 +2,7 @@
 	"name": "vscode-laravel-goto",
 	"displayName": "Laravel Goto",
 	"description": "opening view files and controller files with namespace from text",
-	"version": "0.0.7",
+	"version": "0.1.0",
 	"publisher": "absszero",
 	"license": "MIT",
 	"repository": "https://github.com/absszero/vscode-laravel-goto",
