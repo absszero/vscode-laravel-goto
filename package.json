@@ -55,6 +55,9 @@
 						"description": "Specifies static file extensions",
 						"scope": "window",
 						"type": "array",
+						"items": {
+							"type": "string"
+						},
 						"default": [
 							"js",
 							"ts",

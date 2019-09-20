@@ -3,9 +3,7 @@ import { Namespace } from './namespace';
 import { basename } from 'path';
 
 let extensions : Array<string> = vscode.workspace.getConfiguration().get('laravelGoto.staticFileExtensions', []);
-if (extensions) {
-	extensions = extensions.map(ext => ext.toLowerCase());
-}
+extensions = extensions.map(ext => ext.toLowerCase());
 
 export function activate(context: vscode.ExtensionContext) {
 	let disposable = vscode.commands.registerTextEditorCommand('extension.vscode-laravel-goto',
@@ -22,7 +20,7 @@ export function activate(context: vscode.ExtensionContext) {
 					return;
 				}
 
-				// is controller method
+				// It's a controller method
 				if ('@' === place.location[0]) {
 					vscode.commands.executeCommand('workbench.action.quickOpen', place.location);
 				} else {
