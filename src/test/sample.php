@@ -40,3 +40,13 @@ config('app.timezone');
 config(     ['app.timezone' => 'UTC']);
 
 env(   'APP_DEBUG', false);
+
+__('messages.welcome');
+
+@lang('messages.welcome');
+
+trans('messages.welcome');
+
+trans_choice('messages.apples', 10);
+
+trans('package::messages');

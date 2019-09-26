@@ -82,7 +82,6 @@ export function getPlace(editor: vscode.TextEditor, selection: vscode.Range) : {
 		}
 
 		path = path.replace(/\\/g, '/') + '.php';
-	} else if (isStaticFile(path)) {
 
 	} else if (isConfig(line, path)) {
 		let splited = path.split('.');
@@ -90,14 +89,33 @@ export function getPlace(editor: vscode.TextEditor, selection: vscode.Range) : {
 		if (2 <= splited.length) {
 			location = "(['\"]{1})" + splited[1] + "\\1\\s*=>";
 		}
+
+	} else if (isLanguage(line, path)) {
+		// a package lang file
+		if (-1 !== path.indexOf(':')) {
+			let splited = path.split(':');
+			path = splited[splited.length - 1] + '.php';
+		} else {
+			let splited = path.split('.');
+			path = 'resources/lang/' + splited[0] + '.php'
+
+			if (2 <= splited.length) {
+				location = "(['\"]{1})" + splited[1] + "\\1\\s*=>";
+			}
+		}
+
 	} else if (isEnv(line, path)) {
 		location = path
 		path = '.env'
+
+	} else if (isStaticFile(path)) {
+
 	} else {
 		let splited = path.split(':');
 		path = splited[splited.length - 1];
 		path = path.replace(/\./g, '/') + '.blade.php';
 	}
+
 	return {path: path, location: location};
 }
 
@@ -122,7 +140,7 @@ function isStaticFile(path: string) : boolean
 }
 
 /**
- * check if the path is config file
+ * check if the path is a config file
  * @param line
  * @param path
  */
@@ -144,7 +162,31 @@ function isConfig(line: string, path: string) : boolean
 }
 
 /**
- * check if the path is .env file
+ * check if the path is a language file
+ * @param line
+ * @param path
+ */
+function isLanguage(line: string, path: string): boolean {
+	const patterns = [
+		/__\([^'"]*(['"])([^'"]*)\1/,
+		/@lang\([^'"]*(['"])([^'"]*)\1/,
+		/trans\([^'"]*(['"])([^'"]*)\1/,
+		/trans_choice\([^'"]*(['"])([^'"]*)\1/,
+	];
+
+	for (const pattern of patterns) {
+		let match = pattern.exec(line);
+		if (match && match[2] == path) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+
+/**
+ * check if the path is a .env file
  * @param line
  * @param path
  */

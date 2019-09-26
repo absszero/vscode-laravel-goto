@@ -77,6 +77,27 @@ suite('Extension Test Suite', () => {
 	test('.env', async () => {
 		assertPath(865, ".env");
 	});
+
+	test('lang underscore', async () => {
+		assertPath(890, "resources/lang/messages.php");
+	});
+
+	test('@lang', async () => {
+		assertPath(920, "resources/lang/messages.php");
+	});
+
+	test('trans', async () => {
+		assertPath(950, "resources/lang/messages.php");
+	});
+
+	test('trans_choice', async () => {
+		assertPath(980, "resources/lang/messages.php");
+	});
+
+	test('package trans', async () => {
+		assertPath(1015, "messages.php");
+	});
+
 });
 
 function assertPath(position: number, expected: string, location?: string) {
