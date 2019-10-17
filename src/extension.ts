@@ -109,6 +109,9 @@ export function getPlace(editor: vscode.TextEditor, selection: vscode.Range) : {
 		path = '.env'
 
 	} else if (isStaticFile(path)) {
+		let splited = path.split('/');
+		splited = splited.filter(d => (d !== '..' && d !== '.') );
+		path = splited.join('/');
 
 	} else {
 		let splited = path.split(':');

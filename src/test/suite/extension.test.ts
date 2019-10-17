@@ -98,6 +98,10 @@ suite('Extension Test Suite', () => {
 		assertPath(1015, "messages.php");
 	});
 
+	test('relative static file path', async () => {
+		assertPath(1040, "hello.JS");
+	});
+
 });
 
 function assertPath(position: number, expected: string, location?: string) {
