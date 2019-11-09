@@ -102,6 +102,10 @@ suite('Extension Test Suite', () => {
 		assertPath(1040, "hello.JS");
 	});
 
+	test('config in config', async () => {
+		assertPath(1085, "config/app.php");
+	});
+
 });
 
 function assertPath(position: number, expected: string, location?: string) {

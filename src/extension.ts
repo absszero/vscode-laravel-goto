@@ -83,7 +83,7 @@ export function getPlace(editor: vscode.TextEditor, selection: vscode.Range) : {
 
 		path = path.replace(/\\/g, '/') + '.php';
 
-	} else if (isConfig(line, path)) {
+	} else if (isConfig({ line, path })) {
 		let splited = path.split('.');
 		path = 'config/' + splited[0] + '.php'
 		if (2 <= splited.length) {
@@ -147,18 +147,21 @@ function isStaticFile(path: string) : boolean
  * @param line
  * @param path
  */
-function isConfig(line: string, path: string) : boolean
+function isConfig({ line, path }: { line: string; path: string; }) : boolean
 {
 	const patterns = [
 		/Config::[^'"]*(['"])([^'"]*)\1/,
-		/config\([^'"]*(['"])([^'"]*)\1/
+		/config\([^'"]*(['"])([^'"]*)\1/g
 	];
 
 	for (const pattern of patterns) {
-		let match = pattern.exec(line);
-		if (match && match[2] == path) {
-			return true;
-		}
+		let match;
+		do {
+			match = pattern.exec(line);
+			if (match && match[2] == path) {
+				return true;
+			}
+		} while (match)
 	}
 
 	return false;

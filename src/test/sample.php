@@ -52,3 +52,5 @@ trans_choice('messages.apples', 10);
 trans('package::messages');
 
 './../../hello.JS';
+
+config(['app.timezone' => config('app.tz')]);
