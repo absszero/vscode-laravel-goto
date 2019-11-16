@@ -46,7 +46,7 @@ suite('Extension Test Suite', () => {
 		assertPath(550, "Lumen/HelloController.php", "@index");
 	});
 
-	test('Controller with absoulte path namespace', async () => {
+	test('Controller with absolute path namespace', async () => {
 		assertPath(660, "/Absolute/HelloController.php", "@index");
 	});
 
@@ -95,7 +95,7 @@ suite('Extension Test Suite', () => {
 	});
 
 	test('package trans', async () => {
-		assertPath(1015, "messages.php");
+		assertPath(1015, "resources/lang/vendor/package/messages.php");
 	});
 
 	test('relative static file path', async () => {
@@ -104,6 +104,10 @@ suite('Extension Test Suite', () => {
 
 	test('config in config', async () => {
 		assertPath(1085, "config/app.php");
+	});
+
+	test('vendor view', async () => {
+		assertPath(1110, "vendor/hello_view.blade.php");
 	});
 
 });

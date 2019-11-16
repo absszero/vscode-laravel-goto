@@ -69,11 +69,11 @@ export function getPlace(editor: vscode.TextEditor, selection: vscode.Range) : {
 
 	if (isController(path)) {
 		if (-1 !== path.indexOf('@')) {
-			let splited = path.split('@');
-			path = splited[0];
-			location = '@' + splited[1];
+			let split = path.split('@');
+			path = split[0];
+			location = '@' + split[1];
 		}
-		// it's not an absoulte path namespace
+		// it's not an absolute path namespace
 		if ('\\' !== path[0]) {
 			let namespace = (new Namespace).find(editor.document, selection);
 			if (namespace) {
@@ -84,24 +84,20 @@ export function getPlace(editor: vscode.TextEditor, selection: vscode.Range) : {
 		path = path.replace(/\\/g, '/') + '.php';
 
 	} else if (isConfig({ line, path })) {
-		let splited = path.split('.');
-		path = 'config/' + splited[0] + '.php'
-		if (2 <= splited.length) {
-			location = "(['\"]{1})" + splited[1] + "\\1\\s*=>";
+		let split = path.split('.');
+		path = 'config/' + split[0] + '.php';
+		if (2 <= split.length) {
+			location = "(['\"]{1})" + split[1] + "\\1\\s*=>";
 		}
 
 	} else if (isLanguage(line, path)) {
-		// a package lang file
-		if (-1 !== path.indexOf(':')) {
-			let splited = path.split(':');
-			path = splited[splited.length - 1] + '.php';
-		} else {
-			let splited = path.split('.');
-			path = 'resources/lang/' + splited[0] + '.php'
+		let split = path.split(':');
+		let vendor = (3 == split.length) ? `/vendor/${split[0]}` : '';
+		let keys = split[split.length - 1].split('.');
 
-			if (2 <= splited.length) {
-				location = "(['\"]{1})" + splited[1] + "\\1\\s*=>";
-			}
+		path = `resources/lang${vendor}/${keys[0]}.php`;
+		if (2 <= keys.length) {
+			location = "(['\"]{1})" + keys[1] + "\\1\\s*=>";
 		}
 
 	} else if (isEnv(line, path)) {
@@ -109,14 +105,22 @@ export function getPlace(editor: vscode.TextEditor, selection: vscode.Range) : {
 		path = '.env'
 
 	} else if (isStaticFile(path)) {
-		let splited = path.split('/');
-		splited = splited.filter(d => (d !== '..' && d !== '.') );
-		path = splited.join('/');
+		let split = path.split('/');
+		split = split.filter(d => (d !== '..' && d !== '.') );
+		path = split.join('/');
 
 	} else {
-		let splited = path.split(':');
-		path = splited[splited.length - 1];
-		path = path.replace(/\./g, '/') + '.blade.php';
+		let split = path.split(':');
+		let vendor = '';
+		// namespace or vendor
+		if (3 == split.length) {
+			// it's vendor
+			if (split[0] == split[0].toLowerCase()) {
+				vendor = split[0] + '/';
+			}
+		}
+		path = split[split.length - 1];
+		path = vendor + path.replace(/\./g, '/') + '.blade.php';
 	}
 
 	return {path: path, location: location};
@@ -132,13 +136,13 @@ function isController(path: string) : boolean
 }
 
 /**
- * check if the path ends with an specified extenstion
+ * check if the path ends with an specified extension
  * @param path
  */
 function isStaticFile(path: string) : boolean
 {
-	const splited = path.split('.');
-	const ext = splited[splited.length - 1].toLocaleLowerCase();
+	const split = path.split('.');
+	const ext = split[split.length - 1].toLocaleLowerCase();
 	return (-1 !== extensions.indexOf(ext));
 }
 
