@@ -35,7 +35,7 @@
 			"editor/context": [
 				{
 					"command": "extension.vscode-laravel-goto",
-					"when": "editorTextFocus && editorLangId == php && resourceExtname == .php",
+					"when": "editorTextFocus && resourceExtname == .php",
 					"group": "navigation"
 				}
 			]
