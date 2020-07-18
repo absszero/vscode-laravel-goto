@@ -5,6 +5,15 @@ import { basename } from 'path';
 let extensions : Array<string> = vscode.workspace.getConfiguration().get('laravelGoto.staticFileExtensions', []);
 extensions = extensions.map(ext => ext.toLowerCase());
 
+class Place {
+	path: string;
+	location: string;
+
+	constructor() {
+		this.path = "";
+		this.location = "";
+	}
+}
 export function activate(context: vscode.ExtensionContext) {
 	let disposable = vscode.commands.registerTextEditorCommand('extension.vscode-laravel-goto',
 	(editor: vscode.TextEditor, edit: vscode.TextEditorEdit, args: any[]) => {
@@ -67,116 +76,75 @@ export function getPlace(editor: vscode.TextEditor, selection: vscode.Range) : {
 	let path = editor.document.getText(selection);
 	const line = editor.document.getText(editor.document.lineAt(selection.start).range);
 
-	if (isController(path)) {
-		if (-1 !== path.indexOf('@')) {
-			let split = path.split('@');
-			path = split[0];
-			location = '@' + split[1];
+	let places = [
+		controllerPlace,
+		configPlace,
+		langPlace,
+		envPlace,
+		staticPlace,
+	];
+
+	for (let i = 0; i < places.length; i++) {
+		let place = places[i](editor, selection, path, line);
+		if (place.path) {
+			return place;
 		}
-		// it's not an absolute path namespace
-		if ('\\' !== path[0]) {
-			let namespace = (new Namespace).find(editor.document, selection);
-			if (namespace) {
-				path = namespace + '/' + path;
-			}
-		}
-
-		path = path.replace(/\\/g, '/') + '.php';
-
-	} else if (isConfig({ line, path })) {
-		let split = path.split('.');
-		path = 'config/' + split[0] + '.php';
-		if (2 <= split.length) {
-			location = "(['\"]{1})" + split[1] + "\\1\\s*=>";
-		}
-
-	} else if (isLanguage(line, path)) {
-		let split = path.split(':');
-		let vendor = (3 == split.length) ? `/vendor/${split[0]}` : '';
-		let keys = split[split.length - 1].split('.');
-
-		path = `resources/lang${vendor}/${keys[0]}.php`;
-		if (2 <= keys.length) {
-			location = "(['\"]{1})" + keys[1] + "\\1\\s*=>";
-		}
-
-	} else if (isEnv(line, path)) {
-		location = path
-		path = '.env'
-
-	} else if (isStaticFile(path)) {
-		let split = path.split('/');
-		split = split.filter(d => (d !== '..' && d !== '.') );
-		path = split.join('/');
-
-	} else {
-		let split = path.split(':');
-		let vendor = '';
-		// namespace or vendor
-		if (3 == split.length) {
-			// it's vendor
-			if (split[0] == split[0].toLowerCase()) {
-				vendor = split[0] + '/';
-			}
-		}
-		path = split[split.length - 1];
-		path = vendor + path.replace(/\./g, '/') + '.blade.php';
 	}
 
-	return {path: path, location: location};
+	let place = viewPlace(editor, selection, path, line);
+	return place;
 }
 
-/**
- * check if the path is a controller path
- * @param path
- */
-function isController(path: string) : boolean
-{
-	return (-1 !== path.indexOf('Controller'));
+function controllerPlace(editor: vscode.TextEditor, selection: vscode.Range, path: string, line: string): Place {
+	let place = new Place;
+	if (-1 === path.indexOf('Controller')) {
+		return place;
+	}
+
+	if (-1 !== path.indexOf('@')) {
+		let split = path.split('@');
+		path = split[0];
+		place.location = '@' + split[1];
+	}
+	// it's not an absolute path namespace
+	if ('\\' !== path[0]) {
+		let namespace = (new Namespace).find(editor.document, selection);
+		if (namespace) {
+			path = namespace + '/' + path;
+		}
+	}
+
+	place.path = path.replace(/\\/g, '/') + '.php';
+	return place;
 }
 
-/**
- * check if the path ends with an specified extension
- * @param path
- */
-function isStaticFile(path: string) : boolean
-{
-	const split = path.split('.');
-	const ext = split[split.length - 1].toLocaleLowerCase();
-	return (-1 !== extensions.indexOf(ext));
-}
-
-/**
- * check if the path is a config file
- * @param line
- * @param path
- */
-function isConfig({ line, path }: { line: string; path: string; }) : boolean
-{
+function configPlace(editor: vscode.TextEditor, selection: vscode.Range, path: string, line: string): Place {
 	const patterns = [
 		/Config::[^'"]*(['"])([^'"]*)\1/,
 		/config\([^'"]*(['"])([^'"]*)\1/g
 	];
+
+	let place = new Place;
 
 	for (const pattern of patterns) {
 		let match;
 		do {
 			match = pattern.exec(line);
 			if (match && match[2] == path) {
-				return true;
+				let split = path.split('.');
+				place.path = 'config/' + split[0] + '.php';
+				if (2 <= split.length) {
+					place.location = "(['\"]{1})" + split[1] + "\\1\\s*=>";
+				}
+				return place;
 			}
 		} while (match)
 	}
 
-	return false;
+	return place;
 }
 
-/**
- * check if the path is a language file
- * @param line
- * @param path
- */
-function isLanguage(line: string, path: string): boolean {
+function langPlace(editor: vscode.TextEditor, selection: vscode.Range, path: string, line: string): Place {
 	const patterns = [
 		/__\([^'"]*(['"])([^'"]*)\1/,
 		/@lang\([^'"]*(['"])([^'"]*)\1/,
@@ -184,27 +152,70 @@ function isLanguage(line: string, path: string): boolean {
 		/trans_choice\([^'"]*(['"])([^'"]*)\1/,
 	];
 
+	let place = new Place;
+
 	for (const pattern of patterns) {
 		let match = pattern.exec(line);
 		if (match && match[2] == path) {
-			return true;
+			let split = path.split(':');
+			let vendor = (3 == split.length) ? `/vendor/${split[0]}` : '';
+			let keys = split[split.length - 1].split('.');
+
+			place.path = `resources/lang${vendor}/${keys[0]}.php`;
+			if (2 <= keys.length) {
+				place.location = "(['\"]{1})" + keys[1] + "\\1\\s*=>";
+			}
+
+			return place;
 		}
 	}
 
-	return false;
+	return place;
 }
 
-
-/**
- * check if the path is a .env file
- * @param line
- * @param path
- */
-function isEnv(line: string, path: string) : boolean
-{
+function envPlace(editor: vscode.TextEditor, selection: vscode.Range, path: string, line: string): Place {
 	const pattern = /env\(\s*(['"])([^'"]*)\1/;
 	const match = pattern.exec(line);
-	return (Boolean)(match && match[2] === path);
+	let place = new Place;
+
+	if ((Boolean)(match && match[2] === path)) {
+		place.location = path
+		place.path = '.env'
+		return place;
+	}
+
+	return place;
+}
+
+function staticPlace(editor: vscode.TextEditor, selection: vscode.Range, path: string, line: string): Place {
+	const split = path.split('.');
+	const ext = split[split.length - 1].toLocaleLowerCase();
+	let place = new Place;
+	if (-1 !== extensions.indexOf(ext)) {
+		let split = path.split('/');
+		split = split.filter(d => (d !== '..' && d !== '.'));
+		place.path = split.join('/');
+		return place;
+	}
+	return place;
+}
+
+function viewPlace(editor: vscode.TextEditor, selection: vscode.Range, path: string, line: string): Place {
+	let split = path.split(':');
+	let vendor = '';
+	// namespace or vendor
+	if (3 == split.length) {
+		// it's vendor
+		if (split[0] == split[0].toLowerCase()) {
+			vendor = split[0] + '/';
+		}
+	}
+
+	let place = new Place;
+	place.path = split[split.length - 1];
+	place.path = vendor + place.path.replace(/\./g, '/') + '.blade.php';
+
+	return place;
 }
 
 /**

@@ -53,7 +53,7 @@ export class Namespace {
     }
 
     /**
-     * get the end postion from the start postion
+     * get the end position from the start position
      * @param start
      */
     private getEndPosition(start: number) : number
