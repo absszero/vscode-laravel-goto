@@ -77,6 +77,7 @@ export function getPlace(editor: vscode.TextEditor, selection: vscode.Range) : {
 	const line = editor.document.getText(editor.document.lineAt(selection.start).range);
 
 	let places = [
+		pathHelperPlace,
 		controllerPlace,
 		configPlace,
 		langPlace,
@@ -95,6 +96,13 @@ export function getPlace(editor: vscode.TextEditor, selection: vscode.Range) : {
 	return place;
 }
 
+/**
+ * get controller place
+ * @param editor
+ * @param selection
+ * @param path
+ * @param line
+ */
 function controllerPlace(editor: vscode.TextEditor, selection: vscode.Range, path: string, line: string): Place {
 	let place = new Place;
 	if (-1 === path.indexOf('Controller')) {
@@ -118,6 +126,13 @@ function controllerPlace(editor: vscode.TextEditor, selection: vscode.Range, pat
 	return place;
 }
 
+/**
+ * get config place
+ * @param editor
+ * @param selection
+ * @param path
+ * @param line
+ */
 function configPlace(editor: vscode.TextEditor, selection: vscode.Range, path: string, line: string): Place {
 	const patterns = [
 		/Config::[^'"]*(['"])([^'"]*)\1/,
@@ -143,7 +158,13 @@ function configPlace(editor: vscode.TextEditor, selection: vscode.Range, path: s
 
 	return place;
 }
-
+/**
+ * get language place
+ * @param editor
+ * @param selection
+ * @param path
+ * @param line
+ */
 function langPlace(editor: vscode.TextEditor, selection: vscode.Range, path: string, line: string): Place {
 	const patterns = [
 		/__\([^'"]*(['"])([^'"]*)\1/,
@@ -173,6 +194,13 @@ function langPlace(editor: vscode.TextEditor, selection: vscode.Range, path: str
 	return place;
 }
 
+/**
+ * get env place
+ * @param editor
+ * @param selection
+ * @param path
+ * @param line
+ */
 function envPlace(editor: vscode.TextEditor, selection: vscode.Range, path: string, line: string): Place {
 	const pattern = /env\(\s*(['"])([^'"]*)\1/;
 	const match = pattern.exec(line);
@@ -181,12 +209,18 @@ function envPlace(editor: vscode.TextEditor, selection: vscode.Range, path: stri
 	if ((Boolean)(match && match[2] === path)) {
 		place.location = path
 		place.path = '.env'
-		return place;
 	}
 
 	return place;
 }
 
+/**
+ * get static place
+ * @param editor
+ * @param selection
+ * @param path
+ * @param line
+ */
 function staticPlace(editor: vscode.TextEditor, selection: vscode.Range, path: string, line: string): Place {
 	const split = path.split('.');
 	const ext = split[split.length - 1].toLocaleLowerCase();
@@ -195,11 +229,43 @@ function staticPlace(editor: vscode.TextEditor, selection: vscode.Range, path: s
 		let split = path.split('/');
 		split = split.filter(d => (d !== '..' && d !== '.'));
 		place.path = split.join('/');
-		return place;
 	}
 	return place;
 }
 
+/**
+ * get path helper place
+ * @param editor
+ * @param selection
+ * @param path
+ * @param line
+ */
+function pathHelperPlace(editor: vscode.TextEditor, selection: vscode.Range, path: string, line: string): Place {
+	const pattern = /([^ _]+)_path\(\s*(['"])([^'"]*)\2/;
+	const match = pattern.exec(line);
+	let place = new Place;
+
+	if ((Boolean)(match && match[3] === path)) {
+		let prefix = match![1] + '/';
+		if ('base/' == prefix)
+			prefix = ''
+		else if ('resource/' == prefix) {
+			prefix = 'resources/'
+		}
+
+		place.path = prefix + path
+	}
+
+	return place;
+}
+
+/**
+ * get view place
+ * @param editor
+ * @param selection
+ * @param path
+ * @param line
+ */
 function viewPlace(editor: vscode.TextEditor, selection: vscode.Range, path: string, line: string): Place {
 	let split = path.split(':');
 	let vendor = '';

@@ -56,3 +56,17 @@ trans('package::messages');
 config(['app.timezone' => config('app.tz')]);
 
 view('vendor::hello_view');
+
+app_path('User.php');
+
+base_path('vendor');
+
+config_path('app.php');
+
+database_path('UserFactory.php');
+
+public_path('css/app.css');
+
+resource_path('sass/app.scss');
+
+storage_path('logs/laravel.log');

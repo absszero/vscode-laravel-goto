@@ -110,6 +110,29 @@ suite('Extension Test Suite', () => {
 		assertPath(1110, "vendor/hello_view.blade.php");
 	});
 
+	test('app_path', async () => {
+		assertPath(1140, "app/User.php");
+	});
+
+	test('config_path', async() => {
+		assertPath(1185, 'config/app.php');
+	});
+
+	test('database_path', async() => {
+		assertPath(1215, 'database/UserFactory.php');
+	});
+
+	test('public_path', async() => {
+		assertPath(1245, 'public/css/app.css');
+	});
+
+	test('resource_path', async() => {
+		assertPath(1280, 'resources/sass/app.scss');
+	});
+
+	test('storage_path', async() => {
+		assertPath(1310, 'storage/logs/laravel.log');
+	});
 });
 
 function assertPath(position: number, expected: string, location?: string) {
