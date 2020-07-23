@@ -70,3 +70,5 @@ public_path('css/app.css');
 resource_path('sass/app.scss');
 
 storage_path('logs/laravel.log');
+
+realpath(storage_path('logs/laravel.log'));

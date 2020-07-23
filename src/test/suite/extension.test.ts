@@ -133,6 +133,10 @@ suite('Extension Test Suite', () => {
 	test('storage_path', async() => {
 		assertPath(1310, 'storage/logs/laravel.log');
 	});
+
+	test('path_helper_with_double_brackets', async () => {
+		assertPath(1355, 'storage/logs/laravel.log');
+	});
 });
 
 function assertPath(position: number, expected: string, location?: string) {

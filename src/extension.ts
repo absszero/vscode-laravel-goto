@@ -241,7 +241,7 @@ function staticPlace(editor: vscode.TextEditor, selection: vscode.Range, path: s
  * @param line
  */
 function pathHelperPlace(editor: vscode.TextEditor, selection: vscode.Range, path: string, line: string): Place {
-	const pattern = /([^ _]+)_path\(\s*(['"])([^'"]*)\2/;
+	const pattern = /([\w^_]+)_path\(\s*(['"])([^'"]*)\2/;
 	const match = pattern.exec(line);
 	let place = new Place;
 
