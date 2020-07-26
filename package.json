@@ -2,7 +2,7 @@
 	"name": "vscode-laravel-goto",
 	"displayName": "Laravel Goto",
 	"description": "Go to various Laravel files by Alt + ;",
-	"version": "0.3.0",
+	"version": "0.3.1",
 	"publisher": "absszero",
 	"license": "MIT",
 	"repository": "https://github.com/absszero/vscode-laravel-goto",
