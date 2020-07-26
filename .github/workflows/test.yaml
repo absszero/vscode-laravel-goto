@@ -7,11 +7,23 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [macos-latest, ubuntu-latest, windows-latest]
+        os: [macos-latest, ubuntu-latest]
     runs-on: ${{ matrix.os }}
     steps:
     - name: Checkout
       uses: actions/checkout@v2
+
+    - name: Cache
+      uses: actions/cache@v2
+      env:
+        cache-name: cache-node-modules
+      with:
+        # npm cache files are stored in `~/.npm` on Linux/macOS
+        path: ~/.vscode-test
+        key: ${{ runner.os }}
+        restore-keys: |
+          ${{ runner.os }}
+
     - name: Install Node.js
       uses: actions/setup-node@v1
       with:

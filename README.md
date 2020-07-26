@@ -1,10 +1,8 @@
 # Laravel Goto for VS Code
 
-[![Build Status](https://travis-ci.com/absszero/vscode-laravel-goto.svg?branch=master)](https://travis-ci.com/absszero/vscode-laravel-goto)
+![.github/workflows/test.yaml](https://github.com/absszero/vscode-laravel-goto/workflows/.github/workflows/test.yaml/badge.svg) 
 
 Goto various Laravel files by `Alt`+`;`
-
-![](example.gif)
 
 ## Features
 
