@@ -4,6 +4,8 @@
 
 Goto various Laravel files by `Alt`+`;`
 
+![](example.gif)
+
 ## Features
 
 - Go to Blade Template files *(EX. hello.blade.php)*
