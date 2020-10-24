@@ -35,7 +35,7 @@ export class Namespace {
         let match;
         let blocks : Array<any> = [];
         for (const pattern of this.patterns) {
-            while ((match = pattern.exec(this.fullText)) != null) {
+            while ((match = pattern.exec(this.fullText)) !== null) {
                 let start = document.positionAt(match.index);
                 if (selection.start.isAfter(start)) {
                     blocks.push({
@@ -64,7 +64,7 @@ export class Namespace {
             if ('{' === this.fullText[start]) {
                 result.push(start);
             } else if ('}' === this.fullText[start]) {
-                result.pop() as number;
+                result.pop();
                 if (0 === result.length) {
                     return start;
                 }

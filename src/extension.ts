@@ -145,7 +145,7 @@ function configPlace(editor: vscode.TextEditor, selection: vscode.Range, path: s
 		let match;
 		do {
 			match = pattern.exec(line);
-			if (match && match[2] == path) {
+			if (match && match[2] === path) {
 				let split = path.split('.');
 				place.path = 'config/' + split[0] + '.php';
 				if (2 <= split.length) {
@@ -153,7 +153,7 @@ function configPlace(editor: vscode.TextEditor, selection: vscode.Range, path: s
 				}
 				return place;
 			}
-		} while (match)
+		} while (match);
 	}
 
 	return place;
@@ -177,9 +177,9 @@ function langPlace(editor: vscode.TextEditor, selection: vscode.Range, path: str
 
 	for (const pattern of patterns) {
 		let match = pattern.exec(line);
-		if (match && match[2] == path) {
+		if (match && match[2] === path) {
 			let split = path.split(':');
-			let vendor = (3 == split.length) ? `/vendor/${split[0]}` : '';
+			let vendor = (3 === split.length) ? `/vendor/${split[0]}` : '';
 			let keys = split[split.length - 1].split('.');
 
 			place.path = `resources/lang${vendor}/${keys[0]}.php`;
@@ -207,8 +207,8 @@ function envPlace(editor: vscode.TextEditor, selection: vscode.Range, path: stri
 	let place = new Place;
 
 	if ((Boolean)(match && match[2] === path)) {
-		place.location = path
-		place.path = '.env'
+		place.location = path;
+		place.path = '.env';
 	}
 
 	return place;
@@ -247,13 +247,13 @@ function pathHelperPlace(editor: vscode.TextEditor, selection: vscode.Range, pat
 
 	if ((Boolean)(match && match[3] === path)) {
 		let prefix = match![1] + '/';
-		if ('base/' == prefix)
-			prefix = ''
-		else if ('resource/' == prefix) {
-			prefix = 'resources/'
+		if ('base/' === prefix) {
+			prefix = '';
+		} else if ('resource/' === prefix) {
+			prefix = 'resources/';
 		}
 
-		place.path = prefix + path
+		place.path = prefix + path;
 	}
 
 	return place;
@@ -270,9 +270,9 @@ function viewPlace(editor: vscode.TextEditor, selection: vscode.Range, path: str
 	let split = path.split(':');
 	let vendor = '';
 	// namespace or vendor
-	if (3 == split.length) {
+	if (3 === split.length) {
 		// it's vendor
-		if (split[0] == split[0].toLowerCase()) {
+		if (split[0] === split[0].toLowerCase()) {
 			vendor = split[0] + '/';
 		}
 	}
@@ -297,9 +297,9 @@ export function getSelection(editor: vscode.TextEditor, selected: vscode.Selecti
 	}
 
 	const line = editor.document.lineAt(start);
-	const DELIMITERS = "\"'"
+	const DELIMITERS = "\"'";
 	while (start.isAfter(line.range.start)) {
-		let next = start.with({character: start.character - 1})
+		let next = start.with({character: start.character - 1});
 		let char = editor.document.getText(new vscode.Range(next, start));
 		if (-1 !== DELIMITERS.indexOf(char)) {
 			break;
@@ -307,7 +307,7 @@ export function getSelection(editor: vscode.TextEditor, selected: vscode.Selecti
 		start = next;
 	}
 	while (end.isBefore(line.range.end)) {
-		let next = end.with({character: end.character + 1})
+		let next = end.with({character: end.character + 1});
 		let char = editor.document.getText(new vscode.Range(end, next));
 		if (-1 !== DELIMITERS.indexOf(char)) {
 			break;
