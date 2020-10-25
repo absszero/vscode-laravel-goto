@@ -137,15 +137,30 @@ suite('Extension Test Suite', () => {
 	test('path_helper_with_double_brackets', async () => {
 		assertPath(1355, 'storage/logs/laravel.log');
 	});
+
+	test('Laravel 8 controller with namespace', async () => {
+		assertPath(1395, "L8/HelloController.php", "@index");
+	});
+
+	test('Laravel 8 controller without action', async () => {
+		assertPath(1450, "HelloController.php");
+	});
+
+	test('Laravel 8 controller with group namespace', async () => {
+		assertPath(1550, "L8/HelloController.php");
+	});
 });
 
 function assertPath(position: number, expected: string, location?: string) {
 	editor.selection = new vscode.Selection(editor.document.positionAt(position), editor.document.positionAt(position));
-	const selection = getSelection(editor, editor.selection);
+	const selection = getSelection(editor, editor.selection, "\"'[,)");
+	if (!selection) {
+		assert.fail();
+	}
 	const place = getPlace(editor, selection);
-	assert.equal(place.path, expected)
+	assert.strictEqual(place.path, expected);
 	if (location) {
-		assert.equal(place.location, location)
+		assert.strictEqual(place.location, location);
 	}
 }
 

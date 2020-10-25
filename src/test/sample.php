@@ -72,3 +72,11 @@ resource_path('sass/app.scss');
 storage_path('logs/laravel.log');
 
 realpath(storage_path('logs/laravel.log'));
+
+Route::get('/', [L8\HelloController::class, 'index']);
+
+Route::get('/', HelloController::class);
+
+Route::group(['namespace' => 'L8'], function () {
+    Route::get('/', [\HelloController::class, 'index']);
+});

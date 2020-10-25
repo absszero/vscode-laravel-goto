@@ -17,7 +17,10 @@ class Place {
 export function activate(context: vscode.ExtensionContext) {
 	let disposable = vscode.commands.registerTextEditorCommand('extension.vscode-laravel-goto',
 	(editor: vscode.TextEditor, edit: vscode.TextEditorEdit, args: any[]) => {
-		const selection = getSelection(editor, editor.selection);
+		const selection = getSelection(editor, editor.selection, "\"'[,)");
+		if (!selection) {
+			return;
+		}
 		const place = getPlace(editor, selection);
 		if (place.location) {
 			const event = vscode.window.onDidChangeActiveTextEditor(e => {
@@ -73,7 +76,7 @@ function locationRange(doc: vscode.TextDocument, location: string) : vscode.Rang
 export function getPlace(editor: vscode.TextEditor, selection: vscode.Range) : { path: string; location: string; }
 {
 	let location = "";
-	let path = editor.document.getText(selection);
+	let path = editor.document.getText(selection).trim();
 	const line = editor.document.getText(editor.document.lineAt(selection.start).range);
 
 	let places = [
@@ -97,6 +100,57 @@ export function getPlace(editor: vscode.TextEditor, selection: vscode.Range) : {
 }
 
 /**
+ * set controller action
+ *
+ * @param editor
+ * @param selection
+ * @param place
+ */
+function setControllerAction(editor: vscode.TextEditor, selection: vscode.Range, place: Place): Place {
+	if (-1 !== place.path.indexOf('@')) {
+		let split = place.path.split('@');
+		place.path = split[0];
+		place.location = '@' + split[1];
+	} else if (place.path.endsWith('::class')) {
+		let action = getSelection(editor, selection, "[]");
+		if (action) {
+
+			// HiController, 'index' => index
+			place.location = '@' + editor.document
+			.getText(action)
+			.split(',')[1]
+			.replace(/['"]+/g, '')
+			.trim();
+		}
+	}
+
+	return place;
+}
+
+
+/**
+ * get controller namespace
+ * @param editor
+ * @param selection
+ * @param place
+ */
+function setControllerNamespace(editor: vscode.TextEditor, selection: vscode.Range, place: Place): Place {
+	// group namespace
+	const isClass = place.path.endsWith('::class');
+	if ('\\' !== place.path[0] || isClass) {
+		if ('\\' === place.path[0]) {
+			place.path = place.path.substring(1);
+		}
+		let namespace = (new Namespace).find(editor.document, selection);
+		if (namespace) {
+			place.path = namespace + '/' + place.path;
+		}
+	}
+	return place;
+}
+
+
+/**
  * get controller place
  * @param editor
  * @param selection
@@ -108,21 +162,15 @@ function controllerPlace(editor: vscode.TextEditor, selection: vscode.Range, pat
 	if (-1 === path.indexOf('Controller')) {
 		return place;
 	}
+	place.path = path;
 
-	if (-1 !== path.indexOf('@')) {
-		let split = path.split('@');
-		path = split[0];
-		place.location = '@' + split[1];
-	}
-	// it's not an absolute path namespace
-	if ('\\' !== path[0]) {
-		let namespace = (new Namespace).find(editor.document, selection);
-		if (namespace) {
-			path = namespace + '/' + path;
-		}
-	}
+	place = setControllerAction(editor, selection, place);
+	place = setControllerNamespace(editor, selection, place);
 
-	place.path = path.replace(/\\/g, '/') + '.php';
+	place.path = place.path
+		.replace('::class', '')
+		.replace(/\\/g, '/') + '.php';
+
 	return place;
 }
 
@@ -288,20 +336,15 @@ function viewPlace(editor: vscode.TextEditor, selection: vscode.Range, path: str
  * get selection from cursor or first selection
  * @param selected
  */
-export function getSelection(editor: vscode.TextEditor, selected: vscode.Selection) : vscode.Range {
+export function getSelection(editor: vscode.TextEditor, selected: vscode.Range, delimiters: string) : vscode.Range | null {
 	let start = selected.start;
 	let end = selected.end;
 
-	if (!start.isEqual(end)) {
-		return new vscode.Range(start, end);
-	}
-
 	const line = editor.document.lineAt(start);
-	const DELIMITERS = "\"'";
 	while (start.isAfter(line.range.start)) {
 		let next = start.with({character: start.character - 1});
 		let char = editor.document.getText(new vscode.Range(next, start));
-		if (-1 !== DELIMITERS.indexOf(char)) {
+		if (-1 !== delimiters.indexOf(char)) {
 			break;
 		}
 		start = next;
@@ -309,11 +352,16 @@ export function getSelection(editor: vscode.TextEditor, selected: vscode.Selecti
 	while (end.isBefore(line.range.end)) {
 		let next = end.with({character: end.character + 1});
 		let char = editor.document.getText(new vscode.Range(end, next));
-		if (-1 !== DELIMITERS.indexOf(char)) {
+		if (-1 !== delimiters.indexOf(char)) {
 			break;
 		}
 		end = next;
 	}
 
-	return new vscode.Range(start, end);
+	let range = new vscode.Range(start, end);
+	if (range.isEqual(line.range)) {
+		return null;
+	}
+
+	return range;
 }

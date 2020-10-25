@@ -1,4 +1,6 @@
 <?php
+Route::get('/', [HelloController::class, 'index']);
+
 Route::get('/', 'HelloController@index');
 
 view('hello_view');
