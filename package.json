@@ -37,6 +37,26 @@
 					"command": "extension.vscode-laravel-goto",
 					"when": "editorTextFocus && resourceExtname == .php",
 					"group": "navigation"
+				},
+				{
+					"command": "extension.vscode-laravel-goto",
+					"when": "editorTextFocus && resourceExtname == .js",
+					"group": "navigation"
+				},
+				{
+					"command": "extension.vscode-laravel-goto",
+					"when": "editorTextFocus && resourceExtname == .ts",
+					"group": "navigation"
+				},
+				{
+					"command": "extension.vscode-laravel-goto",
+					"when": "editorTextFocus && resourceExtname == .jsx",
+					"group": "navigation"
+				},
+				{
+					"command": "extension.vscode-laravel-goto",
+					"when": "editorTextFocus && resourceExtname == .vue",
+					"group": "navigation"
 				}
 			]
 		},
@@ -44,7 +64,27 @@
 			{
 				"command": "extension.vscode-laravel-goto",
 				"key": "alt+;",
-				"when": "editorTextFocus && editorLangId == php && resourceExtname == .php"
+				"when": "editorTextFocus && resourceExtname == .php"
+			},
+			{
+				"command": "extension.vscode-laravel-goto",
+				"key": "alt+;",
+				"when": "editorTextFocus && resourceExtname == .js"
+			},
+			{
+				"command": "extension.vscode-laravel-goto",
+				"key": "alt+;",
+				"when": "editorTextFocus && resourceExtname == .ts"
+			},
+			{
+				"command": "extension.vscode-laravel-goto",
+				"key": "alt+;",
+				"when": "editorTextFocus && resourceExtname == .jsx"
+			},
+			{
+				"command": "extension.vscode-laravel-goto",
+				"key": "alt+;",
+				"when": "editorTextFocus && resourceExtname == .vue"
 			}
 		],
 		"configuration": [
