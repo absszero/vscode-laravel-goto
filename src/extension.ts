@@ -73,7 +73,7 @@ function locationRange(doc: vscode.TextDocument, location: string) : vscode.Rang
  * get place by selection
  * @param selection
  */
-export function getPlace(editor: vscode.TextEditor, selection: vscode.Range) : { path: string; location: string; }
+export function getPlace(editor: vscode.TextEditor, selection: vscode.Range) : { path: string; location: string }
 {
 	let location = "";
 	let path = editor.document.getText(selection).trim();
