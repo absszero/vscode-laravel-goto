@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { basename } from 'path';
-import { getPlace } from './Place';
+import { Finder } from './Finder';
 
 export function activate(context: vscode.ExtensionContext) {
 	let disposable = vscode.commands.registerTextEditorCommand('extension.vscode-laravel-goto',
@@ -9,7 +9,8 @@ export function activate(context: vscode.ExtensionContext) {
 		if (!selection) {
 			return;
 		}
-		const place = getPlace(editor, selection);
+		const finder = new Finder(editor, selection);
+		const place = finder.getPlace();
 		if (place.location) {
 			const event = vscode.window.onDidChangeActiveTextEditor(e => {
 				event.dispose();

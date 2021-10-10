@@ -5,7 +5,7 @@ import { before } from 'mocha';
 // as well as import your extension to test it
 import * as vscode from 'vscode';
 import { getSelection } from '../../extension';
-import { getPlace } from '../../Place';
+import { Finder } from '../../Finder';
 
 import * as path from "path";
 
@@ -158,7 +158,8 @@ function assertPath(position: number, expected: string, location?: string) {
 	if (!selection) {
 		assert.fail();
 	}
-	const place = getPlace(editor, selection);
+	const finder = new Finder(editor, selection);
+	const place = finder.getPlace();
 	assert.strictEqual(place.path, expected);
 	if (location) {
 		assert.strictEqual(place.location, location);
