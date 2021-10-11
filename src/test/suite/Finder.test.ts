@@ -12,148 +12,245 @@ import * as path from "path";
 let editor : vscode.TextEditor;
 suite('Extension Test Suite', () => {
 	before(async () => {
-		const folder = process.env.EXTENSION_PATH || process.env.INIT_CWD;
-		let file = path.resolve(folder + '/src/test/sample.php');
-		const document = await vscode.workspace.openTextDocument(file);
+		const document = await vscode.workspace.openTextDocument({language: 'php'});
 		editor = await vscode.window.showTextDocument(document);
 		vscode.window.showInformationMessage('Start all tests.');
 	});
 
 	test('View file', async () => {
-		assertPath(18, "hello_view.blade.php");
+		replace("view('hello|_view');").then(() => {
+			assertPath("hello_view.blade.php");
+		});
 	});
 
 	test('View file with Namespace', async () => {
-		assertPath(47, "hello_view.blade.php");
+		replace("view('Namespace::hel|lo_view');").then(() => {
+			assertPath("hello_view.blade.php");
+		});
 	});
 
 	test('Controller', async () => {
-		assertPath(86, "HelloController.php", "@index");
+		replace("Route::get('/', 'HelloControlle|r@index');").then(() => {
+			assertPath("HelloController.php", "@index");
+		});
 	});
 
 	test('Controller with Route::namespace', async () => {
-		assertPath(180, "58/HelloController.php", "@index");
+		replace(`Route::namespace('58')->group(function () {
+			Route::get('/', 'HelloControl|ler@index');
+		});`).then(() => {
+			assertPath("58/HelloController.php", "@index");
+		});
 	});
 
 	test('Controller with Route::group()', async () => {
-		assertPath(285, "52/HelloController.php", "@index");
+		replace(`Route::group(['namespace' => '52'], function () {
+			Route::get('/', 'HelloContro|ller@index');
+		});`).then(() => {
+			assertPath("52/HelloController.php", "@index");
+		});
 	});
 
 	test('Controller with Route::resource', async () => {
-		assertPath(390, "Resource/HelloController.php");
+		replace(`Route::group(['namespace' => 'Resource'], function () {
+			Route::resource('photo', 'Hel|loController', ['only' => [
+				'index', 'show'
+			]]);
+		});`).then(() => {
+			assertPath("Resource/HelloController.php");
+		});
 	});
 
 	test('Controller with $router->group()', async () => {
-		assertPath(550, "Lumen/HelloController.php", "@index");
+		replace(`$router->group(['namespace' => 'Lumen'], function () use ($router) {
+			Route::get('/', 'HelloControl|ler@index');
+		});`).then(() => {
+			assertPath("Lumen/HelloController.php", "@index");
+		});
 	});
 
 	test('Controller with absolute path namespace', async () => {
-		assertPath(660, "/Absolute/HelloController.php", "@index");
+		replace(`Route::group(['namespace' => 'Abc'], function () {
+			Route::get('/', '\Absolute\HelloContr|oller@index');
+		});`).then(() => {
+			assertPath("/Absolute/HelloController.php", "@index");
+		});
 	});
 
 	test('Static file', async () => {
-		assertPath(690, "hello.JS");
+		replace(`'hell|o.JS';`).then(() => {
+			assertPath("hello.JS");
+		});
 	});
 
 	test('Facade config get', async () => {
-		assertPath(715, "config/app.php");
+		replace(`Config::get('app.t|imezone');`).then(() => {
+			assertPath("config/app.php");
+		});
 	});
 
 	test('Facade config set', async () => {
-		assertPath(750, "config/app.php");
+		replace(`Config::set(   'app.time|zone', 'UTC');`).then(() => {
+			assertPath("config/app.php");
+		});
 	});
 
 	test('config get only file', async () => {
-		assertPath(777, "config/app.php");
+		replace(`config('a|pp');`).then(() => {
+			assertPath("config/app.php");
+		});
 	});
 
 	test('config get', async () => {
-		assertPath(800, "config/app.php");
+		replace(`config('app.time|zone');`).then(() => {
+			assertPath("config/app.php");
+		});
 	});
 
 	test('config set', async () => {
-		assertPath(830, "config/app.php");
+		replace(`config(     ['app.time|zone' => 'UTC']);`).then(() => {
+			assertPath("config/app.php");
+		});
 	});
 
 	test('.env', async () => {
-		assertPath(865, ".env");
+		replace(`env(   'APP_DEB|UG', false);`).then(() => {
+			assertPath(".env");
+		});
 	});
 
 	test('lang underscore', async () => {
-		assertPath(890, "resources/lang/messages.php");
+		replace(`__('messages.|welcome');`).then(() => {
+			assertPath("resources/lang/messages.php");
+		});
 	});
 
 	test('@lang', async () => {
-		assertPath(920, "resources/lang/messages.php");
+		replace(`@lang('messages|.welcome');`).then(() => {
+			assertPath("resources/lang/messages.php");
+		});
 	});
 
 	test('trans', async () => {
-		assertPath(950, "resources/lang/messages.php");
+		replace(`trans('messages.w|elcome');`).then(() => {
+			assertPath("resources/lang/messages.php");
+		});
 	});
 
 	test('trans_choice', async () => {
-		assertPath(980, "resources/lang/messages.php");
+		replace(`trans_choice('message|s.apples', 10);`).then(() => {
+			assertPath("resources/lang/messages.php");
+		});
 	});
 
 	test('package trans', async () => {
-		assertPath(1015, "resources/lang/vendor/package/messages.php");
+		replace(`trans('package::m|essages');`).then(() => {
+			assertPath("resources/lang/vendor/package/messages.php");
+		});
 	});
 
 	test('relative static file path', async () => {
-		assertPath(1040, "hello.JS");
+		replace(`'./../../he|llo.JS';`).then(() => {
+			assertPath("hello.JS");
+		});
 	});
 
 	test('config in config', async () => {
-		assertPath(1085, "config/app.php");
+		replace(`config(['app.timezone' => config('ap|p.tz')]);`).then(() => {
+			assertPath("config/app.php");
+		});
 	});
 
 	test('vendor view', async () => {
-		assertPath(1110, "vendor/hello_view.blade.php");
+		replace(`view('vendor::he|llo_view');`).then(() => {
+			assertPath("vendor/hello_view.blade.php");
+		});
 	});
 
 	test('app_path', async () => {
-		assertPath(1140, "app/User.php");
+		replace(`app_path('Use|r.php');`).then(() => {
+			assertPath("app/User.php");
+		});
 	});
 
 	test('config_path', async() => {
-		assertPath(1185, 'config/app.php');
+		replace(`config_path('a|pp.php');`).then(() => {
+			assertPath('config/app.php');
+		});
 	});
 
 	test('database_path', async() => {
-		assertPath(1215, 'database/UserFactory.php');
+		replace(`database_path('UserFa|ctory.php');`).then(() => {
+			assertPath('database/UserFactory.php');
+		});
 	});
 
 	test('public_path', async() => {
-		assertPath(1245, 'public/css/app.css');
+		replace(`public_path('css/ap|p.css');`).then(() => {
+			assertPath('public/css/app.css');
+		});
 	});
 
 	test('resource_path', async() => {
-		assertPath(1280, 'resources/sass/app.scss');
+		replace(`resource_path('sass/a|pp.scss');`).then(() => {
+			assertPath('resources/sass/app.scss');
+		});
 	});
 
 	test('storage_path', async() => {
-		assertPath(1310, 'storage/logs/laravel.log');
+		replace(`storage_path('logs/lar|avel.log');`).then(() => {
+			assertPath('storage/logs/laravel.log');
+		});
 	});
 
 	test('path_helper_with_double_brackets', async () => {
-		assertPath(1355, 'storage/logs/laravel.log');
+		replace(`realpath(storage_path('logs/la|ravel.log'));`).then(() => {
+			assertPath('storage/logs/laravel.log');
+		});
 	});
 
 	test('Laravel 8 controller with namespace', async () => {
-		assertPath(1395, "L8/HelloController.php", "@index");
+		replace(`Route::get('/', [L8\HelloControl|ler::class, 'index']);`).then(() => {
+			assertPath("L8/HelloController.php", "@index");
+		});
 	});
 
 	test('Laravel 8 controller without action', async () => {
-		assertPath(1450, "HelloController.php");
+		replace(`Route::get('/', HelloCo|ntroller::class);`).then(() => {
+			assertPath("HelloController.php");
+		});
 	});
 
 	test('Laravel 8 controller with group namespace', async () => {
-		assertPath(1550, "L8/HelloController.php");
+		replace(`Route::group(['namespace' => 'L8'], function () {
+			Route::get('/', [\HelloContro|ller::class, 'index']);
+		});`).then(() => {
+			assertPath("L8/HelloController.php");
+		});
 	});
 });
 
-function assertPath(position: number, expected: string, location?: string) {
-	editor.selection = new vscode.Selection(editor.document.positionAt(position), editor.document.positionAt(position));
+function replace(text: string) : Thenable<boolean> {
+	return editor.edit((textEditorEdit) => {
+		const firstLine = editor.document.lineAt(0);
+		const lastLine = editor.document.lineAt(editor.document.lineCount - 1);
+		const textRange = new vscode.Range(firstLine.range.start, lastLine.range.end);
+
+		text = '<?php ' + text;
+		const cursor = text.indexOf('|');
+		if (-1 !== cursor) {
+			text.replace('|', '');
+		}
+		textEditorEdit.replace(textRange, text);
+
+		if (-1 !== cursor) {
+			const position = editor.document.positionAt(cursor);
+			editor.selection = new vscode.Selection(position, position);
+		}
+	});
+}
+
+function assertPath(expected: string, location?: string) {
 	const selection = getSelection(editor, editor.selection, "\"'[,)");
 	if (!selection) {
 		assert.fail();
