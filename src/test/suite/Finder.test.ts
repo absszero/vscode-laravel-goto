@@ -4,7 +4,7 @@ import { before } from 'mocha';
 // You can import and use all API from the 'vscode' module
 // as well as import your extension to test it
 import * as vscode from 'vscode';
-import { getSelection } from '../../extension';
+import { getSelection } from '../../Locator';
 import { Finder } from '../../Finder';
 
 import * as path from "path";
@@ -251,11 +251,11 @@ function replace(text: string) : Thenable<boolean> {
 }
 
 function assertPath(expected: string, location?: string) {
-	const selection = getSelection(editor, editor.selection, "\"'[,)");
+	const selection = getSelection(editor.document, editor.selection, "\"'[,)");
 	if (!selection) {
 		assert.fail();
 	}
-	const finder = new Finder(editor, selection);
+	const finder = new Finder(editor.document, selection);
 	const place = finder.getPlace();
 	assert.strictEqual(place.path, expected);
 	if (location) {

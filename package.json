@@ -140,8 +140,5 @@
 		"mocha": "^9.1.2",
 		"typescript": "^4.3.2",
 		"vscode-test": "^1.6.1"
-	},
-	"dependencies": {
-		"php-parser": "^3.0.3"
 	}
 }

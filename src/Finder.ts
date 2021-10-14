@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { Namespace } from './Namespace';
-import { getSelection } from './extension';
+import { getSelection } from "./Locator";
 
 export interface Place {
 	path: string;
@@ -10,14 +10,14 @@ export interface Place {
 export class Finder {
 	path: string;
 	line: string;
-	editor: vscode.TextEditor;
+	document: vscode.TextDocument;
 	selection: vscode.Range;
 
-	constructor(editor: vscode.TextEditor, selection: vscode.Range) {
-		this.editor = editor;
+	constructor(document: vscode.TextDocument, selection: vscode.Range) {
+		this.document = document;
 		this.selection = selection;
-		this.path = editor.document.getText(selection).trim();
-		this.line = editor.document.getText(editor.document.lineAt(selection.start).range);
+		this.path = document.getText(selection).trim();
+		this.line = document.getText(document.lineAt(selection.start).range);
 	}
 
 	/**
@@ -212,11 +212,11 @@ export class Finder {
 			place.path = split[0];
 			place.location = '@' + split[1];
 		} else if (place.path.endsWith('::class')) {
-			let action = getSelection(this.editor, this.selection, "[]");
+			let action = getSelection(this.document, this.selection, "[]");
 			if (action) {
 
 				// HiController, 'index' => index
-				place.location = '@' + this.editor.document
+				place.location = '@' + this.document
 					.getText(action)
 					.split(',')[1]
 					.replace(/['"]+/g, '')
@@ -240,7 +240,7 @@ export class Finder {
 			if ('\\' === place.path[0]) {
 				place.path = place.path.substring(1);
 			}
-			let namespace = (new Namespace).find(this.editor.document, this.selection);
+			let namespace = (new Namespace).find(this.document, this.selection);
 			if (namespace) {
 				place.path = namespace + '/' + place.path;
 			}
