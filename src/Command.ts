@@ -1,18 +1,20 @@
 import * as vscode from 'vscode';
-import { basename } from 'path';
-import { Finder } from './Finder';
-import { getSelection, bindSymbol } from './Locator';
+import { locate, bindSymbol } from './Locator';
 
 export default (editor: vscode.TextEditor, edit: vscode.TextEditorEdit, args: any[]) => {
-    const selection = getSelection(editor.document, editor.selection, "\"'[,)");
-    if (!selection) {
-        return;
-    }
-    const finder = new Finder(editor.document, selection);
-    const place = finder.getPlace();
+    locate(editor.document, editor.selection)
+    .then(place => {
+        if (undefined === place) {
+            return;
+        }
 
-    if (place.path) {
         bindSymbol(place);
+
+        if (1 === place.uris.length) {
+            vscode.commands.executeCommand('vscode.open', vscode.Uri.file(place.uris[0].path));
+            return;
+        }
+
         vscode.commands.executeCommand('workbench.action.quickOpen', place.path);
-    }
+    });
 };

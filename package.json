@@ -92,6 +92,12 @@
 			{
 				"title": "Laravel Goto",
 				"properties": {
+					"laravelGoto.exclusion": {
+						"description": "the glob pattern to exclude finding files.",
+						"scope": "window",
+						"type": "string",
+						"default": "**/{node_modules,vendor}/"
+					},
 					"laravelGoto.staticFileExtensions": {
 						"description": "Specifies static file extensions",
 						"scope": "window",

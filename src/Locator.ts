@@ -1,13 +1,35 @@
 import { basename } from 'path';
 import * as vscode from 'vscode';
-import { Place } from './Finder';
+import { Finder, Place } from './Finder';
 
+const MAX_RESULTS = 2;
+const excludes = vscode.workspace.getConfiguration().get('laravelGoto.exclusion', null);
+
+/**
+ * locate files
+ *
+ * @var {[type]}
+ */
+export async function locate(document: vscode.TextDocument, range: vscode.Range) {
+    const selection = getSelection(document, range, "\"'[,)");
+    if (!selection) {
+        return undefined;
+    }
+    const finder = new Finder(document, selection);
+    const place = finder.getPlace();
+
+    if (place.path) {
+        place.uris = await vscode.workspace.findFiles('**/' + place.path, excludes, MAX_RESULTS);
+    }
+
+    return place;
+}
 
 /**
  * get selection from cursor or first selection
  * @param selected
  */
-export function getSelection(document: vscode.TextDocument, selected: vscode.Range, delimiters: string): vscode.Range | null {
+export function getSelection(document: vscode.TextDocument, selected: vscode.Range, delimiters: string): vscode.Range | undefined {
     let start = selected.start;
     let end = selected.end;
 
@@ -31,7 +53,7 @@ export function getSelection(document: vscode.TextDocument, selected: vscode.Ran
 
     let range = new vscode.Range(start, end);
     if (range.isEqual(line.range)) {
-        return null;
+        return undefined;
     }
 
     return range;
@@ -44,7 +66,7 @@ export function getSelection(document: vscode.TextDocument, selected: vscode.Ran
  *
  * @return  {void}
  */
-export function bindSymbol(place: Place) {
+export  function bindSymbol(place: Place): void {
     if (!place.location) {
         return;
     }
@@ -75,7 +97,7 @@ export function bindSymbol(place: Place) {
  * @param doc
  * @param location
  */
- function locationRange(doc: vscode.TextDocument, location: string) : vscode.Range | undefined {
+function locationRange(doc: vscode.TextDocument, location: string) : vscode.Range | undefined {
 	const regx = new RegExp(location);
 	const match = regx.exec(doc.getText());
 	if (match) {

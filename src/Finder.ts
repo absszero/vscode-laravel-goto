@@ -5,6 +5,7 @@ import { getSelection } from "./Locator";
 export interface Place {
 	path: string;
 	location: string;
+	uris: Array<vscode.Uri>;
 }
 
 export class Finder {
@@ -34,7 +35,7 @@ export class Finder {
 			this.staticPlace,
 		];
 
-		let place: Place = { path: '', location: '' };
+		let place: Place = { path: '', location: '', uris: [] };
 		for (let i = 0; i < places.length; i++) {
 			place = places[i].call(this, place);
 			if (place.path) {
