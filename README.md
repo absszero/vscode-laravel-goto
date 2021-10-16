@@ -1,6 +1,6 @@
 # Laravel Goto for VS Code
 
-![.github/workflows/test.yaml](https://github.com/absszero/vscode-laravel-goto/workflows/.github/workflows/test.yaml/badge.svg)
+![actions/workflows/test.yaml](https://github.com/absszero/vscode-laravel-goto/workflows/.github/workflows/test.yaml/badge.svg)
 
 Goto various Laravel files by hover it.
 
