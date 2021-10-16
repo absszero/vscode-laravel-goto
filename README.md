@@ -1,8 +1,8 @@
 # Laravel Goto for VS Code
 
-![.github/workflows/test.yaml](https://github.com/absszero/vscode-laravel-goto/workflows/.github/workflows/test.yaml/badge.svg) 
+![.github/workflows/test.yaml](https://github.com/absszero/vscode-laravel-goto/workflows/.github/workflows/test.yaml/badge.svg)
 
-Goto various Laravel files by `Alt`+`;`
+Goto various Laravel files by hover it.
 
 ![](example.gif)
 
@@ -55,5 +55,5 @@ To enable moving to Method directly after a Controller is opened. Make sure one 
 
 ## Usage
 
-- Move your cursor on a text, Press `Alt`+`;` to run the command.
+- Move cursor on a text, and click the hover content, or press `Alt`+`;` to run the command.
 - Or Select a text, `Right-Click` to open content menu, Choose `Laravel Goto`.
