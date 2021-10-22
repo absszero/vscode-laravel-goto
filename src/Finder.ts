@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { Namespace } from './Namespace';
+import { Namespace } from './NS';
 import { getSelection } from "./Locator";
 
 export interface Place {
