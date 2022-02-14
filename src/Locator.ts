@@ -66,18 +66,20 @@ export function getSelection(document: vscode.TextDocument, selected: vscode.Ran
  *
  * @return  {void}
  */
-export  function bindSymbol(place: Place): void {
+export function moveToSymbol(place: Place): void {
     if (!place.location) {
         return;
     }
     const event = vscode.window.onDidChangeActiveTextEditor(e => {
-        event.dispose();
+        console.log(e?.document.fileName);
         if (undefined === e) {
             return;
         }
         if (basename(place.path) !== basename(e.document.uri.path)) {
+            event.dispose();
             return;
         }
+        event.dispose();
 
         // It's a controller method
         if ('@' === place.location[0]) {

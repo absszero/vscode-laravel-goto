@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { locate, bindSymbol } from './Locator';
+import { locate, moveToSymbol } from './Locator';
 
 export default (editor: vscode.TextEditor, edit: vscode.TextEditorEdit, args: any[]) => {
     locate(editor.document, editor.selection)
@@ -8,7 +8,7 @@ export default (editor: vscode.TextEditor, edit: vscode.TextEditorEdit, args: an
             return;
         }
 
-        bindSymbol(place);
+        moveToSymbol(place);
 
         if (1 === place.uris.length) {
             vscode.commands.executeCommand('vscode.open', vscode.Uri.file(place.uris[0].path));

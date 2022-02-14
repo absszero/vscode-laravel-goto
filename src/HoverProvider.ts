@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { locate, bindSymbol } from './Locator';
+import { locate, moveToSymbol } from './Locator';
 
 export class HoverProvider implements vscode.HoverProvider {
     public provideHover(
@@ -13,7 +13,7 @@ export class HoverProvider implements vscode.HoverProvider {
             if (undefined === place) {
                 return;
             }
-            bindSymbol(place);
+            moveToSymbol(place);
 
             let command = 'workbench.action.quickOpen';
             let arg : any = place.path;
