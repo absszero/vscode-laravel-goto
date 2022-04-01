@@ -74,6 +74,12 @@ export class Finder {
 	 *
 	 */
 	viewPlace(place: Place): Place {
+		const componentPattern = /<x-([^\/>]*)/;
+		const isComponent = componentPattern.exec(this.line);
+		if (isComponent) {
+			this.path = isComponent[1].trim();
+		}
+
 		let split = this.path.split(':');
 		let vendor = '';
 		// namespace or vendor
@@ -85,7 +91,14 @@ export class Finder {
 		}
 
 		place.path = split[split.length - 1];
-		place.path = vendor + place.path.replace(/\./g, '/') + '.blade.php';
+		place.path = vendor + place.path.replace(/\./g, '/');
+
+		// a component can be a class or blade view file
+		if (isComponent) {
+			place.path += + '.php';
+		} else {
+			place.path += + '.blade.php';
+		}
 
 		return place;
 	}

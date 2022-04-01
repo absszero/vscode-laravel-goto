@@ -11,7 +11,7 @@ const excludes = vscode.workspace.getConfiguration().get('laravelGoto.exclusion'
  * @var {[type]}
  */
 export async function locate(document: vscode.TextDocument, range: vscode.Range) {
-    const selection = getSelection(document, range, "\"'[,)");
+    const selection = getSelection(document, range, "<\"'[,)>");
     if (!selection) {
         return undefined;
     }

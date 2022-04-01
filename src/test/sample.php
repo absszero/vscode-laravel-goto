@@ -80,3 +80,9 @@ Route::get('/', HelloController::class);
 Route::group(['namespace' => 'L8'], function () {
     Route::get('/', [\HelloController::class, 'index']);
 });
+
+<x-vendor::hello />
+
+<x-alert></x-alert>
+
+<x-forms.input/>
