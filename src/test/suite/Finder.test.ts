@@ -17,6 +17,24 @@ suite('Extension Test Suite', () => {
 		vscode.window.showInformationMessage('Start all tests.');
 	});
 
+	test('Closing tag Component', async () => {
+		replace("</x-al|ert>").then(() => {
+			assertPath("alert.php");
+		});
+	});
+
+	test('Component with namespace', async () => {
+		replace("<x-namespace::|alert/>").then(() => {
+			assertPath("namespace/alert.php");
+		});
+	});
+
+	test('Component', async () => {
+		replace("<x-form.|input/>").then(() => {
+			assertPath("form/input.php");
+		});
+	});
+
 	test('View file', async () => {
 		replace("view('hello|_view');").then(() => {
 			assertPath("hello_view.blade.php");
