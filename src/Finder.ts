@@ -74,7 +74,7 @@ export class Finder {
 	 *
 	 */
 	viewPlace(place: Place): Place {
-		const componentPattern = /<x-([^\/>]*)/;
+		const componentPattern = /<\/?x-([^\/>]*)/;
 		const isComponent = componentPattern.exec(this.line);
 		if (isComponent) {
 			this.path = isComponent[1].trim();
