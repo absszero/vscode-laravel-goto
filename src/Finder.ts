@@ -95,9 +95,9 @@ export class Finder {
 
 		// a component can be a class or blade view file
 		if (isComponent) {
-			place.path += + '.php';
+			place.path += '.php';
 		} else {
-			place.path += + '.blade.php';
+			place.path += '.blade.php';
 		}
 
 		return place;
