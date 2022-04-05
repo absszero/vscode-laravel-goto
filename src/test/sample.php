@@ -81,6 +81,14 @@ Route::group(['namespace' => 'L8'], function () {
     Route::get('/', [\HelloController::class, 'index']);
 });
 
+Route::controller(HelloController::class)->group(function () {
+    Route::get('/posts/{id}', 'show');
+});
+
+Route::controller('HelloController')->group(function () {
+    Route::get('/posts/{id}', 'show');
+});
+
 <x-vendor::hello />
 
 <x-alert></x-alert>
