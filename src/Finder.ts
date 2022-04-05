@@ -9,16 +9,18 @@ export interface Place {
 }
 
 export class Finder {
-	path: string;
-	line: string;
 	document: vscode.TextDocument;
 	selection: vscode.Range;
+	path: string;
+	line: string;
+	// blocks;
 
 	constructor(document: vscode.TextDocument, selection: vscode.Range) {
 		this.document = document;
 		this.selection = selection;
 		this.path = document.getText(selection).trim();
 		this.line = document.getText(document.lineAt(selection.start).range);
+		//this.blocks = (new Namespace(document)).blocks(selection);
 	}
 
 	/**
@@ -254,7 +256,7 @@ export class Finder {
 			if ('\\' === place.path[0]) {
 				place.path = place.path.substring(1);
 			}
-			let namespace = (new Namespace).find(this.document, this.selection);
+			let namespace = (new Namespace(this.document)).find(this.selection);
 			if (namespace) {
 				place.path = namespace + '/' + place.path;
 			}

@@ -1,22 +1,33 @@
 "use strict";
 import * as vscode from "vscode";
 
+interface Block {
+    namespace : string;
+    range : vscode.Range;
+}
+
 export class Namespace {
-    patterns : Array<RegExp> = [
+    patterns : RegExp[] = [
         /namespace\s*\(\s*(['"])\s*([^'"]+)\1/g,
         /['\"]namespace['"]\s*=>\s*(['"])([^'"]+)\1/g,
+        /controller\s*\(\s*[^)]+/g,
     ];
-    fullText : string = '';
+    document: vscode.TextDocument;
+    fullText : string;
+
+	constructor(document: vscode.TextDocument) {
+        this.document = document;
+		this.fullText = document.getText();
+	}
 
     /**
      * find the namespace of the selection
      * @param document
      * @param selection
      */
-    public find(document: vscode.TextDocument, selection: vscode.Range) : string
+    public find(selection: vscode.Range) : string
     {
-        this.fullText = document.getText();
-        let blocks = this.blocks(document, selection);
+        let blocks = this.blocks(selection);
         for (const closure of blocks.reverse()) {
             if ((closure.range as vscode.Range).contains(selection)) {
                 return closure.namespace;
@@ -28,21 +39,20 @@ export class Namespace {
 
     /**
      * get all closure blocks
-     * @param document
      * @param selection
      */
-    private blocks(document: vscode.TextDocument , selection: vscode.Range) : Array<any> {
+    public blocks(selection: vscode.Range) : Array<Block> {
         let match;
         let blocks : Array<any> = [];
         for (const pattern of this.patterns) {
             while ((match = pattern.exec(this.fullText)) !== null) {
-                let start = document.positionAt(match.index);
+                let start = this.document.positionAt(match.index);
                 if (selection.start.isAfter(start)) {
                     blocks.push({
-                        namespace: match[2],
+                        namespace: match[2].trim(),
                         range: new vscode.Range(
-                            document.positionAt(match.index),
-                            document.positionAt(this.getEndPosition(match.index))
+                            this.document.positionAt(match.index),
+                            this.document.positionAt(this.getEndPosition(match.index))
                         )
                     });
                 }
