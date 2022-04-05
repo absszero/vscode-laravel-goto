@@ -17,51 +17,51 @@ suite('Extension Test Suite', () => {
 		return await vscode.commands.executeCommand('workbench.action.closeAllEditors');
 	});
 
-	test('Closing tag Component', async() => {
+	test('closing tag Component', async() => {
 		await replace(editor, "</x-al|ert>");
 		assertPath("alert.php");
 	});
 
-	test('Component with namespace', async() => {
+	test('component with namespace', async() => {
 		await replace(editor, "<x-namespace::|alert/>");
 		assertPath("namespace/alert.php");
 	});
 
-	test('Component', async() => {
+	test('component', async() => {
 		await replace(editor, "<x-form.|input/>");
 		assertPath("form/input.php");
 	});
 
-	test('View file', async() => {
+	test('view file', async() => {
 		await replace(editor, "view('hello|_view');");
 		assertPath("hello_view.blade.php");
 	});
 
-	test('View file with Namespace', async() => {
+	test('view file with Namespace', async() => {
 		await replace(editor, "view('Namespace::hel|lo_view');");
 		assertPath("hello_view.blade.php");
 	});
 
-	test('Controller', async () => {
+	test('controller', async () => {
 		await await replace(editor, "Route::get('/', 'HelloControlle|r@index');");
 		assertPath("HelloController.php", "@index");
 	});
 
-	test('Controller with Route::namespace', async() => {
+	test('controller with Route::namespace', async() => {
 		await replace(editor, `Route::namespace('58')->group(function () {
 			Route::get('/', 'HelloControl|ler@index');
 		});`);
 		assertPath("58/HelloController.php", "@index");
 	});
 
-	test('Controller with Route::group()', async() => {
+	test('controller with Route::group()', async() => {
 		await replace(editor, `Route::group(['namespace' => '52'], function () {
 			Route::get('/', 'HelloContro|ller@index');
 		});`);
 		assertPath("52/HelloController.php", "@index");
 	});
 
-	test('Controller with Route::resource', async() => {
+	test('controller with Route::resource', async() => {
 		await replace(editor, `Route::group(['namespace' => 'Resource'], function () {
 			Route::resource('photo', 'Hel|loController', ['only' => [
 				'index', 'show'
@@ -70,31 +70,31 @@ suite('Extension Test Suite', () => {
 		assertPath("Resource/HelloController.php");
 	});
 
-	test('Controller with $router->group()', async() => {
+	test('controller with $router->group()', async() => {
 		await replace(editor, `$router->group(['namespace' => 'Lumen'], function () use ($router) {
 			Route::get('/', 'HelloControl|ler@index');
 		});`);
 		assertPath("Lumen/HelloController.php", "@index");
 	});
 
-	test('Controller with absolute path namespace', async() => {
+	test('controller with absolute path namespace', async() => {
 		await replace(editor, `Route::group(['namespace' => 'Abc'], function () {
 			Route::get('/', '\\Absolute\\HelloContr|oller@index');
 		});`);
 		assertPath("/Absolute/HelloController.php", "@index");
 	});
 
-	test('Static file', async() => {
+	test('static file', async() => {
 		await replace(editor, `'hell|o.JS';`);
 		assertPath("hello.JS");
 	});
 
-	test('Facade config get', async() => {
+	test('facade config get', async() => {
 		await replace(editor, `Config::get('app.t|imezone');`);
 		assertPath("config/app.php");
 	});
 
-	test('Facade config set', async() => {
+	test('facade config set', async() => {
 		await replace(editor, `Config::set(   'app.time|zone', 'UTC');`);
 		assertPath("config/app.php");
 	});
@@ -194,17 +194,17 @@ suite('Extension Test Suite', () => {
 		assertPath('storage/logs/laravel.log');
 	});
 
-	test('Laravel 8 controller with namespace', async() => {
+	test('laravel 8 controller with namespace', async() => {
 		await replace(editor, `Route::get('/', [L8\\HelloControl|ler::class, 'index']);`);
 		assertPath("L8/HelloController.php", "@index");
 	});
 
-	test('Laravel 8 controller without action', async() => {
+	test('laravel 8 controller without action', async() => {
 		await replace(editor, `Route::get('/', HelloCo|ntroller::class);`);
 		assertPath("HelloController.php");
 	});
 
-	test('Laravel 8 controller with group namespace', async() => {
+	test('laravel 8 controller with group namespace', async() => {
 		await replace(editor, `Route::group(['namespace' => 'L8'], function () {
 			Route::get('/', [\\HelloContro|ller::class, 'index']);
 		});`);

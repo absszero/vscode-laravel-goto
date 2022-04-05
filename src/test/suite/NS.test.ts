@@ -23,4 +23,21 @@ suite('Extension Test Suite', () => {
 		let namespace = (new Namespace(editor.document)).find(editor.selection);
 		assert.strictEqual(namespace, '52');
 	});
+
+	test('route::namespace', async () => {
+		await replace(editor, `Route::namespace('58')->group(function () {
+			Route::get('/', 'HelloControll|er@index');
+		});`);
+		let namespace = (new Namespace(editor.document)).find(editor.selection);
+		assert.strictEqual(namespace, '58');
+	});
+
+	test('route::controller', async () => {
+		await replace(editor, `Route::controller(HelloController::class)->group(function () {
+			Route::get('/post|s/{id}', 'show');
+			Route::post('/posts', 'store');
+		});`);
+		let namespace = (new Namespace(editor.document)).find(editor.selection);
+		assert.strictEqual(namespace, 'HelloController');
+	});
 });

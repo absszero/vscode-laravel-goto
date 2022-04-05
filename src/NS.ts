@@ -10,7 +10,7 @@ export class Namespace {
     patterns : RegExp[] = [
         /namespace\s*\(\s*(['"])\s*([^'"]+)\1/g,
         /['\"]namespace['"]\s*=>\s*(['"])([^'"]+)\1/g,
-        /controller\s*\(\s*[^)]+/g,
+        /(controller)\s*\(\s*([^)]+)/g,
     ];
     document: vscode.TextDocument;
     fullText : string;
@@ -49,7 +49,7 @@ export class Namespace {
                 let start = this.document.positionAt(match.index);
                 if (selection.start.isAfter(start)) {
                     blocks.push({
-                        namespace: match[2].trim(),
+                        namespace: match[2].trim().replace('::class', ''),
                         range: new vscode.Range(
                             this.document.positionAt(match.index),
                             this.document.positionAt(this.getEndPosition(match.index))
