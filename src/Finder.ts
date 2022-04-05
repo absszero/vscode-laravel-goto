@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { Namespace } from './NS';
+import { Namespace, Block } from './NS';
 import { getSelection } from "./Locator";
 
 export interface Place {
@@ -13,14 +13,14 @@ export class Finder {
 	selection: vscode.Range;
 	path: string;
 	line: string;
-	// blocks;
+	blocks: Block[];
 
 	constructor(document: vscode.TextDocument, selection: vscode.Range) {
 		this.document = document;
 		this.selection = selection;
 		this.path = document.getText(selection).trim();
 		this.line = document.getText(document.lineAt(selection.start).range);
-		//this.blocks = (new Namespace(document)).blocks(selection);
+		this.blocks = (new Namespace(document)).blocks(selection);
 	}
 
 	/**
@@ -110,8 +110,8 @@ export class Finder {
 	 *
 	 */
 	controllerPlace(place: Place): Place {
-
-		if (-1 === this.path.indexOf('Controller')) {
+		const controllerNotInPath = (-1 === this.path.indexOf('Controller'));
+		if (0 === this.blocks.length && controllerNotInPath) {
 			return place;
 		}
 
@@ -238,16 +238,22 @@ export class Finder {
 					.replace(/['"]+/g, '')
 					.trim();
 			}
+		} else if (this.blocks.length && !this.blocks[0].isNamespace) { // resource or controller route
+			place.path = this.blocks[0].namespace;
+			if (place.path !== this.path) {
+				place.location = '@' + this.path;
+			}
 		}
 
 		return place;
 	}
 
-
 	/**
-	 * get controller namespace
+	 * set controller namespace
 	 *
-	 * @param place
+	 * @param   {Place}  place  [place description]
+	 *
+	 * @return  {Place}         [return description]
 	 */
 	setControllerNamespace(place: Place): Place {
 		// group namespace
@@ -256,7 +262,7 @@ export class Finder {
 			if ('\\' === place.path[0]) {
 				place.path = place.path.substring(1);
 			}
-			let namespace = (new Namespace(this.document)).find(this.selection);
+			let namespace = Namespace.find(this.blocks);
 			if (namespace) {
 				place.path = namespace + '/' + place.path;
 			}

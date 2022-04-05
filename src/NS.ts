@@ -1,17 +1,19 @@
 "use strict";
 import * as vscode from "vscode";
 
-interface Block {
+export interface Block {
+    isNamespace: boolean;
     namespace : string;
     range : vscode.Range;
 }
 
 export class Namespace {
-    patterns : RegExp[] = [
-        /namespace\s*\(\s*(['"])\s*([^'"]+)\1/g,
-        /['\"]namespace['"]\s*=>\s*(['"])([^'"]+)\1/g,
-        /(controller)\s*\(\s*([^)]+)/g,
-    ];
+    patterns = new Map([
+        [/namespace\s*\(\s*(['"])\s*([^'"]+)\1/g, true],
+        [/['\"]namespace['"]\s*=>\s*(['"])([^'"]+)\1/g, true],
+        [/(controller)\s*\(\s*['"]?([^'")]+)/g, false],
+        [/resource\s*\(\s*['"][^'"]+['"]\s*,\s*(['"]?)([^,'"]+)/g, false],
+    ]);
     document: vscode.TextDocument;
     fullText : string;
 
@@ -20,17 +22,19 @@ export class Namespace {
 		this.fullText = document.getText();
 	}
 
+
     /**
      * find the namespace of the selection
-     * @param document
-     * @param selection
+     *
+     * @param   {Block[]}  blocks  [blocks description]
+     *
+     * @return  {string}           [return description]
      */
-    public find(selection: vscode.Range) : string
+    public static find(blocks: Block[]) : string
     {
-        let blocks = this.blocks(selection);
-        for (const closure of blocks.reverse()) {
-            if ((closure.range as vscode.Range).contains(selection)) {
-                return closure.namespace;
+        for (const block of blocks) {
+            if (block.isNamespace) {
+                return block.namespace;
             }
         }
 
@@ -41,25 +45,29 @@ export class Namespace {
      * get all closure blocks
      * @param selection
      */
-    public blocks(selection: vscode.Range) : Array<Block> {
+    public blocks(selection: vscode.Range) : Block[] {
         let match;
-        let blocks : Array<any> = [];
+        let blocks : Block[] = [];
         for (const pattern of this.patterns) {
-            while ((match = pattern.exec(this.fullText)) !== null) {
+            while ((match = pattern[0].exec(this.fullText)) !== null) {
                 let start = this.document.positionAt(match.index);
-                if (selection.start.isAfter(start)) {
-                    blocks.push({
-                        namespace: match[2].trim().replace('::class', ''),
-                        range: new vscode.Range(
-                            this.document.positionAt(match.index),
-                            this.document.positionAt(this.getEndPosition(match.index))
-                        )
-                    });
+                if (start.isAfter(selection.start)) {
+                    continue;
                 }
+
+                let end = this.document.positionAt(this.getEndPosition(match.index));
+                if (end.isBefore(selection.end)) {
+                    continue;
+                }
+                blocks.push({
+                    isNamespace: pattern[1],
+                    namespace: match[2].trim().replace('::class', ''),
+                    range: new vscode.Range(start, end)
+                });
             }
         }
 
-        return blocks;
+        return blocks.reverse();
     }
 
     /**

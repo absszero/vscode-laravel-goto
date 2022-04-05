@@ -63,11 +63,20 @@ suite('Extension Test Suite', () => {
 
 	test('controller with Route::resource', async() => {
 		await replace(editor, `Route::group(['namespace' => 'Resource'], function () {
-			Route::resource('photo', 'Hel|loController', ['only' => [
+			Route::resource('photo', 'HelloCo|ntroller', ['only' => [
 				'index', 'show'
 			]]);
 		});`);
 		assertPath("Resource/HelloController.php");
+	});
+
+	test('controller action with Route::resource', async() => {
+		await replace(editor, `Route::group(['namespace' => 'Resource'], function () {
+			Route::resource('photo', 'HelloController', ['only' => [
+				'index', 'sho|w'
+			]]);
+		});`);
+		assertPath("Resource/HelloController.php", '@show');
 	});
 
 	test('controller with $router->group()', async() => {
