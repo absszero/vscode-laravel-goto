@@ -130,27 +130,27 @@ suite('Extension Test Suite', () => {
 
 	test('lang underscore', async() => {
 		await replace(editor, `__('messages.|welcome');`);
-		assertPath("resources/lang/messages.php");
+		assertPath("lang/messages.php");
 	});
 
 	test('@lang', async() => {
 		await replace(editor, `@lang('messages|.welcome');`);
-		assertPath("resources/lang/messages.php");
+		assertPath("lang/messages.php");
 	});
 
 	test('trans', async() => {
 		await replace(editor, `trans('messages.w|elcome');`);
-		assertPath("resources/lang/messages.php");
+		assertPath("lang/messages.php");
 	});
 
 	test('trans_choice', async() => {
 		await replace(editor, `trans_choice('message|s.apples', 10);`);
-		assertPath("resources/lang/messages.php");
+		assertPath("lang/messages.php");
 	});
 
 	test('package trans', async() => {
 		await replace(editor, `trans('package::m|essages');`);
-		assertPath("resources/lang/vendor/package/messages.php");
+		assertPath("lang/vendor/package/messages.php");
 	});
 
 	test('relative static file path', async() => {
