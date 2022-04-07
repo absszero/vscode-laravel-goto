@@ -172,7 +172,7 @@ export class Finder {
 				let vendor = (3 === split.length) ? `/vendor/${split[0]}` : '';
 				let keys = split[split.length - 1].split('.');
 
-				place.path = `resources/lang${vendor}/${keys[0]}.php`;
+				place.path = `lang${vendor}/${keys[0]}.php`;
 				if (2 <= keys.length) {
 					place.location = "(['\"]{1})" + keys[1] + "\\1\\s*=>";
 				}
