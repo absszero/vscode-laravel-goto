@@ -94,3 +94,5 @@ Route::controller('HelloController')->group(function () {
 <x-alert></x-alert>
 
 <x-forms.input/>
+
+'App\User'

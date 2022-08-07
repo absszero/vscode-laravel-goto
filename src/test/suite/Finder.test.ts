@@ -17,6 +17,11 @@ suite('Extension Test Suite', () => {
 		return await vscode.commands.executeCommand('workbench.action.closeAllEditors');
 	});
 
+	test('namespace file', async() => {
+		await replace(editor, '"App\\Use|r"');
+		assertPath("App\\User.php");
+	});
+
 	test('closing tag Component', async() => {
 		await replace(editor, "</x-al|ert>");
 		assertPath("alert.php");

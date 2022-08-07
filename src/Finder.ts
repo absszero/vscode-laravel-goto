@@ -34,6 +34,7 @@ export class Finder {
 			this.configPlace,
 			this.langPlace,
 			this.envPlace,
+			this.namespacePlace,
 			this.staticPlace,
 		];
 
@@ -214,6 +215,22 @@ export class Finder {
 			split = split.filter(d => (d !== '..' && d !== '.'));
 			place.path = split.join('/');
 		}
+		return place;
+	}
+
+	/**
+	 * get namespace place
+	 */
+	namespacePlace(place: Place): Place {
+		const pattern = /([A-Z][\w]+[\\])+[A-Z][\w]+/;
+		const match = pattern.exec(this.path);
+
+		if (match) {
+			place.path = this.path + '.php';
+		}
+
+		console.log( place.path );
+
 		return place;
 	}
 
