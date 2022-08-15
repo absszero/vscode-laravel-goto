@@ -36,6 +36,7 @@ export class Finder {
 			this.envPlace,
 			this.namespacePlace,
 			this.staticPlace,
+			this.inertiajsPlace,
 		];
 
 		let place: Place = { path: '', location: '', uris: [] };
@@ -215,6 +216,29 @@ export class Finder {
 			split = split.filter(d => (d !== '..' && d !== '.'));
 			place.path = split.join('/');
 		}
+		return place;
+	}
+
+
+	/**
+	 * get Inertia.js place
+	 */
+	inertiajsPlace(place: Place): Place {
+		// Match Route
+		const patterns = [
+			/Route::inertia\s*\([^,]+,\s*['"]([^'"]+)/,
+			/Inertia::render\s*\(\s*['"]([^'"]+)/,
+			/inertia\s*\(\s*['"]([^'"]+)/,
+		];
+
+		for (const pattern of patterns) {
+			let match = pattern.exec(this.line);
+			if ((Boolean)(match && match[1] === this.path)) {
+				place.path = this.path;
+				return place;
+			}
+		}
+
 		return place;
 	}
 

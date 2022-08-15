@@ -17,6 +17,21 @@ suite('Extension Test Suite', () => {
 		return await vscode.commands.executeCommand('workbench.action.closeAllEditors');
 	});
 
+	test('inertia.js function', async() => {
+		await replace(editor, 'inertia("About/AboutCo|mponent");');
+		assertPath("About/AboutComponent");
+	});
+
+	test('inertia.js render', async() => {
+		await replace(editor, 'Inertia::render("About/AboutC|omponent");');
+		assertPath("About/AboutComponent");
+	});
+
+	test('inertia.js route', async() => {
+		await replace(editor, 'Route::inertia("/about", "About/AboutCom|ponent");');
+		assertPath("About/AboutComponent");
+	});
+
 	test('namespace file', async() => {
 		await replace(editor, '"App\\Use|r"');
 		assertPath("App\\User.php");
