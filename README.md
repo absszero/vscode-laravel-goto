@@ -15,6 +15,7 @@ Goto various Laravel files by hover it.
 - Go to Config files and highlight option (EX. config\app.php)
 - Go to Language files (EX. resources/lang/en/messages.php )
 - Go to .env and highlight option
+- Go to Inertia.js components (EX. Inertia::render('MyComponent');)
 
 - Go to paths by path helers, EX:
   - app_path('User.php');
