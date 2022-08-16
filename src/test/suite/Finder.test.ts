@@ -17,6 +17,16 @@ suite('Extension Test Suite', () => {
 		return await vscode.commands.executeCommand('workbench.action.closeAllEditors');
 	});
 
+	test('Livewire tag', async() => {
+		await replace(editor, '<livewire:nav.sho|w-post />');
+		assertPath("Nav/ShowPost.php");
+	});
+
+	test('Livewire blade directive', async() => {
+		await replace(editor, '@livewire("nav.show|-post")');
+		assertPath("Nav/ShowPost.php");
+	});
+
 	test('inertia.js function', async() => {
 		await replace(editor, 'inertia("About/AboutCo|mponent");');
 		assertPath("About/AboutComponent");

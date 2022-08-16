@@ -12,10 +12,11 @@ Goto various Laravel files by hover it.
 - Go to Blade Component files (EX. &lt;x-alert&gt;)
 - Go to Controller and highlight method (EX. \Namespace\Controller.php@Method)
 - Go to Static files (EX. hello.js)
-- Go to Config files and highlight option (EX. config\app.php)
+- Go to Config files and highlight option (EX. config/app.php)
 - Go to Language files (EX. resources/lang/en/messages.php )
 - Go to .env and highlight option
 - Go to Inertia.js components (EX. Inertia::render('MyComponent');)
+- Go to Livewire classes (EX. &lt;livewire:nav.show-post /&gt; => Nav/ShowPost.php )
 
 - Go to paths by path helers, EX:
   - app_path('User.php');

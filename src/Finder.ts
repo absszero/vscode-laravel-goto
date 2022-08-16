@@ -37,6 +37,7 @@ export class Finder {
 			this.namespacePlace,
 			this.staticPlace,
 			this.inertiajsPlace,
+			this.livewirePlace,
 		];
 
 		let place: Place = { path: '', location: '', uris: [] };
@@ -219,12 +220,10 @@ export class Finder {
 		return place;
 	}
 
-
 	/**
 	 * get Inertia.js place
 	 */
 	inertiajsPlace(place: Place): Place {
-		// Match Route
 		const patterns = [
 			/Route::inertia\s*\([^,]+,\s*['"]([^'"]+)/,
 			/Inertia::render\s*\(\s*['"]([^'"]+)/,
@@ -235,6 +234,41 @@ export class Finder {
 			let match = pattern.exec(this.line);
 			if ((Boolean)(match && match[1] === this.path)) {
 				place.path = this.path;
+				return place;
+			}
+		}
+
+		return place;
+	}
+
+	/**
+	 * get Livewire place
+	 */
+	 livewirePlace(place: Place): Place {
+		const patterns = [
+			/livewire:([^ ]+)/,
+			/@livewire\s*\(\s*['"]([^"']+)/,
+		];
+
+		const snakeToCamel = (str: string) =>
+		str.toLowerCase()
+		.replace(/([-_.][a-z])/g, group =>
+		  group
+			.toUpperCase()
+			.replace('-', '')
+			.replace('_', '')
+			.replace('.', '/')
+		);
+
+		for (const pattern of patterns) {
+			let match = pattern.exec(this.line);
+			if (null === match) {
+				continue;
+			}
+
+			if ((Boolean)(match && this.path.includes(match[1]))) {
+				place.path = snakeToCamel(match[1]);
+				place.path = place.path.charAt(0).toUpperCase() + place.path.slice(1) + '.php';
 				return place;
 			}
 		}
