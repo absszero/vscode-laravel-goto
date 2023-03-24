@@ -4,6 +4,7 @@ import { Finder, Place } from './Finder';
 
 const MAX_RESULTS = 2;
 const excludes = vscode.workspace.getConfiguration().get('laravelGoto.exclusion', null);
+let event: vscode.Disposable | null;
 
 /**
  * locate files
@@ -70,8 +71,17 @@ export function moveToSymbol(place: Place): void {
     if (!place.location) {
         return;
     }
-    const event = vscode.window.onDidChangeActiveTextEditor(e => {
-        console.log(e?.document.fileName);
+
+    // dispose previous event
+    if (event) {
+        event.dispose();
+        event = null;
+    }
+    event = vscode.window.onDidChangeActiveTextEditor(e => {
+        if (null === event) {
+            return;
+        }
+
         if (undefined === e) {
             return;
         }
@@ -80,7 +90,6 @@ export function moveToSymbol(place: Place): void {
             return;
         }
         event.dispose();
-
         // It's a controller method
         if ('@' === place.location[0]) {
             vscode.commands.executeCommand('workbench.action.quickOpen', place.location);
