@@ -243,6 +243,11 @@ suite('Extension Test Suite', () => {
 		assertPath("HelloController.php");
 	});
 
+	test('laravel 8 controller with action', async() => {
+		await replace(editor, `Route::get('/', [HelloController::class, 'in|dex']);`);
+		assertPath("HelloController.php", "@index");
+	});
+
 	test('laravel 8 controller with group namespace', async() => {
 		await replace(editor, `Route::group(['namespace' => 'L8'], function () {
 			Route::get('/', [\\HelloContro|ller::class, 'index']);

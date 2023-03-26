@@ -113,12 +113,17 @@ export class Finder {
 	 *
 	 */
 	controllerPlace(place: Place): Place {
-		const controllerNotInPath = (-1 === this.path.indexOf('Controller'));
+		const controllerNotInPath = (-1 === this.line.indexOf('Controller'));
 		if (0 === this.blocks.length && controllerNotInPath) {
 			return place;
 		}
-
+		const pattern = /\[\s*(.*::class)\s*,\s*["']([^"']+)/;
+		let match = pattern.exec(this.line);
 		place.path = this.path;
+		if (match) {
+			place.path = match[1];
+			place.location = match[2];
+		}
 
 		place = this.setControllerAction(place);
 		place = this.setControllerNamespace(place);
@@ -305,7 +310,6 @@ export class Finder {
 		} else if (place.path.endsWith('::class')) {
 			let action = getSelection(this.document, this.selection, "[]");
 			if (action) {
-
 				// HiController, 'index' => index
 				place.location = '@' + this.document
 					.getText(action)
