@@ -38,6 +38,7 @@ export class Finder {
 			this.staticPlace,
 			this.inertiajsPlace,
 			this.livewirePlace,
+			this.componentPlace,
 		];
 
 		let place: Place = { path: '', location: '', uris: [] };
@@ -75,34 +76,65 @@ export class Finder {
 	}
 
 	/**
+	 * get component place
+	 *
+	 */
+	componentPlace(place: Place): Place {
+		const pattern = /<\/?x-([^\/\s>]*)/;
+
+		let match = pattern.exec(this.line);
+		if (match && this.path.includes(match[1])) {
+			let split = match[1].split(':');
+			let vendor = '';
+			// namespace or vendor
+			if (3 === split.length) {
+				// it's vendor
+				if (split[0] === split[0].toLowerCase()) {
+					vendor = split[0] + '/';
+				}
+			}
+
+			place.path = split[split.length - 1];
+			place.path = vendor + place.path.replace(/\./g, '/');
+			place.path += '.php';
+
+			return place;
+	}
+
+		return place;
+	}
+
+
+	/**
 	 * get view place
 	 *
 	 */
 	viewPlace(place: Place): Place {
-		const componentPattern = /<\/?x-([^\/>]*)/;
-		const isComponent = componentPattern.exec(this.line);
-		if (isComponent) {
-			this.path = isComponent[1].trim();
-		}
+		const patterns = [
+			/view\(\s*(['"])([^'"]*)\1/,
+			/View::exists\(\s*(['"])([^'"]*)\1/,
+			/View::first[^'"]*(['"])([^'"]*)\1/
+		];
 
-		let split = this.path.split(':');
-		let vendor = '';
-		// namespace or vendor
-		if (3 === split.length) {
-			// it's vendor
-			if (split[0] === split[0].toLowerCase()) {
-				vendor = split[0] + '/';
+		for (const pattern of patterns) {
+			let match = pattern.exec(this.line);
+			if (match && match[2] === this.path) {
+				let split = this.path.split(':');
+				let vendor = '';
+				// namespace or vendor
+				if (3 === split.length) {
+					// it's vendor
+					if (split[0] === split[0].toLowerCase()) {
+						vendor = split[0] + '/';
+					}
+				}
+
+				place.path = split[split.length - 1];
+				place.path = vendor + place.path.replace(/\./g, '/');
+				place.path += '.blade.php';
+
+				return place;
 			}
-		}
-
-		place.path = split[split.length - 1];
-		place.path = vendor + place.path.replace(/\./g, '/');
-
-		// a component can be a class or blade view file
-		if (isComponent) {
-			place.path += '.php';
-		} else {
-			place.path += '.blade.php';
 		}
 
 		return place;

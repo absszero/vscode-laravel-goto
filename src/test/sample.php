@@ -1,7 +1,13 @@
 <?php
-view('hello_view');
+view('hello_view', ['name' => 'James']);
 
 view('Namespace::hello_view');
+
+view('vender::hello_view');
+
+View::first(['custom.admin', 'admin'], $data);
+
+View::exists('emails.customer');
 
 Route::get('/', 'HelloController@index');
 
@@ -91,7 +97,7 @@ Route::controller('HelloController')->group(function () {
 
 <x-vendor::hello />
 
-<x-alert></x-alert>
+<x-alert type="error" :message="$message"></x-alert>
 
 <x-forms.input/>
 

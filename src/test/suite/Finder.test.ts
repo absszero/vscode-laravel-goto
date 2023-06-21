@@ -58,17 +58,32 @@ suite('Extension Test Suite', () => {
 	});
 
 	test('component', async() => {
-		await replace(editor, "<x-form.|input/>");
+		await replace(editor, '<x-form.|input type="error"/>');
 		assertPath("form/input.php");
 	});
 
 	test('view file', async() => {
-		await replace(editor, "view('hello|_view');");
+		await replace(editor, "view('hello|_view', ['name' => 'James']);");
 		assertPath("hello_view.blade.php");
 	});
 
 	test('view file with Namespace', async() => {
 		await replace(editor, "view('Namespace::hel|lo_view');");
+		assertPath("hello_view.blade.php");
+	});
+
+	test('vendor view', async() => {
+		await replace(editor, "view('vendor::he|llo_view');");
+		assertPath("vendor/hello_view.blade.php");
+	});
+
+	test('View::first', async() => {
+		await replace(editor, "View::first(['firs|t_view', 'second_view']);");
+		assertPath("first_view.blade.php");
+	});
+
+	test('View::exists', async() => {
+		await replace(editor, "View::exists('hello|_view');");
 		assertPath("hello_view.blade.php");
 	});
 
@@ -191,11 +206,6 @@ suite('Extension Test Suite', () => {
 	test('config in config', async() => {
 		await replace(editor, `config(['app.timezone' => config('ap|p.tz')]);`);
 		assertPath("config/app.php");
-	});
-
-	test('vendor view', async() => {
-		await replace(editor, `view('vendor::he|llo_view');`);
-		assertPath("vendor/hello_view.blade.php");
 	});
 
 	test('app_path', async() => {
