@@ -3,7 +3,7 @@ view('hello_view', ['name' => 'James']);
 
 view('Namespace::hello_view');
 
-view('vender::hello_view');
+view('vendor::hello_view');
 
 View::first(['custom.admin', 'admin'], $data);
 
