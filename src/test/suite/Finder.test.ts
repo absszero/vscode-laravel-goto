@@ -18,13 +18,18 @@ suite('Extension Test Suite', () => {
 	});
 
 	test('Livewire tag', async() => {
-		await replace(editor, '<livewire:nav.sho|w-post />');
+		await replace(editor, '<livewire:nav.sho|w-post>');
 		assertPath("Nav/ShowPost.php");
 	});
 
 	test('Livewire blade directive', async() => {
 		await replace(editor, '@livewire("nav.show|-post")');
 		assertPath("Nav/ShowPost.php");
+	});
+
+	test('Livewire method', async() => {
+		await replace(editor, "layout('lay|outs.app')");
+		assertPath("layouts/app.blade.php");
 	});
 
 	test('inertia.js function', async() => {
@@ -65,6 +70,16 @@ suite('Extension Test Suite', () => {
 	test('view file', async() => {
 		await replace(editor, "view('hello|_view', ['name' => 'James']);");
 		assertPath("hello_view.blade.php");
+	});
+
+	test('view string', async() => {
+		await replace(editor, "'resources/views/he|llo'");
+		assertPath("resources/views/hello.blade.php");
+	});
+
+	test('view var', async() => {
+		await replace(editor, "$view = 'he|llo'");
+		assertPath("hello.blade.php");
 	});
 
 	test('view file with Namespace', async() => {

@@ -49,7 +49,7 @@ export class Finder {
 			}
 		}
 
-		place = this.viewPlace(place);
+		place = this.bladePlace(place);
 		return place;
 	}
 
@@ -109,32 +109,45 @@ export class Finder {
 	 * get view place
 	 *
 	 */
-	viewPlace(place: Place): Place {
+	bladePlace(place: Place): Place {
 		const patterns = [
 			/view\(\s*(['"])([^'"]*)\1/,
+			/layout\(\s*(['"])([^'"]*)\1/,
+			/\$view\s*=\s*(['"])([^'"]*)\1/,
 			/View::exists\(\s*(['"])([^'"]*)\1/,
-			/View::first[^'"]*(['"])([^'"]*)\1/
+			/View::first[^'"]*(['"])([^'"]*)\1/,
 		];
+
+		const trasformFilename = (place: Place) => {
+			let split = this.path.split(':');
+			let vendor = '';
+			// namespace or vendor
+			if (3 === split.length) {
+				// it's vendor
+				if (split[0] === split[0].toLowerCase()) {
+					vendor = split[0] + '/';
+				}
+			}
+
+			place.path = split[split.length - 1];
+			place.path = vendor + place.path.replace(/\./g, '/');
+			place.path += '.blade.php';
+
+			return place;
+		};
 
 		for (const pattern of patterns) {
 			let match = pattern.exec(this.line);
 			if (match && match[2] === this.path) {
-				let split = this.path.split(':');
-				let vendor = '';
-				// namespace or vendor
-				if (3 === split.length) {
-					// it's vendor
-					if (split[0] === split[0].toLowerCase()) {
-						vendor = split[0] + '/';
-					}
-				}
-
-				place.path = split[split.length - 1];
-				place.path = vendor + place.path.replace(/\./g, '/');
-				place.path += '.blade.php';
+				place = trasformFilename(place);
 
 				return place;
 			}
+		}
+
+		if (/resources([\/.])views[^\s"']+/.exec(this.line)) {
+			place = trasformFilename(place);
+			return place;
 		}
 
 		return place;
@@ -283,7 +296,7 @@ export class Finder {
 	 */
 	 livewirePlace(place: Place): Place {
 		const patterns = [
-			/livewire:([^ ]+)/,
+			/livewire:([^\s\/>]+)/,
 			/@livewire\s*\(\s*['"]([^"']+)/,
 		];
 
