@@ -72,6 +72,16 @@ suite('Extension Test Suite', () => {
 		assertPath("hello_view.blade.php");
 	});
 
+	test('view file in mailable class', async() => {
+		await replace(editor, "view: 'ema|ils.test',");
+		assertPath("emails/test.blade.php");
+	});
+
+	test('view file in Route::view', async() => {
+		await replace(editor, "Route::view('/welcome', 'pages.wel|come', ['name' => 'Taylor']);");
+		assertPath("pages/welcome.blade.php");
+	});
+
 	test('view string', async() => {
 		await replace(editor, "'resources/views/he|llo'");
 		assertPath("resources/views/hello.blade.php");

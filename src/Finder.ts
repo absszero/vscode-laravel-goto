@@ -117,7 +117,7 @@ export class Finder {
 			/View::exists\(\s*(['"])([^'"]*)\1/,
 			/View::first[^'"]*(['"])([^'"]*)\1/,
 			/view:\s*(['"])([^'"]*)\1/,
-            /view\(\s*['"][^'"]*['"],\s*(['"])([^'"]*)\1/,
+			/view\(\s*['"][^'"]*['"],\s*(['"])([^'"]*)\1/,
 		];
 
 		const trasformFilename = (place: Place) => {

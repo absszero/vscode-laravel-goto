@@ -118,3 +118,7 @@ $view = 'hello.world'
 layout('layouts.app')
 
 "resources/views/pages/public/charge"
+
+view: 'emails.test',
+
+Route::view('/', 'pages.public.index');
