@@ -112,12 +112,13 @@ export class Finder {
 	bladePlace(place: Place): Place {
 		const patterns = [
 			/view\(\s*(['"])([^'"]*)\1/,
-			/layout\(\s*(['"])([^'"]*)\1/,
+			/[lL]ayout\(\s*(['"])([^'"]*)\1/,
 			/\$view\s*=\s*(['"])([^'"]*)\1/,
 			/View::exists\(\s*(['"])([^'"]*)\1/,
 			/View::first[^'"]*(['"])([^'"]*)\1/,
 			/view:\s*(['"])([^'"]*)\1/,
 			/view\(\s*['"][^'"]*['"],\s*(['"])([^'"]*)\1/,
+			/['"]layout['"]\s*=>\s*(['"])([^'"]*)\1/,
 		];
 
 		const trasformFilename = (place: Place) => {

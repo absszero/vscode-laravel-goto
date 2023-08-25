@@ -82,6 +82,12 @@ suite('Extension Test Suite', () => {
 		assertPath("pages/welcome.blade.php");
 	});
 
+	test('view file in config/livewire.php', async() => {
+		await replace(editor, "'layout' => 'layou|ts.app',");
+		assertPath("layouts/app.blade.php");
+	});
+
+
 	test('view string', async() => {
 		await replace(editor, "'resources/views/he|llo'");
 		assertPath("resources/views/hello.blade.php");

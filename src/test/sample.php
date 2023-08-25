@@ -122,3 +122,5 @@ layout('layouts.app')
 view: 'emails.test',
 
 Route::view('/', 'pages.public.index');
+
+'layout' => 'layouts.app',
