@@ -117,10 +117,20 @@ $view = 'hello.world'
 
 layout('layouts.app')
 
-"resources/views/pages/public/charge"
+"{{-- resources/views/components/layout --}}"
 
 view: 'emails.test',
 
 Route::view('/', 'pages.public.index');
 
 'layout' => 'layouts.app',
+
+@includeIf('view.name', ['status' => 'complete'])
+
+@includeUnless($boolean, 'view.name', ['status' => 'complete'])
+
+@includeFirst(['custom.admin', 'admin'], ['status' => 'complete'])
+
+@each('view.name', $jobs, 'job', 'view.empty')
+
+@extends('layouts.app')

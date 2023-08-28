@@ -87,10 +87,19 @@ suite('Extension Test Suite', () => {
 		assertPath("layouts/app.blade.php");
 	});
 
+	test('html comment', async() => {
+		await replace(editor, "<!-- resources/views/compo|nents/layout -->");
+		assertPath("resources/views/components/layout.blade.php");
+	});
 
-	test('view string', async() => {
-		await replace(editor, "'resources/views/he|llo'");
-		assertPath("resources/views/hello.blade.php");
+	test('blade comment', async() => {
+		await replace(editor, "'{{-- resources/views/compo|nents/layout --}}'");
+		assertPath("resources/views/components/layout.blade.php");
+	});
+
+	test('blade comment with .blade.php', async() => {
+		await replace(editor, "'{{-- resources/views/compo|nents/layout.blade.php --}}'");
+		assertPath("resources/views/components/layout.blade.php");
 	});
 
 	test('view var', async() => {
@@ -116,6 +125,31 @@ suite('Extension Test Suite', () => {
 	test('View::exists', async() => {
 		await replace(editor, "View::exists('hello|_view');");
 		assertPath("hello_view.blade.php");
+	});
+
+	test('@includeIf, @include', async() => {
+		await replace(editor, "@includeIf('view.na|me', ['status' => 'complete'])");
+		assertPath("view/name.blade.php");
+	});
+
+	test('@extends', async() => {
+		await replace(editor, "@extends('view.na|me')");
+		assertPath("view/name.blade.php");
+	});
+
+	test('@includeUnless, @includeWhen', async() => {
+		await replace(editor, "@includeUnless($boolean, 'view|.name', ['status' => 'complete'])");
+		assertPath("view/name.blade.php");
+	});
+
+	test('@includeFirst', async() => {
+		await replace(editor, "@includeFirst(['custom.admin', 'ad|min'], ['status' => 'complete'])");
+		assertPath("admin.blade.php");
+	});
+
+	test('@each', async() => {
+		await replace(editor, "@each('view.name', $jobs, 'job', 'view|.empty')");
+		assertPath("view/empty.blade.php");
 	});
 
 	test('controller', async () => {

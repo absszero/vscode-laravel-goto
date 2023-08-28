@@ -19,6 +19,7 @@ export class Finder {
 		this.document = document;
 		this.selection = selection;
 		this.path = document.getText(selection).trim();
+		this.path = this.path.replace(/^[\s{<!-]+|[-\s>}]+$/g, '');
 		this.line = document.getText(document.lineAt(selection.start).range);
 		this.blocks = (new Namespace(document)).blocks(selection);
 	}
@@ -119,6 +120,10 @@ export class Finder {
 			/view:\s*(['"])([^'"]*)\1/,
 			/view\(\s*['"][^'"]*['"],\s*(['"])([^'"]*)\1/,
 			/['"]layout['"]\s*=>\s*(['"])([^'"]*)\1/,
+			/@include(If\b)?\(\s*(['"])([^'"]*)\2/,
+			/@extends\(\s*(['"])([^'"]*)\1/,
+			/@include(When|Unless\b)?\([^'"]+(['"])([^'"]+)/,
+			/(resources\/views[^\s'"-]+)/,
 		];
 
 		const trasformFilename = (place: Place) => {
@@ -134,6 +139,9 @@ export class Finder {
 
 			place.path = split[split.length - 1];
 			place.path = vendor + place.path.replace(/\./g, '/');
+			if (place.path.endsWith('/blade/php')) {
+				place.path = place.path.slice(0, place.path.length - '/blade/php'.length);
+			}
 			place.path += '.blade.php';
 
 			return place;
@@ -141,16 +149,23 @@ export class Finder {
 
 		for (const pattern of patterns) {
 			let match = pattern.exec(this.line);
-			if (match && match[2] === this.path) {
+			if (match && match[match.length - 1] === this.path) {
 				place = trasformFilename(place);
 
 				return place;
 			}
 		}
 
-		if (/resources([\/.])views[^\s"']+/.exec(this.line)) {
-			place = trasformFilename(place);
-			return place;
+		const multiViewsPatterns = [
+			/@includeFirst\(\[(\s*['"][^'"]+['"]\s*[,]?\s*){2,}\]/,
+			/@each\(['"][^'"]+['"]\s*,[^,]+,[^,]+,[^)]+/,
+		];
+
+		for (const pattern of multiViewsPatterns) {
+			if (pattern.exec(this.line)) {
+				place = trasformFilename(place);
+				return place;
+			}
 		}
 
 		return place;
