@@ -2,6 +2,8 @@
 
 ![actions/workflows/test.yaml](https://github.com/absszero/vscode-laravel-goto/workflows/.github/workflows/test.yaml/badge.svg)
 
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/absszero)
+
 Goto various Laravel files by hover it.
 
 ![](example.gif)

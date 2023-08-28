@@ -21,6 +21,9 @@
 		"Namespace",
 		"Controller"
 	],
+	"sponsor": {
+		"url": "https://ko-fi.com/absszero"
+	},
 	"activationEvents": [
 		"onLanguage:php",
 		"onCommand:extension.vscode-laravel-goto"
