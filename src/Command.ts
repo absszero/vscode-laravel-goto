@@ -5,6 +5,7 @@ export default (editor: vscode.TextEditor, edit: vscode.TextEditorEdit, args: an
     locate(editor.document, editor.selection)
     .then(place => {
         if (undefined === place) {
+            vscode.window.showWarningMessage('Laravel Goto: unidentified string.');
             return;
         }
 
