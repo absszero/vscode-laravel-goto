@@ -1,9 +1,8 @@
 import { basename } from 'path';
 import * as vscode from 'vscode';
 import { Finder, Place } from './Finder';
+import { findFiles } from './Workspace';
 
-const MAX_RESULTS = 2;
-const excludes = vscode.workspace.getConfiguration().get('laravelGoto.exclusion', null);
 let event: vscode.Disposable | null;
 
 /**
@@ -20,7 +19,7 @@ export async function locate(document: vscode.TextDocument, range: vscode.Range)
     const place = finder.getPlace();
 
     if (place.path) {
-        place.uris = await vscode.workspace.findFiles('**/' + place.path, excludes, MAX_RESULTS);
+        place.uris = await findFiles('**/' + place.path);
     }
 
     return place;

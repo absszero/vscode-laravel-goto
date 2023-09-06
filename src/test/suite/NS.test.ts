@@ -5,11 +5,10 @@ import { replace } from './Utils';
 import { Namespace } from '../../NS';
 
 let editor : vscode.TextEditor;
-suite('Extension Test Suite', () => {
+suite('NS Test Suite', () => {
 	before(async () => {
 		const document = await vscode.workspace.openTextDocument({language: 'php'});
 		editor = await vscode.window.showTextDocument(document);
-		vscode.window.showInformationMessage('Start all tests.');
 	});
 
 	after(async () => {
