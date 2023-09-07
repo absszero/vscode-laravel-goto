@@ -1,6 +1,7 @@
 import { basename } from 'path';
 import * as vscode from 'vscode';
-import { Finder, Place } from './Finder';
+import { Finder } from './Finder';
+import { Place } from './Place';
 import { findFiles } from './Workspace';
 
 let event: vscode.Disposable | null;

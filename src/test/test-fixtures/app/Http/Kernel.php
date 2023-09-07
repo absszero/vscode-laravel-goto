@@ -3,7 +3,7 @@
 namespace App\Http;
 
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
-use \App\Http\Middleware\Authenticate as Auth;
+use App\Http\Middleware\Authenticate as Auth;
 
 class Kernel extends HttpKernel
 {
@@ -17,7 +17,7 @@ class Kernel extends HttpKernel
     ];
 
     protected $middlewareGroups = [
-        'web'=>[
+        'web' => [
         ],
         'api' => [
             // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
@@ -26,9 +26,7 @@ class Kernel extends HttpKernel
     ];
 
     protected $middlewareAliases = [
-        'auth'
-        =>
-        Auth::class,
+        'auth' => Auth::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
     ];
 }
