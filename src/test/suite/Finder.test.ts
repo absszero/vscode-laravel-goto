@@ -299,7 +299,7 @@ suite('Finder Test Suite', () => {
 
 	test('storage_path', async() => {
 		await replace(editor, `storage_path('logs/lar|avel.log');`);
-			assertPath('storage/logs/laravel.log');
+		assertPath('storage/logs/laravel.log');
 	});
 
 	test('path_helper_with_double_brackets', async() => {
@@ -328,6 +328,11 @@ suite('Finder Test Suite', () => {
 		});`);
 		assertPath("L8/HelloController.php");
 	});
+
+	// test('controller ', async() => {
+	// 	await replace(editor, `Route::get('/oauth/me', 'Auth\OAuthController@me')->name('oauth:me')->middleware('aut|h:api');`);
+	// 	assertPath("");
+	// });
 });
 
 function assertPath(expected: string, location?: string) {

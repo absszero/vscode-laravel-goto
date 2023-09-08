@@ -1,19 +1,13 @@
 import * as vscode from 'vscode';
 import { Namespace, Block } from './NS';
 import { getSelection } from "./Locator";
-
-export interface Place {
-	path: string;
-	location: string;
-	uris: Array<vscode.Uri>;
-}
+import { Place} from './Place';
 
 export class Finder {
 	document: vscode.TextDocument;
 	selection: vscode.Range;
 	path: string;
 	line: string;
-	blocks: Block[];
 
 	constructor(document: vscode.TextDocument, selection: vscode.Range) {
 		this.document = document;
@@ -21,7 +15,6 @@ export class Finder {
 		this.path = document.getText(selection).trim();
 		this.path = this.path.replace(/^[\s{<!-]+|[-\s>}]+$/g, '');
 		this.line = document.getText(document.lineAt(selection.start).range);
-		this.blocks = (new Namespace(document)).blocks(selection);
 	}
 
 	/**
@@ -31,11 +24,12 @@ export class Finder {
 	public getPlace(): Place {
 		let places = [
 			this.pathHelperPlace,
-			this.controllerPlace,
 			this.configPlace,
 			this.langPlace,
 			this.envPlace,
+			this.controllerPlace,
 			this.namespacePlace,
+			this.bladePlace,
 			this.staticPlace,
 			this.inertiajsPlace,
 			this.livewirePlace,
@@ -44,13 +38,12 @@ export class Finder {
 
 		let place: Place = { path: '', location: '', uris: [] };
 		for (let i = 0; i < places.length; i++) {
-			place = places[i].call(this, place);
+			place = places[i].call(this, place, this.document, this.selection);
 			if (place.path) {
 				return place;
 			}
 		}
 
-		place = this.bladePlace(place);
 		return place;
 	}
 
@@ -175,9 +168,10 @@ export class Finder {
 	 * get controller place
 	 *
 	 */
-	controllerPlace(place: Place): Place {
+	controllerPlace(place: Place, document: vscode.TextDocument, selection: vscode.Range): Place {
+		const blocks = (new Namespace(document)).blocks(selection);
 		const controllerNotInPath = (-1 === this.line.indexOf('Controller'));
-		if (0 === this.blocks.length && controllerNotInPath) {
+		if (0 === blocks.length && controllerNotInPath) {
 			return place;
 		}
 		const pattern = /\[\s*(.*::class)\s*,\s*["']([^"']+)/;
@@ -188,8 +182,8 @@ export class Finder {
 			place.location = match[2];
 		}
 
-		place = this.setControllerAction(place);
-		place = this.setControllerNamespace(place);
+		place = this.setControllerAction(blocks, place);
+		place = this.setControllerNamespace(blocks ,place);
 
 		place.path = place.path
 			.replace('::class', '')
@@ -355,8 +349,6 @@ export class Finder {
 			place.path = this.path + '.php';
 		}
 
-		console.log( place.path );
-
 		return place;
 	}
 
@@ -365,7 +357,7 @@ export class Finder {
 	 *
 	 * @param place
 	 */
-	setControllerAction(place: Place): Place {
+	setControllerAction(blocks: Block[],place: Place): Place {
 		if (-1 !== place.path.indexOf('@')) {
 			let split = place.path.split('@');
 			place.path = split[0];
@@ -380,8 +372,8 @@ export class Finder {
 					.replace(/['"]+/g, '')
 					.trim();
 			}
-		} else if (this.blocks.length && !this.blocks[0].isNamespace) { // resource or controller route
-			place.path = this.blocks[0].namespace;
+		} else if (blocks.length && !blocks[0].isNamespace) { // resource or controller route
+			place.path = blocks[0].namespace;
 			if (place.path !== this.path) {
 				place.location = '@' + this.path;
 			}
@@ -397,14 +389,14 @@ export class Finder {
 	 *
 	 * @return  {Place}         [return description]
 	 */
-	setControllerNamespace(place: Place): Place {
+	setControllerNamespace(blocks: Block[], place: Place): Place {
 		// group namespace
 		const isClass = place.path.endsWith('::class');
 		if ('\\' !== place.path[0] || isClass) {
 			if ('\\' === place.path[0]) {
 				place.path = place.path.substring(1);
 			}
-			let namespace = Namespace.find(this.blocks);
+			let namespace = Namespace.find(blocks);
 			if (namespace) {
 				place.path = namespace + '/' + place.path;
 			}
