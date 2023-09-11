@@ -1,29 +1,9 @@
 <?php
 
-Route::get('/profile', function () {
-    // ...
-})->middleware(Authenticate::class);
+Route::middleware(['web:1234', 'api']);
 
-Route::get('/', function () {
-    // ...
-})->middleware(['web', 'api']);
+Route::middleware('auth:1234');
 
-Route::get('/profile', function () {
-    // ...
-})->middleware('auth');
+Route::group(['middleware' => ['auth',]]);
 
-Route::middleware([EnsureTokenIsValid::class]);
-
-Route::get('/profile', function () {
-    // ...
-})->withoutMiddleware([EnsureTokenIsValid::class]);
-
-Route::withoutMiddleware([EnsureTokenIsValid::class]);
-
-Route::put('/post/{id}', function (string $id) {
-    // ...
-})->middleware('role:editor');
-
-$this->middleware('log')
-
-$this->middleware('subscribed')
+Route::middleware('first', 'second');

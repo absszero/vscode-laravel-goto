@@ -38,7 +38,7 @@ suite('MiddlwareParser Test Suite', () => {
 
         assert.ok(middlewares.has("auth"));
         assert.ok(middlewares.has("auth.basic"));
-        assert.strictEqual(middlewares.get("auth")?.path, String.raw`App\Http\Middleware\Authenticate`);
-        assert.strictEqual(middlewares.get("auth.basic")?.path, String.raw`\Illuminate\Auth\Middleware\AuthenticateWithBasicAuth`);
+        assert.strictEqual(middlewares.get("auth")?.path, String.raw`App\Http\Middleware\Authenticate.php`);
+        assert.strictEqual(middlewares.get("auth.basic")?.path, String.raw`\Illuminate\Auth\Middleware\AuthenticateWithBasicAuth.php`);
 	});
 });

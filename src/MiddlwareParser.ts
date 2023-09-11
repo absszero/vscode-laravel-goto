@@ -11,7 +11,9 @@ export function parse(content: string): Map<string, Place> {
     const middlewares = new Map();
     const classnames = collectClassNames(content);
 
-    const aliasPattern = /\$middlewareAliases\s*=\s*\[([^;]+)/m;
+    // Before Laravel 10, middlewareAliases was called routeMiddleware. They work the exact same way.
+    const aliasPattern = /(\$\bmiddlewareAliases\b|\$\brouteMiddleware\b)\s*=\s*\[([^;]+)/m;
+
     const matchBlcok = aliasPattern.exec(content);
     if (!matchBlcok) {
         return middlewares;
@@ -19,22 +21,19 @@ export function parse(content: string): Map<string, Place> {
 
     let match;
     const pattern = /['"]([^'"]+)['"]\s*=>\s*([^,\]]+)/g;
-    while ((match = pattern.exec(matchBlcok[1])) !== null) {
+    while ((match = pattern.exec(matchBlcok[2])) !== null) {
         if (match.index === pattern.lastIndex) {
             pattern.lastIndex++;
         }
 
-        match[2] = match[2].trim();
-        if (match[2].endsWith('::class')) {
-            match[2] = match[2].slice(0, match[2].length - '::class'.length);
-        }
+        match[2] = match[2].replace('::class', '').trim();
 
         let className = classnames.get(match[2]);
         if (className) {
             match[2] = className;
         }
 
-        let place: Place = { path: match[2], location: '', uris: [] };
+        let place: Place = { path: match[2] + '.php', location: '', uris: [] };
         middlewares.set(match[1], place);
     }
 
