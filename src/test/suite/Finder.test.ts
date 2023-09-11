@@ -342,10 +342,10 @@ suite('Finder Test Suite', () => {
 			return (await fsp.readFile(process.env.EXTENSION_PATH + '/src/test/test-fixtures/app/Http/Kernel.php')).toString();
 		};
 		await replace(editor, `Route::middleware(['web:1234', 'auth|:abc']);`);
-		await assertPath(String.raw`App\Http\Middleware\Authenticate.php`);
+		await assertPath('Http/Middleware/Authenticate.php');
 
 		await replace(editor, `Route::group(['middleware' => ['auth.|basic',]]);`);
-		await assertPath(String.raw`\Illuminate\Auth\Middleware\AuthenticateWithBasicAuth.php`);
+		await assertPath('Illuminate/Auth/Middleware/AuthenticateWithBasicAuth.php');
 	});
 });
 

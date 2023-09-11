@@ -26,14 +26,23 @@ export function parse(content: string): Map<string, Place> {
             pattern.lastIndex++;
         }
 
-        match[2] = match[2].replace('::class', '').trim();
-
-        let className = classnames.get(match[2]);
-        if (className) {
-            match[2] = className;
+        let className = match[2].replace('::class', '').trim();
+        let place: Place = { path: className, location: '', uris: [] };
+        const found = classnames.get(place.path);
+        if (found) {
+            place.path = found;
         }
 
-        let place: Place = { path: match[2] + '.php', location: '', uris: [] };
+        place.path = place.path.replace(/\\/g, '/') + '.php';
+        if ('/' === place.path[0]) {
+            place.path = place.path.substring(1);
+        }
+
+        // glob pattern is case-sensitive, and default app folder is lowercase.
+        if (place.path.startsWith('App/')) {
+            place.path = place.path.substring('App/'.length);
+        }
+
         middlewares.set(match[1], place);
     }
 

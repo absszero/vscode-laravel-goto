@@ -20,15 +20,6 @@ suite('MiddlwareParser Test Suite', () => {
 
             ];
 
-            protected $middlewareGroups = [
-                'web' => [
-                ],
-                'api' => [
-                    // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
-                    \Illuminate\Routing\Middleware\ThrottleRequests::class.':api',
-                ],
-            ];
-
             protected $middlewareAliases = [
                 'auth' => Auth::class,
                 'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
@@ -38,7 +29,7 @@ suite('MiddlwareParser Test Suite', () => {
 
         assert.ok(middlewares.has("auth"));
         assert.ok(middlewares.has("auth.basic"));
-        assert.strictEqual(middlewares.get("auth")?.path, String.raw`App\Http\Middleware\Authenticate.php`);
-        assert.strictEqual(middlewares.get("auth.basic")?.path, String.raw`\Illuminate\Auth\Middleware\AuthenticateWithBasicAuth.php`);
+        assert.strictEqual(middlewares.get("auth")?.path, 'Http/Middleware/Authenticate.php');
+        assert.strictEqual(middlewares.get("auth.basic")?.path, 'Illuminate/Auth/Middleware/AuthenticateWithBasicAuth.php');
 	});
 });
