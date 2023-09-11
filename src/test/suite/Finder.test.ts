@@ -4,8 +4,12 @@ import { before, after } from 'mocha';
 import { getSelection } from '../../Locator';
 import { Finder } from '../../Finder';
 import { replace } from './Utils';
+import * as workspace from '../../Workspace';
+import {promises as fsp} from "fs";
 
 let editor : vscode.TextEditor;
+const getFileContent = workspace.getFileContent;
+
 suite('Finder Test Suite', () => {
 	before(async () => {
 		const document = await vscode.workspace.openTextDocument({language: 'php'});
@@ -14,6 +18,10 @@ suite('Finder Test Suite', () => {
 
 	after(async () => {
 		return await vscode.commands.executeCommand('workbench.action.closeAllEditors');
+	});
+
+	teardown(() => {
+		(workspace as any).getFileContent = getFileContent;
 	});
 
 	test('Livewire tag', async() => {
@@ -329,13 +337,16 @@ suite('Finder Test Suite', () => {
  		await assertPath("L8/HelloController.php");
 	});
 
-	// test('middleware', async() => {
-	// 	await replace(editor, `Route::middleware(['web:1234', 'auth|:abc']);`);
-	// 	await assertPath(String.raw`App\Http\Middleware\Authenticate`);
+	test('middleware', async() => {
+	    (workspace as any).getFileContent = async () => {
+			return (await fsp.readFile(process.env.EXTENSION_PATH + '/src/test/test-fixtures/app/Http/Kernel.php')).toString();
+		};
+		await replace(editor, `Route::middleware(['web:1234', 'auth|:abc']);`);
+		await assertPath(String.raw`App\Http\Middleware\Authenticate.php`);
 
-	// 	await replace(editor, `Route::group(['middleware' => ['auth.|basic',]]);`);
-	// 	await assertPath(String.raw`\Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class`);
-	// });
+		await replace(editor, `Route::group(['middleware' => ['auth.|basic',]]);`);
+		await assertPath(String.raw`\Illuminate\Auth\Middleware\AuthenticateWithBasicAuth.php`);
+	});
 });
 
 async function assertPath(expected: string, location?: string) {

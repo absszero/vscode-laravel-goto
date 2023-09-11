@@ -1,9 +1,10 @@
 import * as vscode from 'vscode';
 import { Namespace, Block } from './NS';
 import { getSelection } from "./Locator";
-import { Place} from './Place';
+import { Place } from './Place';
 import { getFileContent } from './Workspace';
 import { parse } from './MiddlwareParser';
+
 
 export class Finder {
 	document: vscode.TextDocument;
@@ -29,7 +30,7 @@ export class Finder {
 			this.configPlace,
 			this.langPlace,
 			this.envPlace,
-			// this.middlewarePlace,
+			this.middlewarePlace, // before controllerPlace
 			this.controllerPlace,
 			this.namespacePlace,
 			this.bladePlace,
@@ -96,7 +97,7 @@ export class Finder {
 			place.path += '.php';
 
 			return place;
-	}
+		}
 
 		return place;
 	}
@@ -186,7 +187,7 @@ export class Finder {
 		}
 
 		place = ctx.setControllerAction(ctx, blocks, place);
-		place = ctx.setControllerNamespace(blocks ,place);
+		place = ctx.setControllerNamespace(blocks, place);
 
 		place.path = place.path
 			.replace('::class', '')
@@ -309,21 +310,19 @@ export class Finder {
 	/**
 	 * get Livewire place
 	 */
-	 livewirePlace(ctx: Finder, place: Place): Place {
+	livewirePlace(ctx: Finder, place: Place): Place {
 		const patterns = [
 			/livewire:([^\s\/>]+)/,
 			/@livewire\s*\(\s*['"]([^"']+)/,
 		];
 
-		const snakeToCamel = (str: string) =>
-		str.toLowerCase()
-		.replace(/([-_.][a-z])/g, group =>
-		  group
-			.toUpperCase()
-			.replace('-', '')
-			.replace('_', '')
-			.replace('.', '/')
-		);
+		const snakeToCamel = (str: string) => str.toLowerCase()
+			.replace(/([-_.][a-z])/g, group => group
+				.toUpperCase()
+				.replace('-', '')
+				.replace('_', '')
+				.replace('.', '/')
+			);
 
 		for (const pattern of patterns) {
 			let match = pattern.exec(ctx.line);
@@ -358,7 +357,7 @@ export class Finder {
 	/**
 	 * get middleware place
 	 */
-	async middlewarePlace(ctx: Finder, place :Place): Promise<Place> {
+	async middlewarePlace(ctx: Finder, place: Place): Promise<Place> {
 		const httpKernel = await getFileContent('Http/Kernel.php');
 		if (!httpKernel) {
 			return place;
@@ -373,7 +372,9 @@ export class Finder {
 			if (!pattern.exec(ctx.line)) {
 				continue;
 			}
-			let place = middlewares.get(ctx.path);
+			// remove middleware parameters
+			const alias = ctx.path.split(':')[0];
+			let place = middlewares.get(alias);
 			if (place) {
 				return place;
 			}

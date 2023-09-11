@@ -17,7 +17,7 @@ export async function locate(document: vscode.TextDocument, range: vscode.Range)
         return undefined;
     }
     const finder = new Finder(document, selection);
-    const place = finder.getPlace();
+    const place = await finder.getPlace();
 
     if (place.path) {
         place.uris = await findFiles('**/' + place.path);
