@@ -1,9 +1,9 @@
 <?php
 
-Route::middleware(['web:1234', 'api']);
+Route::middleware(['auth.basic', 'auth:role']);
 
-Route::middleware('auth:1234');
+Route::middleware('auth.basic');
 
 Route::group(['middleware' => ['auth',]]);
 
-Route::middleware('first', 'second');
+Route::middleware('auth', 'auth.basic');
