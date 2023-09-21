@@ -6,31 +6,30 @@ Go to various Laravel files.
 
 ![](example.gif)
 
-### Go to Middleware
 
-![](middleware.gif)
+## Features
 
 ### Go to Blade
 
 Go to blade template files.
 
-  ```php
-  view('hello_view', ['name' => 'James']);
+```php
+view('hello_view', ['name' => 'James']);
 
-  Route::view('/', 'pages.public.index');
+Route::view('/', 'pages.public.index');
 
-  @includeIf('view.name', ['status' => 'complete'])
+@includeIf('view.name', ['status' => 'complete'])
 
-  @each('view.name', $jobs, 'job', 'view.empty')
+@each('view.name', $jobs, 'job', 'view.empty')
 
-  @extends('layouts.app')
-  ```
+@extends('layouts.app')
+```
 
 Go to blade Component files.
 
-  ```php
-  <x-alert:hello />
-  ```
+```php
+<x-alert:hello />
+```
 
 ### Go to Controller
 
@@ -43,6 +42,10 @@ Route::resource('photo', 'HelloController', ['only' => [
   'index', 'show'
 ]]);
 ```
+
+### Go to Middleware
+
+![](middleware.gif)
 
 ### Go to Config
 
