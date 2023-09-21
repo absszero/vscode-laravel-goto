@@ -358,25 +358,27 @@ export class Finder {
 	 * get middleware place
 	 */
 	async middlewarePlace(ctx: Finder, place: Place): Promise<Place> {
-		const httpKernel = await getFileContent('Http/Kernel.php');
-		if (!httpKernel) {
-			return place;
-		}
-		const middlewares = parse(httpKernel);
-
 		const patterns = [
 			/[m|M]iddleware\(\s*\[?\s*(['"][^'"]+['"]\s*,?\s*)+/,
 			/['"]middleware['"]\s*=>\s*\s*\[?\s*(['"][^'"]+['"]\s*,?\s*){1,}\]?/,
 		];
+
 		for (const pattern of patterns) {
 			if (!pattern.exec(ctx.line)) {
 				continue;
 			}
+
+			const httpKernel = await getFileContent('Http/Kernel.php');
+			if (!httpKernel) {
+				return place;
+			}
+			const middlewares = parse(httpKernel);
+
 			// remove middleware parameters
 			const alias = ctx.path.split(':')[0];
-			let place = middlewares.get(alias);
-			if (place) {
-				return place;
+			let found = middlewares.get(alias);
+			if (found) {
+				return found;
 			}
 		}
 
