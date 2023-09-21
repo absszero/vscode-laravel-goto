@@ -16,7 +16,7 @@ export function run(): Promise<void> {
 		let filePattern = '**/**.test.js';
 
 		if (process.env.TEST_FILE) {
-			const prevousFilename = process.env.EXTENSION_PATH + '/out/.prevous';
+			const prevousFilename = process.env.EXTENSION_PATH + '/.vscode-test/.prevous';
 			if (process.env.TEST_FILE.endsWith('test.ts')) {
 				filePattern = process.env.TEST_FILE;
 				filePattern = filePattern.replace('src/test/', '');
@@ -24,7 +24,9 @@ export function run(): Promise<void> {
 
 				fs.writeFile(prevousFilename, filePattern, err => null);
 			} else {
-				filePattern = fs.readFileSync(prevousFilename, 'utf8');
+				if (fs.existsSync(prevousFilename) ) {
+					filePattern = fs.readFileSync(prevousFilename, 'utf8');
+				}
 			}
 		}
 
