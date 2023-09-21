@@ -1,6 +1,7 @@
 import * as path from 'path';
 import * as Mocha from 'mocha';
 import * as glob from 'glob';
+import * as fs from 'fs';
 
 export function run(): Promise<void> {
 	// Create the mocha test
@@ -12,7 +13,22 @@ export function run(): Promise<void> {
 	const testsRoot = path.resolve(__dirname, '..');
 
 	return new Promise((c, e) => {
-		glob('**/**.test.js', { cwd: testsRoot }, (err, files) => {
+		let filePattern = '**/**.test.js';
+
+		if (process.env.TEST_FILE) {
+			const prevousFilename = process.env.EXTENSION_PATH + '/out/.prevous';
+			if (process.env.TEST_FILE.endsWith('test.ts')) {
+				filePattern = process.env.TEST_FILE;
+				filePattern = filePattern.replace('src/test/', '');
+				filePattern = filePattern.replace('.ts', '.js');
+
+				fs.writeFile(prevousFilename, filePattern, err => null);
+			} else {
+				filePattern = fs.readFileSync(prevousFilename, 'utf8');
+			}
+		}
+
+		glob(filePattern, { cwd: testsRoot }, (err, files) => {
 			if (err) {
 				return e(err);
 			}
