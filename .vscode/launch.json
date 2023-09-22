@@ -31,8 +31,8 @@
 				"${workspaceFolder}/out/test/**/*.js"
 			],
 			"env": {
-                "EXTENSION_PATH": "${workspaceFolder}"
-            },
+				"EXTENSION_PATH": "${workspaceFolder}"
+			},
 			"preLaunchTask": "npm: watch"
 		},
 		{
@@ -48,9 +48,9 @@
 				"${workspaceFolder}/out/test/**/*.js"
 			],
 			"env": {
-                "EXTENSION_PATH": "${workspaceFolder}",
+				"EXTENSION_PATH": "${workspaceFolder}",
 				"TEST_FILE": "${file}",
-            },
+			},
 			"preLaunchTask": "npm: watch"
 		},
 		{
@@ -66,10 +66,10 @@
 				"${workspaceFolder}/out/test/**/*.js"
 			],
 			"env": {
-                "EXTENSION_PATH": "${workspaceFolder}",
+				"EXTENSION_PATH": "${workspaceFolder}",
 				"TEST_FILE": "${file}",
 				"TEST_FILE_LINE": "${lineNumber}",
-            },
+			},
 			"preLaunchTask": "npm: watch"
 		}
 
