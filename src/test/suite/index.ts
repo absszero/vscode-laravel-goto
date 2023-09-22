@@ -17,7 +17,7 @@ export function run(): Promise<void> {
 		let filePattern = '**/**.test.js';
 
 		if (process.env.TEST_FILE) {
-			const prevousFilename = process.env.EXTENSION_PATH + '/.vscode-test/.prevous';
+			const previous = process.env.EXTENSION_PATH + '/.vscode-test/.previous';
 			let lineNumber = '';
 			if (process.env.TEST_FILE.endsWith('test.ts')) {
 				filePattern = process.env.TEST_FILE;
@@ -25,10 +25,10 @@ export function run(): Promise<void> {
 					lineNumber = process.env.TEST_FILE_LINE;
 				}
 
-				fs.writeFile(prevousFilename, filePattern + ':' + lineNumber, err => null);
+				fs.writeFile(previous, filePattern + ':' + lineNumber, err => null);
 			} else {
-				if (fs.existsSync(prevousFilename) ) {
-					const content = fs.readFileSync(prevousFilename, 'utf8').split(':');
+				if (fs.existsSync(previous) ) {
+					const content = fs.readFileSync(previous, 'utf8').split(':');
 					filePattern = content[0];
 					lineNumber = content[1];
 				}
