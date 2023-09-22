@@ -49,10 +49,29 @@
 			],
 			"env": {
                 "EXTENSION_PATH": "${workspaceFolder}",
-				"TEST_FILE": "${relativeFile}",
+				"TEST_FILE": "${file}",
+            },
+			"preLaunchTask": "npm: watch"
+		},
+		{
+			"name": "Test Current Case",
+			"type": "extensionHost",
+			"request": "launch",
+			"runtimeExecutable": "${execPath}",
+			"args": [
+				"--extensionDevelopmentPath=${workspaceFolder}",
+				"--extensionTestsPath=${workspaceFolder}/out/test/suite/index"
+			],
+			"outFiles": [
+				"${workspaceFolder}/out/test/**/*.js"
+			],
+			"env": {
+                "EXTENSION_PATH": "${workspaceFolder}",
+				"TEST_FILE": "${file}",
 				"TEST_FILE_LINE": "${lineNumber}",
             },
 			"preLaunchTask": "npm: watch"
 		}
+
 	]
 }
