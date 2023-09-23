@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { Namespace, Block } from './NS';
-import { getSelection } from "./Locator";
+import { getSelection, getLinesAfterDelimiter } from "./Locator";
 import { Place } from './Place';
 import { getFileContent } from './Workspace';
 import { parse } from './MiddlwareParser';
@@ -11,13 +11,15 @@ export class Finder {
 	selection: vscode.Range;
 	path: string;
 	line: string;
+	lines: string;
 
 	constructor(document: vscode.TextDocument, selection: vscode.Range) {
 		this.document = document;
 		this.selection = selection;
 		this.path = document.getText(selection).trim();
 		this.path = this.path.replace(/^[\s{<!-]+|[-\s>}]+$/g, '');
-		this.line = document.getText(document.lineAt(selection.start).range);
+		this.line = document.lineAt(selection.start).text;
+		this.lines = getLinesAfterDelimiter(document, selection.start.line);
 	}
 
 	/**
@@ -56,7 +58,7 @@ export class Finder {
 	*/
 	pathHelperPlace(ctx: Finder, place: Place): Place {
 		const pattern = /([\w^_]+)_path\(\s*(['"])([^'"]*)\2/;
-		const match = pattern.exec(ctx.line);
+		const match = pattern.exec(ctx.line) || pattern.exec(ctx.lines);
 
 		if ((Boolean)(match && match[3] === ctx.path)) {
 			let prefix = match![1] + '/';
@@ -80,7 +82,7 @@ export class Finder {
 	componentPlace(ctx: Finder, place: Place): Place {
 		const pattern = /<\/?x-([^\/\s>]*)/;
 
-		let match = pattern.exec(ctx.line);
+		let match = pattern.exec(ctx.line) || pattern.exec(ctx.lines);
 		if (match && ctx.path.includes(match[1])) {
 			let split = match[1].split(':');
 			let vendor = '';
@@ -145,7 +147,7 @@ export class Finder {
 		};
 
 		for (const pattern of patterns) {
-			let match = pattern.exec(ctx.line);
+			let match = pattern.exec(ctx.line) || pattern.exec(ctx.lines);
 			if (match && match[match.length - 1] === ctx.path) {
 				place = trasformFilename(place);
 
@@ -159,7 +161,7 @@ export class Finder {
 		];
 
 		for (const pattern of multiViewsPatterns) {
-			if (pattern.exec(ctx.line)) {
+			if (pattern.exec(ctx.line) || pattern.exec(ctx.lines)) {
 				place = trasformFilename(place);
 				return place;
 			}
@@ -179,7 +181,7 @@ export class Finder {
 			return place;
 		}
 		const pattern = /\[\s*(.*::class)\s*,\s*["']([^"']+)/;
-		let match = pattern.exec(ctx.line);
+		let match = pattern.exec(ctx.line) || pattern.exec(ctx.lines);
 		place.path = ctx.path;
 		if (match) {
 			place.path = match[1];
@@ -208,7 +210,7 @@ export class Finder {
 		for (const pattern of patterns) {
 			let match;
 			do {
-				match = pattern.exec(ctx.line);
+				match = pattern.exec(ctx.line) || pattern.exec(ctx.lines);
 				if (match && match[2] === ctx.path) {
 					let split = ctx.path.split('.');
 					place.path = 'config/' + split[0] + '.php';
@@ -235,7 +237,7 @@ export class Finder {
 		];
 
 		for (const pattern of patterns) {
-			let match = pattern.exec(ctx.line);
+			let match = pattern.exec(ctx.line) || pattern.exec(ctx.lines);
 			if (match && match[2] === ctx.path) {
 				let split = ctx.path.split(':');
 				let vendor = (3 === split.length) ? `/vendor/${split[0]}` : '';
@@ -258,7 +260,7 @@ export class Finder {
 	 */
 	envPlace(ctx: Finder, place: Place): Place {
 		const pattern = /env\(\s*(['"])([^'"]*)\1/;
-		const match = pattern.exec(ctx.line);
+		const match = pattern.exec(ctx.line) || pattern.exec(ctx.lines);
 
 		if ((Boolean)(match && match[2] === ctx.path)) {
 			place.location = ctx.path;
@@ -297,7 +299,7 @@ export class Finder {
 		];
 
 		for (const pattern of patterns) {
-			let match = pattern.exec(ctx.line);
+			let match = pattern.exec(ctx.line) || pattern.exec(ctx.lines);
 			if ((Boolean)(match && match[1] === ctx.path)) {
 				place.path = ctx.path;
 				return place;
@@ -325,7 +327,7 @@ export class Finder {
 			);
 
 		for (const pattern of patterns) {
-			let match = pattern.exec(ctx.line);
+			let match = pattern.exec(ctx.line) || pattern.exec(ctx.lines);
 			if (null === match) {
 				continue;
 			}
@@ -345,7 +347,7 @@ export class Finder {
 	 */
 	namespacePlace(ctx: Finder, place: Place): Place {
 		const pattern = /([A-Z][\w]+[\\])+[A-Z][\w]+/;
-		const match = pattern.exec(ctx.path);
+		const match = pattern.exec(ctx.path) || pattern.exec(ctx.lines);
 
 		if (match) {
 			place.path = ctx.path + '.php';
@@ -364,7 +366,7 @@ export class Finder {
 		];
 
 		for (const pattern of patterns) {
-			if (!pattern.exec(ctx.line)) {
+			if (!pattern.exec(ctx.line) && pattern.exec(ctx.lines)) {
 				continue;
 			}
 

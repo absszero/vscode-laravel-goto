@@ -2,7 +2,7 @@ import * as assert from 'assert';
 import * as vscode from 'vscode';
 import { before, after } from 'mocha';
 import { replace } from './Utils';
-import { getSelection } from '../../Locator';
+import { getSelection, getLinesAfterDelimiter } from '../../Locator';
 
 let editor : vscode.TextEditor;
 suite('Locator Test Suite', () => {
@@ -20,5 +20,16 @@ suite('Locator Test Suite', () => {
 		const selection = getSelection(editor.document, editor.selection, "-");
 		const text = editor.document.getText(selection).trim();
 		assert.strictEqual(text, 'HelloWorld');
+	});
+
+	test('getLinesAfterDelimiter', async () => {
+		await replace(editor, `
+view(
+	'hello|_view',
+	['name' => 'James']
+);`);
+
+		const lines = getLinesAfterDelimiter(editor.document, 2);
+		assert.strictEqual(lines, `view('hello_view',`);
 	});
 });

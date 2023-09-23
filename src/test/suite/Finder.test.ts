@@ -347,6 +347,77 @@ suite('Finder Test Suite', () => {
 		await replace(editor, `Route::group(['middleware' => ['auth.|basic',]]);`);
 		await assertPath('Illuminate/Auth/Middleware/AuthenticateWithBasicAuth.php');
 	});
+
+	test('multiline', async() => {
+	    (workspace as any).getFileContent = async () => {
+			return (await fsp.readFile(__dirname + '/../../../src/test/test-fixtures/app/Http/Kernel.php')).toString();
+		};
+		const examples = new Map([
+			[
+				'layouts/app.blade.php',
+				`layout(
+					'lay|outs.app'
+				)`
+			],
+			[
+				'Http/Middleware/Authenticate.php',
+				`Route::middleware(
+					[
+						'web:1234',
+						'auth|:abc'
+					]
+				);`
+			],
+			[
+				'About/AboutComponent',
+				`inertia(
+					'About/AboutCo|mponent'
+				);`,
+			],
+			[
+				'hello_view.blade.php',
+				`view(
+					'hello|_view', ['name' => 'James']
+				);`
+			],
+			[
+				'HelloController.php',
+				`Route::get(
+					'/', 'HelloControlle|r@index'
+				);`,
+			],
+			[
+				'config/app.php',
+				`Config::get(
+					'app.t|imezone'
+				);`,
+			],
+			[
+				'.env',
+				`env(
+					'APP_DEB|UG'
+					, false
+				);`
+			],
+			[
+				'lang/messages.php',
+				`__(
+					'messages.|welcome'
+				);`
+			],
+			[
+				'app/User.php',
+				`app_path(
+					'Use|r.php'
+				);`
+			]
+		]);
+
+		for (const [expected, content] of examples) {
+			await replace(editor, content);
+			await assertPath(expected);
+		}
+	});
 });
 
 async function assertPath(expected: string, location?: string) {

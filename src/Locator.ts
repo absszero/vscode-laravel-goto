@@ -61,6 +61,27 @@ export function getSelection(document: vscode.TextDocument, selected: vscode.Ran
 }
 
 /**
+ * get lines after delimiter
+ * @param document
+ * @param lineNumber
+ * @param delimiter
+ * @returns
+ */
+export function getLinesAfterDelimiter(document: vscode.TextDocument, lineNumber: number, delimiter = '(') : string {
+    let lines: string[] = [];
+    while(lineNumber >= 0) {
+        let text = document.lineAt(lineNumber).text.trim();
+        lines.unshift(text);
+        if (text.includes(delimiter)) {
+            return lines.join('');
+        }
+        lineNumber--;
+    }
+
+    return '';
+}
+
+/**
  * go to the symbol in place after file is opened
  *
  * @param   {Place}  place  [place description]
