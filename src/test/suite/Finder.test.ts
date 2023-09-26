@@ -134,6 +134,22 @@ suite('Finder Test Suite', () => {
 		await assertPath("hello_view.blade.php");
 	});
 
+    test('View::composer', async() => {
+        await replace(editor, "View::composer(['pro|file', 'dashboard'], MultiComposer::class);");
+        await assertPath('profile.blade.php');
+
+        await replace(editor, "View::composer(['profile', 'das|hboard'], MultiComposer::class);");
+        await assertPath('dashboard.blade.php');
+
+        await replace(editor, "View::composer('prof|ile', ProfileComposer::class);");
+        await assertPath('profile.blade.php');
+	});
+
+    test('View::creator', async() => {
+        await replace(editor, "View::creator('prof|ile', ProfileComposer::class);");
+        await assertPath('profile.blade.php');
+	});
+
 	test('@includeIf, @include', async() => {
 		await replace(editor, "@includeIf('view.na|me', ['status' => 'complete'])");
 		await assertPath("view/name.blade.php");
