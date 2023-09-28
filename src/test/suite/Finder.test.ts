@@ -63,6 +63,7 @@ suite('Finder Test Suite', () => {
 	test('closing tag Component', async() => {
 		await replace(editor, "</x-al|ert>");
 		const place = await assertPath("View/Components/Alert.php");
+		assert.ok(place.paths?.has("View/Components/Alert.php"));
 		assert.ok(place.paths?.has("views/components/alert.blade.php"));
 	});
 

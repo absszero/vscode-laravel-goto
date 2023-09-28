@@ -16,9 +16,9 @@ export class HoverProvider implements vscode.HoverProvider {
             moveToSymbol(place);
             let links = this.markdownUri(place.path, place.uris);
             if (place.paths?.size) {
-                links = '- ' + links;
+                links = '';
                 for (const [path, uris] of place.paths) {
-                    links += "\n- " + this.markdownUri(path, uris);
+                    links += "- " + this.markdownUri(path, uris) + "\n";
                 }
             }
             const contents = new vscode.MarkdownString(links);

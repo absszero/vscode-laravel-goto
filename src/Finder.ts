@@ -102,6 +102,7 @@ export class Finder {
 			for (const key in sections) {
 				sections[key] = sections[key][0].toUpperCase() + sections[key].slice(1);
 			}
+			place.paths?.set(vendor + sections.join('/') + '.php', []);
 			place.path = vendor + sections.join('/') + '.php';
 
 			return place;
