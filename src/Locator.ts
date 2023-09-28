@@ -12,24 +12,24 @@ let event: vscode.Disposable | null;
  * @var {[type]}
  */
 export async function locate(document: vscode.TextDocument, range: vscode.Range) {
-    const selection = getSelection(document, range, "<(\"'[,)>");
-    if (!selection) {
-        return undefined;
-    }
-    const finder = new Finder(document, selection);
-    const place = await finder.getPlace();
+	const selection = getSelection(document, range, "<(\"'[,)>");
+	if (!selection) {
+		return undefined;
+	}
+	const finder = new Finder(document, selection);
+	const place = await finder.getPlace();
 
-    if (place.path) {
-        place.uris = await findFiles('**/' + place.path);
-    }
+	if (place.path) {
+		place.uris = await findFiles('**/' + place.path);
+	}
 
-    if (place.paths) {
-        for (const path of place.paths.keys()) {
-            place.paths.set(path, await findFiles('**/' + path));
-        }
-    }
+	if (place.paths) {
+		for (const path of place.paths.keys()) {
+			place.paths.set(path, await findFiles('**/' + path));
+		}
+	}
 
-    return place;
+	return place;
 }
 
 /**
@@ -37,33 +37,33 @@ export async function locate(document: vscode.TextDocument, range: vscode.Range)
  * @param selected
  */
 export function getSelection(document: vscode.TextDocument, selected: vscode.Range, delimiters: string): vscode.Range | undefined {
-    let start = selected.start;
-    let end = selected.end;
+	let start = selected.start;
+	let end = selected.end;
 
-    const line = document.lineAt(start);
-    while (start.isAfter(line.range.start)) {
-        let next = start.with({ character: start.character - 1 });
-        let char = document.getText(new vscode.Range(next, start));
-        if (-1 !== delimiters.indexOf(char)) {
-            break;
-        }
-        start = next;
-    }
-    while (end.isBefore(line.range.end)) {
-        let next = end.with({ character: end.character + 1 });
-        let char = document.getText(new vscode.Range(end, next));
-        if (-1 !== delimiters.indexOf(char)) {
-            break;
-        }
-        end = next;
-    }
+	const line = document.lineAt(start);
+	while (start.isAfter(line.range.start)) {
+		let next = start.with({ character: start.character - 1 });
+		let char = document.getText(new vscode.Range(next, start));
+		if (-1 !== delimiters.indexOf(char)) {
+			break;
+		}
+		start = next;
+	}
+	while (end.isBefore(line.range.end)) {
+		let next = end.with({ character: end.character + 1 });
+		let char = document.getText(new vscode.Range(end, next));
+		if (-1 !== delimiters.indexOf(char)) {
+			break;
+		}
+		end = next;
+	}
 
-    let range = new vscode.Range(start, end);
-    if (range.isEqual(line.range)) {
-        return undefined;
-    }
+	let range = new vscode.Range(start, end);
+	if (range.isEqual(line.range)) {
+		return undefined;
+	}
 
-    return range;
+	return range;
 }
 
 /**
@@ -74,17 +74,17 @@ export function getSelection(document: vscode.TextDocument, selected: vscode.Ran
  * @returns
  */
 export function getLinesAfterDelimiter(document: vscode.TextDocument, lineNumber: number, delimiter = '(') : string {
-    let lines: string[] = [];
-    while(lineNumber >= 0) {
-        let text = document.lineAt(lineNumber).text.trim();
-        lines.unshift(text);
-        if (text.includes(delimiter)) {
-            return lines.join('');
-        }
-        lineNumber--;
-    }
+	let lines: string[] = [];
+	while(lineNumber >= 0) {
+		let text = document.lineAt(lineNumber).text.trim();
+		lines.unshift(text);
+		if (text.includes(delimiter)) {
+			return lines.join('');
+		}
+		lineNumber--;
+	}
 
-    return '';
+	return '';
 }
 
 /**
@@ -95,39 +95,39 @@ export function getLinesAfterDelimiter(document: vscode.TextDocument, lineNumber
  * @return  {void}
  */
 export function moveToSymbol(place: Place): void {
-    if (!place.location) {
-        return;
-    }
+	if (!place.location) {
+		return;
+	}
 
-    // dispose previous event
-    if (event) {
-        event.dispose();
-        event = null;
-    }
-    event = vscode.window.onDidChangeActiveTextEditor(e => {
-        if (null === event) {
-            return;
-        }
+	// dispose previous event
+	if (event) {
+		event.dispose();
+		event = null;
+	}
+	event = vscode.window.onDidChangeActiveTextEditor(e => {
+		if (null === event) {
+			return;
+		}
 
-        if (undefined === e) {
-            return;
-        }
-        if (basename(place.path) !== basename(e.document.uri.path)) {
-            event.dispose();
-            return;
-        }
-        event.dispose();
-        // It's a controller method
-        if ('@' === place.location[0]) {
-            vscode.commands.executeCommand('workbench.action.quickOpen', place.location);
-        } else {
-            const range = locationRange(e.document, place.location);
-            if (range) {
-                e.selection = new vscode.Selection(range.start, range.end);
-                e.revealRange(range);
-            }
-        }
-    });
+		if (undefined === e) {
+			return;
+		}
+		if (basename(place.path) !== basename(e.document.uri.path)) {
+			event.dispose();
+			return;
+		}
+		event.dispose();
+		// It's a controller method
+		if ('@' === place.location[0]) {
+			vscode.commands.executeCommand('workbench.action.quickOpen', place.location);
+		} else {
+			const range = locationRange(e.document, place.location);
+			if (range) {
+				e.selection = new vscode.Selection(range.start, range.end);
+				e.revealRange(range);
+			}
+		}
+	});
 }
 
 /**

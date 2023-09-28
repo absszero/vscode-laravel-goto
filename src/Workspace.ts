@@ -10,7 +10,7 @@ let mTimes  = new Map<string, string>;
  *
  */
 export async function findFiles(glob: string, maxResults = MAX_RESULTS) {
-    return await vscode.workspace.findFiles(glob, excludes, maxResults);
+	return await vscode.workspace.findFiles(glob, excludes, maxResults);
 }
 
 /**
@@ -21,23 +21,23 @@ export async function findFiles(glob: string, maxResults = MAX_RESULTS) {
  * @return  {Promise:<string>}            [return description]
  */
 export async function getFileContent(pathGlob: string): Promise<string> {
-    const uri = await findFiles('**/' + pathGlob, 1);
-    if (0 === uri.length) {
-        return '';
-    }
-    const filepath = uri[0].path;
+	const uri = await findFiles('**/' + pathGlob, 1);
+	if (0 === uri.length) {
+		return '';
+	}
+	const filepath = uri[0].path;
 
-    // read from cache
-    const mTime = (await fsp.stat(filepath)).mtime.toString();
-    if (mTimes.get(filepath) === mTime) {
-        return contents.get(filepath) || '';
+	// read from cache
+	const mTime = (await fsp.stat(filepath)).mtime.toString();
+	if (mTimes.get(filepath) === mTime) {
+		return contents.get(filepath) || '';
 
-    }
+	}
 
-    // read from disk
-    const content = (await fsp.readFile(filepath)).toString();
-    mTimes.set(filepath, mTime);
-    contents.set(filepath, content);
+	// read from disk
+	const content = (await fsp.readFile(filepath)).toString();
+	mTimes.set(filepath, mTime);
+	contents.set(filepath, content);
 
-    return content;
+	return content;
 }
