@@ -23,6 +23,12 @@ export async function locate(document: vscode.TextDocument, range: vscode.Range)
         place.uris = await findFiles('**/' + place.path);
     }
 
+    if (place.paths) {
+        for (const path of place.paths.keys()) {
+            place.paths.set(path, await findFiles('**/' + path));
+        }
+    }
+
     return place;
 }
 

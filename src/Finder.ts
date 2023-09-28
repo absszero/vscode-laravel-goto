@@ -42,7 +42,7 @@ export class Finder {
 			this.componentPlace,
 		];
 
-		let place: Place = { path: '', location: '', uris: [] };
+		let place: Place = { path: '', paths: new Map ,location: '', uris: [] };
 		for (let i = 0; i < places.length; i++) {
 			place = await places[i](this, place, this.document, this.selection);
 			if (place.path) {
@@ -85,18 +85,24 @@ export class Finder {
 		let match = pattern.exec(ctx.line) || pattern.exec(ctx.lines);
 		if (match && ctx.path.includes(match[1])) {
 			let split = match[1].split(':');
-			let vendor = '';
+			let vendor = 'View/Components/';
+			let resVendor = 'views/components/';
 			// namespace or vendor
 			if (3 === split.length) {
 				// it's vendor
 				if (split[0] === split[0].toLowerCase()) {
 					vendor = split[0] + '/';
+					resVendor = split[0] + '/';;
 				}
 			}
 
-			place.path = split[split.length - 1];
-			place.path = vendor + place.path.replace(/\./g, '/');
-			place.path += '.php';
+			const sections = split[split.length - 1].split('.');
+			place.paths?.set(resVendor + sections.join('/') + '.blade.php', []);
+			// capitalizeFirstLetter
+			for (const key in sections) {
+				sections[key] = sections[key][0].toUpperCase() + sections[key].slice(1);
+			}
+			place.path = vendor + sections.join('/') + '.php';
 
 			return place;
 		}

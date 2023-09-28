@@ -1,4 +1,4 @@
-# VSCode Laravel Goto
+# Laravel Goto
 
 ![actions/workflows/test.yaml](https://github.com/absszero/vscode-laravel-goto/workflows/.github/workflows/test.yaml/badge.svg)
 

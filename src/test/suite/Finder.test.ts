@@ -6,6 +6,7 @@ import { Finder } from '../../Finder';
 import { replace } from './Utils';
 import * as workspace from '../../Workspace';
 import {promises as fsp} from "fs";
+import { Place } from '../../Place';
 
 let editor : vscode.TextEditor;
 const getFileContent = workspace.getFileContent;
@@ -61,17 +62,18 @@ suite('Finder Test Suite', () => {
 
 	test('closing tag Component', async() => {
 		await replace(editor, "</x-al|ert>");
-		await assertPath("alert.php");
+		const place = await assertPath("View/Components/Alert.php");
+		assert.ok(place.paths?.has("views/components/alert.blade.php"));
 	});
 
 	test('component with namespace', async() => {
 		await replace(editor, "<x-namespace::|alert/>");
-		await assertPath("namespace/alert.php");
+		await assertPath("namespace/Alert.php");
 	});
 
-	test('component', async() => {
+	test('component with sub-view', async() => {
 		await replace(editor, '<x-form.|input type="error"/>');
-		await assertPath("form/input.php");
+		await assertPath("View/Components/Form/Input.php");
 	});
 
 	test('view file', async() => {
@@ -436,7 +438,7 @@ suite('Finder Test Suite', () => {
 	});
 });
 
-async function assertPath(expected: string, location?: string) {
+async function assertPath(expected: string, location?: string) : Promise<Place> {
 	const selection = getSelection(editor.document, editor.selection, "<\"'[,)>");
 	if (!selection) {
 		assert.fail();
@@ -447,5 +449,7 @@ async function assertPath(expected: string, location?: string) {
 	if (location) {
 		assert.strictEqual(place.location, location);
 	}
+
+	return place;
 }
 
