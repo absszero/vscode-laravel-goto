@@ -61,20 +61,20 @@ suite('Finder Test Suite', () => {
 	});
 
 	test('closing tag Component', async() => {
-		await replace(editor, "</x-al|ert>");
-		const place = await assertPath("View/Components/Alert.php");
-		assert.ok(place.paths?.has("View/Components/Alert.php"));
-		assert.ok(place.paths?.has("views/components/alert.blade.php"));
+		await replace(editor, "</x-hello-al|ert>");
+		const place = await assertPath("views/components/hello-alert.blade.php");
+		assert.ok(place.paths?.has("View/Components/HelloAlert.php"));
+		assert.ok(place.paths?.has("views/components/hello-alert.blade.php"));
 	});
 
 	test('component with namespace', async() => {
 		await replace(editor, "<x-namespace::|alert/>");
-		await assertPath("namespace/Alert.php");
+		await assertPath("namespace/alert.blade.php");
 	});
 
 	test('component with sub-view', async() => {
 		await replace(editor, '<x-form.|input type="error"/>');
-		await assertPath("View/Components/Form/Input.php");
+		await assertPath("views/components/form/input.blade.php");
 	});
 
 	test('view file', async() => {

@@ -19,6 +19,10 @@ export default (editor: vscode.TextEditor, edit: vscode.TextEditorEdit, args: an
 			uris = place.paths.get(path) || [];
 		}
 
+		if (!path) {
+			return;
+		}
+
 		if (1 === uris.length) {
 			vscode.commands.executeCommand('vscode.open', vscode.Uri.file(uris[0].path));
 			return;

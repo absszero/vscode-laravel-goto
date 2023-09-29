@@ -92,18 +92,28 @@ export class Finder {
 				// it's vendor
 				if (split[0] === split[0].toLowerCase()) {
 					vendor = split[0] + '/';
-					resVendor = split[0] + '/';;
+					resVendor = split[0] + '/';
 				}
 			}
 
-			const sections = split[split.length - 1].split('.');
-			place.paths?.set(resVendor + sections.join('/') + '.blade.php', []);
 			// capitalizeFirstLetter
-			for (const key in sections) {
-				sections[key] = sections[key][0].toUpperCase() + sections[key].slice(1);
+			const capitalizeFirstLetter = (words: string[]) => {
+				for (const key in words) {
+					words[key] = words[key][0].toUpperCase() + words[key].slice(1);
+				}
+
+				return words;
 			}
+
+			let sections = split[split.length - 1].split('.');
+			place.path = resVendor + sections.join('/') + '.blade.php';
+			place.paths?.set(resVendor + sections.join('/') + '.blade.php', []);
+
+			sections = capitalizeFirstLetter(sections);
+			let filenames = sections[sections.length - 1].split('-');
+			filenames = capitalizeFirstLetter(filenames);
+			sections[sections.length - 1] = filenames.join('');
 			place.paths?.set(vendor + sections.join('/') + '.php', []);
-			place.path = vendor + sections.join('/') + '.php';
 
 			return place;
 		}
