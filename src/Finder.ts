@@ -2,8 +2,7 @@ import * as vscode from 'vscode';
 import { Namespace, Block } from './NS';
 import { getSelection, getLinesAfterDelimiter } from "./Locator";
 import { Place } from './Place';
-import { getFileContent } from './Workspace';
-import { parse } from './Middlware';
+import { Middlware } from './Middlware';
 
 
 export class Finder {
@@ -390,14 +389,9 @@ export class Finder {
 				continue;
 			}
 
-			const httpKernel = await getFileContent('Http/Kernel.php');
-			if (!httpKernel) {
-				return place;
-			}
-			const middlewares = parse(httpKernel);
-
 			// remove middleware parameters
 			const alias = ctx.path.split(':')[0];
+			const middlewares = await (new Middlware).getMiddlewares();
 			let found = middlewares.get(alias);
 			if (found) {
 				return found;

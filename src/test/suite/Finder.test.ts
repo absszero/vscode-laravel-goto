@@ -1,15 +1,14 @@
+import * as sinon from 'sinon';
 import * as assert from 'assert';
 import * as vscode from 'vscode';
-import { before, after } from 'mocha';
+import { before, after, afterEach } from 'mocha';
 import { getSelection } from '../../Locator';
 import { Finder } from '../../Finder';
 import { replace } from './Utils';
-import * as workspace from '../../Workspace';
-import {promises as fsp} from "fs";
+import { Middlware } from '../../Middlware';
 import { Place } from '../../Place';
 
 let editor : vscode.TextEditor;
-const getFileContent = workspace.getFileContent;
 
 suite('Finder Test Suite', () => {
 	before(async () => {
@@ -21,8 +20,8 @@ suite('Finder Test Suite', () => {
 		return await vscode.commands.executeCommand('workbench.action.closeAllEditors');
 	});
 
-	teardown(() => {
-		(workspace as any).getFileContent = getFileContent;
+	afterEach(() => {
+		sinon.restore();
 	});
 
 	test('Livewire tag', async() => {
@@ -357,9 +356,14 @@ suite('Finder Test Suite', () => {
 	});
 
 	test('middleware', async() => {
-	    (workspace as any).getFileContent = async () => {
-			return (await fsp.readFile(__dirname + '/../../../src/test/test-fixtures/app/Http/Kernel.php')).toString();
-		};
+		sinon.stub(Middlware.prototype, 'getMiddlewares').returns(new Promise((resolve) => {
+			const middlewares = new Map([
+				['auth', { path: 'Http/Middleware/Authenticate.php', location: '', uris: [] }],
+				['auth.basic', { path: 'Illuminate/Auth/Middleware/AuthenticateWithBasicAuth.php', location: '', uris: [] }],
+			]);
+			resolve(middlewares);
+		}));
+
 		await replace(editor, `Route::middleware(['web:1234', 'auth|:abc']);`);
 		await assertPath('Http/Middleware/Authenticate.php');
 
@@ -368,9 +372,14 @@ suite('Finder Test Suite', () => {
 	});
 
 	test('multiline', async() => {
-	    (workspace as any).getFileContent = async () => {
-			return (await fsp.readFile(__dirname + '/../../../src/test/test-fixtures/app/Http/Kernel.php')).toString();
-		};
+		sinon.stub(Middlware.prototype, 'getMiddlewares').returns(new Promise((resolve) => {
+			const middlewares = new Map([
+				['auth', { path: 'Http/Middleware/Authenticate.php', location: '', uris: [] }],
+				['auth.basic', { path: 'Illuminate/Auth/Middleware/AuthenticateWithBasicAuth.php', location: '', uris: [] }],
+			]);
+			resolve(middlewares);
+		}));
+
 		const examples = new Map([
 			[
 				'layouts/app.blade.php',

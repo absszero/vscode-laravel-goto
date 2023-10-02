@@ -145,6 +145,7 @@
 		"@types/glob": "^7.1.4",
 		"@types/mocha": "^9.1.0",
 		"@types/node": "^10.17.60",
+		"@types/sinon": "^10.0.17",
 		"@types/vscode": "^1.76.0",
 		"@typescript-eslint/eslint-plugin": "^4.33.0",
 		"@typescript-eslint/parser": "^4.33.0",
@@ -153,6 +154,7 @@
 		"eslint": "^7.32.0",
 		"glob": "^7.2.0",
 		"mocha": "^9.1.2",
+		"sinon": "^16.0.0",
 		"typescript": "^4.3.2"
 	}
 }
