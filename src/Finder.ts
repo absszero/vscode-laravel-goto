@@ -3,7 +3,7 @@ import { Namespace, Block } from './NS';
 import { getSelection, getLinesAfterDelimiter } from "./Locator";
 import { Place } from './Place';
 import { getFileContent } from './Workspace';
-import { parse } from './MiddlwareParser';
+import { parse } from './Middlware';
 
 
 export class Finder {

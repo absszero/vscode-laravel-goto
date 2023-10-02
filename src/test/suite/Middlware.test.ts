@@ -1,9 +1,9 @@
 import * as assert from 'assert';
 import * as vscode from 'vscode';
-import { parse } from '../../MiddlwareParser';
+import { parse } from '../../Middlware';
 
 let editor : vscode.TextEditor;
-suite('MiddlwareParser Test Suite', () => {
+suite('Middlware Test Suite', () => {
 	test('parse', () => {
 		const middlewares = parse(String.raw`
 		use Illuminate\Foundation\Http\Kernel as HttpKernel;
