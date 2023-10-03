@@ -6,6 +6,7 @@ import { getSelection } from '../../Locator';
 import { Finder } from '../../Finder';
 import { replace } from './Utils';
 import { Middlware } from '../../Middlware';
+import { Console } from '../../Console';
 import { Place } from '../../Place';
 
 let editor : vscode.TextEditor;
@@ -356,7 +357,7 @@ suite('Finder Test Suite', () => {
 	});
 
 	test('middleware', async() => {
-		sinon.stub(Middlware.prototype, 'getMiddlewares').returns(new Promise((resolve) => {
+		sinon.stub(Middlware.prototype, 'all').returns(new Promise((resolve) => {
 			const middlewares = new Map([
 				['auth', { path: 'Http/Middleware/Authenticate.php', location: '', uris: [] }],
 				['auth.basic', { path: 'Illuminate/Auth/Middleware/AuthenticateWithBasicAuth.php', location: '', uris: [] }],
@@ -371,8 +372,24 @@ suite('Finder Test Suite', () => {
 		await assertPath('Illuminate/Auth/Middleware/AuthenticateWithBasicAuth.php');
 	});
 
+	test('command', async() => {
+		sinon.stub(Console.prototype, 'all').returns(new Promise((resolve) => {
+			const commands = new Map([
+				['app:say-hello', { path: 'SayHello.php', location: '', uris: [] }],
+			]);
+			resolve(commands);
+		}));
+
+		await replace(editor, `Artisan::call('app:say|-hello --args');`);
+		await assertPath('SayHello.php');
+
+		await replace(editor, `command('app:say|-hello --args');`);
+		await assertPath('SayHello.php');
+	});
+
+
 	test('multiline', async() => {
-		sinon.stub(Middlware.prototype, 'getMiddlewares').returns(new Promise((resolve) => {
+		sinon.stub(Middlware.prototype, 'all').returns(new Promise((resolve) => {
 			const middlewares = new Map([
 				['auth', { path: 'Http/Middleware/Authenticate.php', location: '', uris: [] }],
 				['auth.basic', { path: 'Illuminate/Auth/Middleware/AuthenticateWithBasicAuth.php', location: '', uris: [] }],

@@ -16,16 +16,21 @@ export async function findFiles(glob: string, maxResults = MAX_RESULTS) {
 /**
  * get file content
  *
- * @param   {string}  pathGlob  [pathGlob description]
+ * @param   {string| vscode.Uri}  	glob  [glob description]
  *
  * @return  {Promise:<string>}            [return description]
  */
-export async function getFileContent(pathGlob: string): Promise<string> {
-	const uri = await findFiles('**/' + pathGlob, 1);
-	if (0 === uri.length) {
-		return '';
+export async function getFileContent(glob: string | vscode.Uri): Promise<string> {
+	let uri = glob;
+	if (typeof glob === 'string') {
+		const uris = await findFiles(glob, 1);
+		if (0 === uris.length) {
+			return '';
+		}
+
+		uri = uris[0];
 	}
-	const filepath = uri[0].path;
+	const filepath = (uri as vscode.Uri).path;
 
 	// read from cache
 	const mTime = (await fsp.stat(filepath)).mtime.toString();

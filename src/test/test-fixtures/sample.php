@@ -134,3 +134,8 @@ Route::view('/', 'pages.public.index');
 @each('view.name', $jobs, 'job', 'view.empty')
 
 @extends('layouts.app')
+
+Artisan::call('app:say-hello');
+
+command('app:say-hello');
+

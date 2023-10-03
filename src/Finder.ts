@@ -3,6 +3,7 @@ import { Namespace, Block } from './NS';
 import { getSelection, getLinesAfterDelimiter } from "./Locator";
 import { Place } from './Place';
 import { Middlware } from './Middlware';
+import { Console } from './Console';
 
 
 export class Finder {
@@ -39,6 +40,7 @@ export class Finder {
 			this.inertiajsPlace,
 			this.livewirePlace,
 			this.componentPlace,
+			this.commandPlace,
 		];
 
 		let place: Place = { path: '', paths: new Map ,location: '', uris: [] };
@@ -102,7 +104,7 @@ export class Finder {
 				}
 
 				return words;
-			}
+			};
 
 			let sections = split[split.length - 1].split('.');
 			place.path = resVendor + sections.join('/') + '.blade.php';
@@ -385,14 +387,41 @@ export class Finder {
 		];
 
 		for (const pattern of patterns) {
-			if (!pattern.exec(ctx.line) && pattern.exec(ctx.lines)) {
+			const match = pattern.exec(ctx.line) || pattern.exec(ctx.lines);
+			if (!match) {
 				continue;
 			}
 
 			// remove middleware parameters
 			const alias = ctx.path.split(':')[0];
-			const middlewares = await (new Middlware).getMiddlewares();
+			const middlewares = await (new Middlware).all();
 			let found = middlewares.get(alias);
+			if (found) {
+				return found;
+			}
+		}
+
+		return place;
+	}
+
+	/**
+	 * get command place
+	 */
+	async commandPlace(ctx: Finder, place: Place): Promise<Place> {
+		const patterns = [
+			/Artisan::call\(\s*['"]([^\s'"]+)/,
+			/command\(\s*['"]([^\s'"]+)/,
+		];
+
+		for (const pattern of patterns) {
+			const match = pattern.exec(ctx.line) || pattern.exec(ctx.lines);
+			if (!match) {
+				continue;
+			}
+
+			const signature = match[1];
+			const commands = await (new Console).all();
+			let found = commands.get(signature);
 			if (found) {
 				return found;
 			}

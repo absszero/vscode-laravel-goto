@@ -4,14 +4,13 @@ import { Middlware } from '../../Middlware';
 import { teardown } from 'mocha';
 import * as workspace from '../../Workspace';
 
-let editor : vscode.TextEditor;
 const getFileContent = workspace.getFileContent;
 suite('Middlware Test Suite', () => {
 	teardown(() => {
 		(workspace as any).getFileContent = getFileContent;
 	});
 
-	test('parse', async () => {
+	test('all', async () => {
 	    (workspace as any).getFileContent = async () => {
 			return String.raw`
 			use Illuminate\Foundation\Http\Kernel as HttpKernel;
@@ -36,7 +35,7 @@ suite('Middlware Test Suite', () => {
 			`;
 		};
 
-		const middlewares = await (new Middlware).getMiddlewares();
+		const middlewares = await (new Middlware).all();
 
 		assert.ok(middlewares.has("auth"));
 		assert.ok(middlewares.has("auth.basic"));

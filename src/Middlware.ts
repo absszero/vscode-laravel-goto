@@ -8,11 +8,11 @@ export class Middlware {
  *
  * @return  {Promise<Map<string, Place>>}              [return description]
  */
-	public async getMiddlewares(): Promise<Map<string, Place>> {
+	public async all(): Promise<Map<string, Place>> {
 		const middlewares = new Map();
 
 		if (this.httpKernel === undefined) {
-			this.httpKernel = await getFileContent('Http/Kernel.php');
+			this.httpKernel = await getFileContent('**/Http/Kernel.php');
 		}
 		if (!this.httpKernel) {
 			return middlewares;
@@ -23,14 +23,14 @@ export class Middlware {
 		// Before Laravel 10, middlewareAliases was called routeMiddleware. They work the exact same way.
 		const aliasPattern = /(\$\bmiddlewareAliases\b|\$\brouteMiddleware\b)\s*=\s*\[([^;]+)/m;
 
-		const matchBlcok = aliasPattern.exec(this.httpKernel);
-		if (!matchBlcok) {
+		const matchBlock = aliasPattern.exec(this.httpKernel);
+		if (!matchBlock) {
 			return middlewares;
 		}
 
 		let match;
 		const pattern = /['"]([^'"]+)['"]\s*=>\s*([^,\]]+)/g;
-		while ((match = pattern.exec(matchBlcok[2])) !== null) {
+		while ((match = pattern.exec(matchBlock[2])) !== null) {
 			if (match.index === pattern.lastIndex) {
 				pattern.lastIndex++;
 			}
