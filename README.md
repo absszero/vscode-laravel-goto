@@ -76,6 +76,11 @@ trans_choice('messages.apples', 10);
 env('APP_DEBUG', false);
 ```
 
+### Go to Command
+
+![](command.gif)
+
+
 ### Go to Inertia.js
 
 ```php
