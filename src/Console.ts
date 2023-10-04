@@ -6,14 +6,14 @@ import { join, basename } from 'path';
 export class Console {
 	static kernelFilename = 'Console/Kernel.php';
 
-	consoleKernel: string | undefined;
+	consoleKernel: string = '';
 	/**
 	 * get all command places
 	 *
 	 * @return  {Promise<Map<string, Place>>}              [return description]
 	 */
 	public async all(): Promise<Map<string, Place>> {
-		let commands = new Map();
+		let commands: Map<string, Place> = new Map;
 		const uris = await findFiles(join('**', Console.kernelFilename), 1);
 		if (uris.length === 0) {
 			return commands;
@@ -24,12 +24,11 @@ export class Console {
 			return commands;
 		}
 
-		const cmdFnPattern = /function commands\([^\)]*[^{]+([^}]+)/m;
-		const match = cmdFnPattern.exec(this.consoleKernel);
-		if (match) {
-			const files = await this.collectFiles(match[1]);
-			commands = await this.collectCommands(files);
-		}
+		const files = await this.collectFiles();
+		commands = await this.collectFileCmds(files);
+
+		const cmds = await this.collectRegisteredCmds();
+		cmds.forEach((value, key) => commands.set(key, value));
 
 		return commands;
 	}
@@ -37,16 +36,19 @@ export class Console {
 	/**
 	 * collect files from $this->load(__DIR__.'YOUR_COMMANDS')
 	 *
-	 * @param   {string<Map><string>}   content  [content description]
-	 *
 	 * @return  {Promise<Map><string>}           [return description]
 	 */
-	private async collectFiles(content: string) : Promise<Map<string, Uri>> {
-		const pattern = /\$this->load\(\s*__DIR__\.['"]([^'"]+)/g;
+	private async collectFiles() : Promise<Map<string, Uri>> {
 		const files = new Map;
-
+		const cmdFnPattern = /function commands\([^\)]*[^{]+([^}]+)/m;
 		let match;
-		while ((match = pattern.exec(content)) !== null) {
+		match = cmdFnPattern.exec(this.consoleKernel);
+		if (!match) {
+			return files;
+		}
+
+		const pattern = /\$this->load\(\s*__DIR__\.['"]([^'"]+)/g;
+		while ((match = pattern.exec(match[1])) !== null) {
 			if (match.index === pattern.lastIndex) {
 				pattern.lastIndex++;
 			}
@@ -62,22 +64,79 @@ export class Console {
 	}
 
 	/**
+	 * [getCommandSignature description]
+	 *
+	 * @param   {string}  content  [content description]
+	 *
+	 * @return  {string}           [return description]
+	 */
+	private getCommandSignature(content: string) : string {
+		const pattern = /\$signature\s*=\s*['"]([^\s'"]+)/;
+		const match = pattern.exec(content);
+		if (match) {
+			return match[1];
+		}
+
+		return '';
+	}
+
+	/**
 	 * collect command signatures from command files
 	 *
 	 * @param   {Map<string, Uri>}    files  [files description]
 	 *
 	 * @return  {Place}                      [return description]
 	 */
-	private async collectCommands(files: Map<string, Uri>): Promise<Map<string, Place>> {
+	private async collectFileCmds(files: Map<string, Uri>): Promise<Map<string, Place>> {
 		let commands = new Map;
-		const pattern = /\$signature\s*=\s*['"]([^\s'"]+)/;
-		let match;
 		for (const uri of files.values()) {
 			const content = await getFileContent(uri);
-			match = pattern.exec(content);
-			if (match) {
+			const signature = this.getCommandSignature(content);
+			if (signature) {
 				const place: Place = { path: basename(uri.path), location: '', uris: [uri] };
-				commands.set(match[1], place);
+				commands.set(signature, place);
+			}
+		}
+
+		return commands;
+	}
+
+	/**
+	 * collect registered commands
+	 *
+	 * @return  {Promise<Map><string>}           [return description]
+	 */
+	private async collectRegisteredCmds(): Promise<Map<string, Place>> {
+		let commands = new Map;
+		const cmdAttrPattern = /\$commands\s*=\s*\[([^\]]+)/m;
+		let match = cmdAttrPattern.exec(this.consoleKernel);
+		if (!match) {
+			return commands;
+		}
+
+		const classes = match[1].split('\n');
+		for (const className of classes) {
+			let filename = className.replace(',', '').replace('::class', '').replace(/\\/g, '/').trim() + '.php';
+			if ('/' === filename[0]) {
+				filename = filename.substring(1);
+			}
+			// glob pattern is case-sensitive, and default app folder is lowercase.
+			if (filename.startsWith('App/')) {
+				filename = filename.substring('App/'.length);
+			}
+
+			if (filename === '.php') {
+				continue;
+			}
+			const uris = await findFiles(join('**', filename), 1);
+			if (uris.length === 0) {
+				continue;
+			}
+			const content = await getFileContent(uris[0]);
+			const signature = this.getCommandSignature(content);
+			if (signature) {
+				const place: Place = { path: filename, location: '', uris: [] };
+				commands.set(signature, place);
 			}
 		}
 

@@ -139,3 +139,4 @@ Artisan::call('app:say-hello');
 
 command('app:say-hello');
 
+command('app:say-goodbye');
