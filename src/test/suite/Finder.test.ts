@@ -259,6 +259,11 @@ suite('Finder Test Suite', () => {
 		await assertPath("config/app.php");
 	});
 
+	test('filesystem', async() => {
+		await replace(editor, `Storage::disk('lo|cal')->put('example.txt', 'Contents');`);
+		await assertPath("config/filesystems.php", "(['\"]{1})local\\1\\s*=>");
+	});
+
 	test('.env', async() => {
 		await replace(editor, `env(   'APP_DEB|UG', false);`);
 		await assertPath(".env");

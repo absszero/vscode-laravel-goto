@@ -140,3 +140,5 @@ Artisan::call('app:say-hello');
 command('app:say-hello');
 
 command('app:say-goodbye');
+
+Storage::disk('local')->put('example.txt', 'Contents');

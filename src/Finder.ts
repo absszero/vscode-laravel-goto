@@ -41,6 +41,7 @@ export class Finder {
 			this.livewirePlace,
 			this.componentPlace,
 			this.commandPlace,
+			this.filesystemPlace,
 		];
 
 		let place: Place = { path: '', paths: new Map ,location: '', uris: [] };
@@ -245,6 +246,23 @@ export class Finder {
 
 		return place;
 	}
+
+	/**
+	 * get file system place
+	 */
+	filesystemPlace(ctx: Finder, place: Place): Place {
+		const pattern = /Storage::disk\(\s*['"]([^'"]+)/;
+		const match = pattern.exec(ctx.line) || pattern.exec(ctx.lines);
+		if (match && match[1] === ctx.path) {
+			place.path = 'config/filesystems.php';
+			place.location = "(['\"]{1})" + match[1] + "\\1\\s*=>";
+			return place;
+		}
+
+		return place;
+	}
+
+
 	/**
 	 * get language place
 	 *
