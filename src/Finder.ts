@@ -4,7 +4,7 @@ import { getSelection, getLinesAfterDelimiter } from "./Locator";
 import { Place } from './Place';
 import { Middlware } from './Middlware';
 import { Console } from './Console';
-import { Route } from './Route';
+import { Router } from './Router';
 
 
 export class Finder {
@@ -463,6 +463,7 @@ export class Finder {
 	async routePlace(ctx: Finder, place: Place): Promise<Place> {
 		const patterns = [
 			/route\(\s*['"]([^'"]+)/,
+			/['"]route['"]\s*=>\s*(['"])([^'"]+)/
 		];
 
 		let routes;
@@ -473,7 +474,7 @@ export class Finder {
 			}
 
 			if (routes === undefined) {
-				routes = await (new Route).all();
+				routes = await (new Router).all();
 			}
 			let found = routes.get(ctx.path);
 			if (found) {

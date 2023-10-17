@@ -1,5 +1,5 @@
 import * as assert from 'assert';
-import { Route } from '../../Route';
+import { Router } from '../../Router';
 import { teardown } from 'mocha';
 import * as workspace from '../../Workspace';
 import * as cp from 'child_process';
@@ -26,10 +26,12 @@ suite('Route Test Suite', () => {
 			signal: null
 		});
 
-		const routes = await (new Route).all();
+		const route = new Router;
+		await route.update();
+		const routes = route.all();
 
 		assert.ok(routes.has("admin.index"));
 		assert.strictEqual(routes.get("admin.index")?.path, 'Http/Controllers/Admin/MainController.php');
-		assert.strictEqual(routes.get("admin.index")?.location, 'index');
+		assert.strictEqual(routes.get("admin.index")?.location, '@index');
 	});
 });

@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { HoverProvider } from './HoverProvider';
 import Command from './Command';
+import { Router } from './Router';
 
 export function activate(context: vscode.ExtensionContext) {
 	const php: vscode.DocumentFilter = {
@@ -13,6 +14,11 @@ export function activate(context: vscode.ExtensionContext) {
 
 	const commandDispose = vscode.commands.registerTextEditorCommand('extension.vscode-laravel-goto', Command);
 	context.subscriptions.push(commandDispose);
+
+	const router = new Router;
+	router.update();
+	const watcher = router.watch();
+	context.subscriptions.push(watcher);
 }
 // this method is called when your extension is deactivated
 export function deactivate() {}

@@ -6,6 +6,10 @@ const excludes = vscode.workspace.getConfiguration().get('laravelGoto.exclusion'
 let contents = new Map<string, string>;
 let mTimes  = new Map<string, string>;
 
+export function createFileSystemWatcher(glob: string) {
+	return vscode.workspace.createFileSystemWatcher(glob);
+}
+
 /**
  * locate files
  *
