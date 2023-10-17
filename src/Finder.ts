@@ -4,6 +4,7 @@ import { getSelection, getLinesAfterDelimiter } from "./Locator";
 import { Place } from './Place';
 import { Middlware } from './Middlware';
 import { Console } from './Console';
+import { Route } from './Route';
 
 
 export class Finder {
@@ -42,6 +43,7 @@ export class Finder {
 			this.componentPlace,
 			this.commandPlace,
 			this.filesystemPlace,
+			this.routePlace,
 		];
 
 		let place: Place = { path: '', paths: new Map ,location: '', uris: [] };
@@ -404,6 +406,7 @@ export class Finder {
 			/['"]middleware['"]\s*=>\s*\s*\[?\s*(['"][^'"]+['"]\s*,?\s*){1,}\]?/,
 		];
 
+		let middlewares;
 		for (const pattern of patterns) {
 			const match = pattern.exec(ctx.line) || pattern.exec(ctx.lines);
 			if (!match) {
@@ -412,7 +415,9 @@ export class Finder {
 
 			// remove middleware parameters
 			const alias = ctx.path.split(':')[0];
-			const middlewares = await (new Middlware).all();
+			if (middlewares === undefined) {
+				middlewares = await (new Middlware).all();
+			}
 			let found = middlewares.get(alias);
 			if (found) {
 				return found;
@@ -431,6 +436,7 @@ export class Finder {
 			/command\(\s*['"]([^\s'"]+)/,
 		];
 
+		let commands;
 		for (const pattern of patterns) {
 			const match = pattern.exec(ctx.line) || pattern.exec(ctx.lines);
 			if (!match) {
@@ -438,8 +444,38 @@ export class Finder {
 			}
 
 			const signature = match[1];
-			const commands = await (new Console).all();
+			if (commands === undefined) {
+				commands = await (new Console).all();
+			}
 			let found = commands.get(signature);
+			if (found) {
+				return found;
+			}
+		}
+
+		return place;
+	}
+
+
+	/**
+	 * get route place
+	 */
+	async routePlace(ctx: Finder, place: Place): Promise<Place> {
+		const patterns = [
+			/route\(\s*['"]([^'"]+)/,
+		];
+
+		let routes;
+		for (const pattern of patterns) {
+			const match = pattern.exec(ctx.line) || pattern.exec(ctx.lines);
+			if (!match) {
+				continue;
+			}
+
+			if (routes === undefined) {
+				routes = await (new Route).all();
+			}
+			let found = routes.get(ctx.path);
 			if (found) {
 				return found;
 			}

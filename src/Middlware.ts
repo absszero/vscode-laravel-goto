@@ -1,5 +1,5 @@
 import { Place } from './Place';
-import { getFileContent } from './Workspace';
+import { class2path, getFileContent } from './Workspace';
 
 export class Middlware {
 	httpKernel: string | undefined;
@@ -41,16 +41,7 @@ export class Middlware {
 			if (found) {
 				place.path = found;
 			}
-
-			place.path = place.path.replace(/\\/g, '/') + '.php';
-			if ('/' === place.path[0]) {
-				place.path = place.path.substring(1);
-			}
-
-			// glob pattern is case-sensitive, and default app folder is lowercase.
-			if (place.path.startsWith('App/')) {
-				place.path = place.path.substring('App/'.length);
-			}
+			place.path = class2path(place.path);
 
 			middlewares.set(match[1], place);
 		}

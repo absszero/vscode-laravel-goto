@@ -8,6 +8,7 @@ import { replace } from './Utils';
 import { Middlware } from '../../Middlware';
 import { Console } from '../../Console';
 import { Place } from '../../Place';
+import { Route } from '../../Route';
 
 let editor : vscode.TextEditor;
 
@@ -392,6 +393,17 @@ suite('Finder Test Suite', () => {
 		await assertPath('SayHello.php');
 	});
 
+	test('route funciton', async() => {
+		sinon.stub(Route.prototype, 'all').returns(new Promise((resolve) => {
+			const commands = new Map([
+				['admin.index', { path: 'Http/Controllers/Admin/MainController.php', location: 'index', uris: [] }],
+			]);
+			resolve(commands);
+		}));
+
+		await replace(editor, `route('admin.in|dex');`);
+		await assertPath('Http/Controllers/Admin/MainController.php', 'index');
+	});
 
 	test('multiline', async() => {
 		sinon.stub(Middlware.prototype, 'all').returns(new Promise((resolve) => {

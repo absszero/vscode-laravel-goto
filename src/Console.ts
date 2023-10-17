@@ -1,6 +1,6 @@
 import { Uri } from 'vscode';
 import { Place } from './Place';
-import { getFileContent, findFiles } from './Workspace';
+import { getFileContent, findFiles, class2path } from './Workspace';
 import { join, basename } from 'path';
 
 export class Console {
@@ -116,14 +116,7 @@ export class Console {
 
 		const classes = match[1].split('\n');
 		for (const className of classes) {
-			let filename = className.replace(',', '').replace('::class', '').replace(/\\/g, '/').trim() + '.php';
-			if ('/' === filename[0]) {
-				filename = filename.substring(1);
-			}
-			// glob pattern is case-sensitive, and default app folder is lowercase.
-			if (filename.startsWith('App/')) {
-				filename = filename.substring('App/'.length);
-			}
+			let filename = class2path(className);
 
 			if (filename === '.php') {
 				continue;
