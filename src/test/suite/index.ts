@@ -17,7 +17,8 @@ export function run(): Promise<void> {
 		let filePattern = '**/**.test.js';
 
 		if (process.env.TEST_FILE) {
-			const previous = process.env.EXTENSION_PATH + '/.vscode-test/.previous';
+			const previous = process.env.EXTENSION_PATH + path.join('/', '.vscode-test', '.previous');
+
 			let lineNumber = '';
 			if (process.env.TEST_FILE.endsWith('test.ts')) {
 				filePattern = process.env.TEST_FILE;
@@ -38,9 +39,12 @@ export function run(): Promise<void> {
 			if (testCase) {
 				mocha.grep(testCase);
 			}
-			filePattern = filePattern.replace('src/test/', 'out/test');
+
+			filePattern = filePattern.replace(path.join('src/test/'), path.join('out/test'));
 			filePattern = filePattern.replace('.ts', '.js');
+			filePattern = filePattern.charAt(0).toLocaleLowerCase() + filePattern.slice(1);
 			filePattern = filePattern.replace(testsRoot, '');
+			filePattern = filePattern.replace(/\\/g,'/');
 		}
 
 		glob(filePattern, { cwd: testsRoot }, (err, files) => {
