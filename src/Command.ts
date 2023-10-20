@@ -24,7 +24,7 @@ export default (editor: vscode.TextEditor, edit: vscode.TextEditorEdit, args: an
 		}
 
 		if (1 === uris.length) {
-			vscode.commands.executeCommand('vscode.open', vscode.Uri.file(uris[0].path));
+			vscode.commands.executeCommand('vscode.open', vscode.Uri.file(uris[0].fsPath));
 			return;
 		}
 

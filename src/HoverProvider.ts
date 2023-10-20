@@ -32,7 +32,7 @@ export class HoverProvider implements vscode.HoverProvider {
 		let arg : string|vscode.Uri = path;
 		let command = 'workbench.action.quickOpen';
 		if (1 === uris?.length) {
-			arg = vscode.Uri.file(uris[0].path);
+			arg = vscode.Uri.file(uris[0].fsPath);
 			command = 'vscode.open';
 		}
 

@@ -39,7 +39,7 @@ export class Router {
 			return;
 		}
 
-		const raw = spawnSync('php', [uris[0].path, 'route:list', '--json', '--columns=name,action']);
+		const raw = spawnSync('php', [uris[0].fsPath, 'route:list', '--json', '--columns=name,action']);
 		if (raw.status !== 0) {
 			return;
 		}
