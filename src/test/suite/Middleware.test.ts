@@ -1,11 +1,11 @@
 import * as assert from 'assert';
 import * as vscode from 'vscode';
-import { Middlware } from '../../Middlware';
+import { Middleware } from '../../Middleware';
 import { teardown } from 'mocha';
 import * as workspace from '../../Workspace';
 
 const getFileContent = workspace.getFileContent;
-suite('Middlware Test Suite', () => {
+suite('Middleware Test Suite', () => {
 	teardown(() => {
 		(workspace as any).getFileContent = getFileContent;
 	});
@@ -35,7 +35,7 @@ suite('Middlware Test Suite', () => {
 			`;
 		};
 
-		const middlewares = await (new Middlware).all();
+		const middlewares = await (new Middleware).all();
 
 		assert.ok(middlewares.has("auth"));
 		assert.ok(middlewares.has("auth.basic"));

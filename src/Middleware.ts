@@ -1,7 +1,9 @@
 import { Place } from './Place';
 import { class2path, getFileContent } from './Workspace';
+import { log } from './Logging';
 
-export class Middlware {
+
+export class Middleware {
 	httpKernel: string | undefined;
 /**
  * [export description]
@@ -14,6 +16,8 @@ export class Middlware {
 		if (this.httpKernel === undefined) {
 			this.httpKernel = await getFileContent('**/Http/Kernel.php');
 		}
+		log('middleware http kernel', this.httpKernel.length);
+
 		if (!this.httpKernel) {
 			return middlewares;
 		}

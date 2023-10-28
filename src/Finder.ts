@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { Namespace, Block } from './NS';
 import { getSelection, getLinesAfterDelimiter } from "./Locator";
 import { Place } from './Place';
-import { Middlware } from './Middlware';
+import { Middleware } from './Middleware';
 import { Console } from './Console';
 import { Router } from './Router';
 
@@ -416,7 +416,7 @@ export class Finder {
 			// remove middleware parameters
 			const alias = ctx.path.split(':')[0];
 			if (middlewares === undefined) {
-				middlewares = await (new Middlware).all();
+				middlewares = await (new Middleware).all();
 			}
 			let found = middlewares.get(alias);
 			if (found) {

@@ -2,6 +2,15 @@ import * as vscode from 'vscode';
 import { locate, moveToSymbol } from './Locator';
 
 export class HoverProvider implements vscode.HoverProvider {
+	static documentFilter() {
+		const php: vscode.DocumentFilter = {
+			language: "php",
+			scheme: "file"
+		};
+
+		return php;
+	}
+
 	public provideHover(
 		document: vscode.TextDocument,
 		position: vscode.Position,

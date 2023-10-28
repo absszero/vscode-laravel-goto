@@ -2,14 +2,12 @@ import * as vscode from 'vscode';
 import { HoverProvider } from './HoverProvider';
 import Command from './Command';
 import { Router } from './Router';
+import { Logging } from './Logging';
 
 export function activate(context: vscode.ExtensionContext) {
-	const php: vscode.DocumentFilter = {
-		language: "php",
-		scheme: "file"
-	};
+	(new Logging()).setDevMode(context.extensionMode);
 
-	const hoverDispose = vscode.languages.registerHoverProvider(php, new HoverProvider());
+	const hoverDispose = vscode.languages.registerHoverProvider(HoverProvider.documentFilter(), new HoverProvider());
 	context.subscriptions.push(hoverDispose);
 
 	const commandDispose = vscode.commands.registerTextEditorCommand('extension.vscode-laravel-goto', Command);

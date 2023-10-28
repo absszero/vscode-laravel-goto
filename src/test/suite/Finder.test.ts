@@ -5,7 +5,7 @@ import { before, after, afterEach } from 'mocha';
 import { getSelection } from '../../Locator';
 import { Finder } from '../../Finder';
 import { replace } from './Utils';
-import { Middlware } from '../../Middlware';
+import { Middleware } from '../../Middleware';
 import { Console } from '../../Console';
 import { Place } from '../../Place';
 import { Router } from '../../Router';
@@ -363,7 +363,7 @@ suite('Finder Test Suite', () => {
 	});
 
 	test('middleware', async() => {
-		sinon.stub(Middlware.prototype, 'all').returns(new Promise((resolve) => {
+		sinon.stub(Middleware.prototype, 'all').returns(new Promise((resolve) => {
 			const middlewares = new Map([
 				['auth', { path: 'Http/Middleware/Authenticate.php', location: '', uris: [] }],
 				['auth.basic', { path: 'Illuminate/Auth/Middleware/AuthenticateWithBasicAuth.php', location: '', uris: [] }],
@@ -406,7 +406,7 @@ suite('Finder Test Suite', () => {
 	});
 
 	test('multiline', async() => {
-		sinon.stub(Middlware.prototype, 'all').returns(new Promise((resolve) => {
+		sinon.stub(Middleware.prototype, 'all').returns(new Promise((resolve) => {
 			const middlewares = new Map([
 				['auth', { path: 'Http/Middleware/Authenticate.php', location: '', uris: [] }],
 				['auth.basic', { path: 'Illuminate/Auth/Middleware/AuthenticateWithBasicAuth.php', location: '', uris: [] }],

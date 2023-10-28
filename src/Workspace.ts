@@ -35,7 +35,7 @@ export async function getFileContent(glob: string | vscode.Uri): Promise<string>
 
 		uri = uris[0];
 	}
-	const filepath = (uri as vscode.Uri).path;
+	const filepath = (uri as vscode.Uri).fsPath;
 
 	// read from cache
 	const mTime = (await fsp.stat(filepath)).mtime.toString();

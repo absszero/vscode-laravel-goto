@@ -125,6 +125,12 @@
 							"xml",
 							"log"
 						]
+					},
+					"laravelGoto.debug": {
+						"description": "debug",
+						"scope": "window",
+						"type": "boolean",
+						"default": false
 					}
 				}
 			}
