@@ -3,6 +3,7 @@ import { HoverProvider } from './HoverProvider';
 import Command from './Command';
 import { Router } from './Router';
 import { Logging } from './Logging';
+import { newWindow, openAllfiles} from './OpenAllCommand';
 
 export function activate(context: vscode.ExtensionContext) {
 	(new Logging()).setDevMode(context.extensionMode);
@@ -12,6 +13,12 @@ export function activate(context: vscode.ExtensionContext) {
 
 	const commandDispose = vscode.commands.registerTextEditorCommand('extension.vscode-laravel-goto', Command);
 	context.subscriptions.push(commandDispose);
+
+	const newWindowDispose = vscode.commands.registerCommand('extension.vscode-laravel-goto.new-window', (args) => {
+		newWindow(context, args);
+	} );
+	context.subscriptions.push(newWindowDispose);
+	openAllfiles(context);
 
 	const router = new Router;
 	router.update();

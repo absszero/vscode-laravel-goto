@@ -4,6 +4,7 @@ import * as assert from 'assert';
 import { Console } from '../../Console';
 import { afterEach } from 'mocha';
 import * as workspace from '../../Workspace';
+import * as utils from './Utils';
 
 suite('Console Test Suite', () => {
 	afterEach(() => {
@@ -12,7 +13,7 @@ suite('Console Test Suite', () => {
 
 	test('all', async () => {
 		const subFindFiles = sinon.stub(workspace, 'findFiles');
-		const path = '/../../../src/test/test-fixtures/app/Console/';
+		const path = utils.testFixturesDirPath('/app/Console/');
 		const kernel = Uri.parse(__dirname + path + 'Kernel.php');
 		const files = [
 			Uri.parse(__dirname + path + 'Commands/SayHello.php'),

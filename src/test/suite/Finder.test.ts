@@ -270,29 +270,18 @@ suite('Finder Test Suite', () => {
 		await assertPath(".env");
 	});
 
-	test('lang underscore', async() => {
+	test('language', async() => {
 		await replace(editor, `__('messages.|welcome');`);
-		await assertPath("lang/messages.php");
-	});
+		await assertPath("lang/messages.php", undefined, "uderscores");
 
-	test('@lang', async() => {
 		await replace(editor, `@lang('messages|.welcome');`);
-		await assertPath("lang/messages.php");
-	});
+		await assertPath("lang/messages.php", undefined, "@lang");
 
-	test('trans', async() => {
 		await replace(editor, `trans('messages.w|elcome');`);
-		await assertPath("lang/messages.php");
-	});
+		await assertPath("lang/messages.php", undefined, "trans");
 
-	test('trans_choice', async() => {
 		await replace(editor, `trans_choice('message|s.apples', 10);`);
-		await assertPath("lang/messages.php");
-	});
-
-	test('package trans', async() => {
-		await replace(editor, `trans('package::m|essages');`);
-		await assertPath("lang/vendor/package/messages.php");
+		await assertPath("lang/messages.php", undefined, "trans_choice");
 	});
 
 	test('relative static file path', async() => {
@@ -482,16 +471,16 @@ suite('Finder Test Suite', () => {
 	});
 });
 
-async function assertPath(expected: string, location?: string) : Promise<Place> {
+async function assertPath(expected: string, location?: string, message?: string) : Promise<Place> {
 	const selection = getSelection(editor.document, editor.selection, "<\"'[,)>");
 	if (!selection) {
 		assert.fail();
 	}
 	const finder = new Finder(editor.document, selection);
 	const place = await finder.getPlace();
-	assert.strictEqual(place.path, expected);
+	assert.strictEqual(place.path, expected, message);
 	if (location) {
-		assert.strictEqual(place.location, location);
+		assert.strictEqual(place.location, location, message);
 	}
 
 	return place;

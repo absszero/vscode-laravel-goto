@@ -18,3 +18,9 @@ export async function replace(editor :vscode.TextEditor, text: string) : Promise
 		editor.selection = new vscode.Selection(position, position);
 	});
 }
+
+// create a function for test-fixtures dir path
+export function testFixturesDirPath(path : string): string {
+    return __dirname + '/../../../src/test/test-fixtures' + path;
+}
+

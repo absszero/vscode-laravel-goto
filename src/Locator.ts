@@ -11,7 +11,7 @@ let event: vscode.Disposable | null;
  *
  * @var {[type]}
  */
-export async function locate(document: vscode.TextDocument, range: vscode.Range) {
+export async function locate(document: vscode.TextDocument, range: vscode.Range): Promise<Place | undefined> {
 	const selection = getSelection(document, range, "<(\"'[,)>");
 	if (!selection) {
 		return undefined;
@@ -19,17 +19,19 @@ export async function locate(document: vscode.TextDocument, range: vscode.Range)
 	const finder = new Finder(document, selection);
 	const place = await finder.getPlace();
 
+	if (place.paths?.size) {
+		for (const path of place.paths.keys()) {
+			if (place.paths.get(path)?.length === 0) {
+				place.paths.set(path, await findFiles('**/' + path));
+			}
+		}
+		return place;
+	}
+
 	if (place.path) {
 		place.uris = await findFiles('**/' + place.path);
+		return place;
 	}
-
-	if (place.paths) {
-		for (const path of place.paths.keys()) {
-			place.paths.set(path, await findFiles('**/' + path));
-		}
-	}
-
-	return place;
 }
 
 /**
@@ -135,7 +137,7 @@ export function moveToSymbol(place: Place): void {
  * @param doc
  * @param location
  */
-function locationRange(doc: vscode.TextDocument, location: string) : vscode.Range | undefined {
+export function locationRange(doc: vscode.TextDocument, location: string) : vscode.Range | undefined {
 	const regx = new RegExp(location);
 	const match = regx.exec(doc.getText());
 	if (match) {

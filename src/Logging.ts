@@ -3,12 +3,13 @@ import { ExtensionMode } from 'vscode';
 
 
 export class Logging {
-    static DEV_MODE = false;
-    static DEBUG: boolean;
+    static devMode = false;
+    static debug: boolean;
+    static files: string;
 
     constructor() {
-        if (undefined === Logging.DEBUG) {
-            Logging.DEBUG = vscode.workspace.getConfiguration().get('laravelGoto.dubug', false);
+        if (undefined === Logging.debug) {
+            Logging.debug = vscode.workspace.getConfiguration().get('laravelGoto.dubug', false);
         }
     }
 
@@ -17,15 +18,12 @@ export class Logging {
      * @param mode ExtensionMode
      */
     public setDevMode(mode: ExtensionMode) {
-        Logging.DEV_MODE = (mode === vscode.ExtensionMode.Development);
+        Logging.devMode = (mode === vscode.ExtensionMode.Development);
     }
 }
 
 export function log(caption: String, ...args : any) {
-
-    if (!Logging.DEBUG && !Logging.DEV_MODE) {
-        return;
+    if (Logging.debug || Logging.devMode) {
+        console.log(`[LG]:${caption}`, ...args);
     }
-
-    console.log(`[LG]:${caption}`, ...args);
 }

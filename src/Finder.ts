@@ -5,6 +5,7 @@ import { Place } from './Place';
 import { Middleware } from './Middleware';
 import { Console } from './Console';
 import { Router } from './Router';
+import { Language } from './Language';
 
 
 export class Finder {
@@ -269,7 +270,7 @@ export class Finder {
 	 * get language place
 	 *
 	 */
-	langPlace(ctx: Finder, place: Place): Place {
+	async langPlace(ctx: Finder, place: Place): Promise<Place> {
 		const patterns = [
 			/__\([^'"]*(['"])([^'"]*)\1/,
 			/@lang\([^'"]*(['"])([^'"]*)\1/,
@@ -280,16 +281,7 @@ export class Finder {
 		for (const pattern of patterns) {
 			let match = pattern.exec(ctx.line) || pattern.exec(ctx.lines);
 			if (match && match[2] === ctx.path) {
-				let split = ctx.path.split(':');
-				let vendor = (3 === split.length) ? `/vendor/${split[0]}` : '';
-				let keys = split[split.length - 1].split('.');
-
-				place.path = `lang${vendor}/${keys[0]}.php`;
-				if (2 <= keys.length) {
-					place.location = "(['\"]{1})" + keys[1] + "\\1\\s*=>";
-				}
-
-				return place;
+				return await (new Language()).getPlace(ctx.path);
 			}
 		}
 

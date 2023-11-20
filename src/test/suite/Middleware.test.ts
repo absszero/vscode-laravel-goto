@@ -1,5 +1,4 @@
 import * as assert from 'assert';
-import * as vscode from 'vscode';
 import { Middleware } from '../../Middleware';
 import { teardown } from 'mocha';
 import * as workspace from '../../Workspace';
