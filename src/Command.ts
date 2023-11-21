@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { locate, moveToSymbol } from './Locator';
+import { locate, fireGotoSymbolEvent } from './Locator';
 
 export default (editor: vscode.TextEditor, edit: vscode.TextEditorEdit, args: any[]) => {
 	locate(editor.document, editor.selection)
@@ -9,7 +9,7 @@ export default (editor: vscode.TextEditor, edit: vscode.TextEditorEdit, args: an
 			return;
 		}
 
-		moveToSymbol(place);
+		fireGotoSymbolEvent(place);
 
 		let uris = place.uris;
 		let path = place.path;

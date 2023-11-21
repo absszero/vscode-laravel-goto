@@ -20,10 +20,11 @@ export async function locate(document: vscode.TextDocument, range: vscode.Range)
 	const place = await finder.getPlace();
 
 	if (place.paths?.size) {
-		for (const path of place.paths.keys()) {
-			if (place.paths.get(path)?.length === 0) {
-				place.paths.set(path, await findFiles('**/' + path));
+		for (const [path, uris] of place.paths) {
+			if (uris.length !== 0) {
+				continue;
 			}
+			place.paths.set(path, await findFiles('**/' + path));
 		}
 		return place;
 	}
@@ -90,13 +91,13 @@ export function getLinesAfterDelimiter(document: vscode.TextDocument, lineNumber
 }
 
 /**
- * go to the symbol in place after file is opened
+ * fire a goto-symbol event after a file is opened
  *
  * @param   {Place}  place  [place description]
  *
  * @return  {void}
  */
-export function moveToSymbol(place: Place): void {
+export function fireGotoSymbolEvent(place: Place): void {
 	if (!place.location) {
 		return;
 	}
@@ -123,27 +124,30 @@ export function moveToSymbol(place: Place): void {
 		if ('@' === place.location[0]) {
 			vscode.commands.executeCommand('workbench.action.quickOpen', place.location);
 		} else {
-			const range = locationRange(e.document, place.location);
-			if (range) {
-				e.selection = new vscode.Selection(range.start, range.end);
-				e.revealRange(range);
-			}
+			locateByLocation(e, place.location);
 		}
 	});
 }
 
 /**
  * return the range of location
- * @param doc
+ * @param editor
  * @param location
  */
-export function locationRange(doc: vscode.TextDocument, location: string) : vscode.Range | undefined {
+export function locateByLocation(editor: vscode.TextEditor, location: string) : void {
+	if (!location) {
+		return;
+	}
+
 	const regx = new RegExp(location);
-	const match = regx.exec(doc.getText());
+	const match = regx.exec(editor.document.getText());
 	if (match) {
-		return new vscode.Range(
-			doc.positionAt(match.index),
-			doc.positionAt(match.index + match[0].length),
+		const range = new vscode.Range(
+			editor.document.positionAt(match.index),
+			editor.document.positionAt(match.index + match[0].length),
 		);
+
+		editor.selection = new vscode.Selection(range.start, range.end);
+		editor.revealRange(range);
 	}
 }

@@ -2,7 +2,7 @@ import * as assert from 'assert';
 import * as vscode from 'vscode';
 import { before, after } from 'mocha';
 import { replace } from './Utils';
-import { getSelection, getLinesAfterDelimiter } from '../../Locator';
+import * as Locator from '../../Locator';
 
 let editor : vscode.TextEditor;
 suite('Locator Test Suite', () => {
@@ -17,7 +17,7 @@ suite('Locator Test Suite', () => {
 
 	test('getSelection', async () => {
 		await replace(editor, `--Hello|World--`);
-		const selection = getSelection(editor.document, editor.selection, "-");
+		const selection = Locator.getSelection(editor.document, editor.selection, "-");
 		const text = editor.document.getText(selection).trim();
 		assert.strictEqual(text, 'HelloWorld');
 	});
@@ -29,7 +29,23 @@ view(
 	['name' => 'James']
 );`);
 
-		const lines = getLinesAfterDelimiter(editor.document, 2);
+		const lines = Locator.getLinesAfterDelimiter(editor.document, 2);
 		assert.strictEqual(lines, `view('hello_view',`);
+	});
+
+	test('locateByLocation', async () => {
+		await replace(editor, `return [
+			'hello' => 'Hello',
+		];`);
+
+		// not matched
+		Locator.locateByLocation(editor, "(['\"]{1})" + 'Hi' + "\\1\\s*=>");
+		let text = editor.document.getText(editor.selection).trim();
+		assert.strictEqual(text, '');
+
+		// matched
+		Locator.locateByLocation(editor, "(['\"]{1})" + 'hello' + "\\1\\s*=>");
+		text = editor.document.getText(editor.selection).trim();
+		assert.strictEqual(text, `'hello' =>`);
 	});
 });

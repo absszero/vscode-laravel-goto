@@ -31,13 +31,13 @@ suite('Language Test Suite', () => {
 			'en'
 		];
 
-		let place = language.getPlace('messages.title');
+		let place = await language.getPlace('messages.title');
 		assert.strictEqual(place.path, 'lang/messages.php');
 		assert.ok(place.location.includes('title'));
 		assert.ok(place.paths?.has('lang/en/messages.php'));
 
 		// vendor
-		place = language.getPlace('pkg::messages.title');
+		place = await language.getPlace('pkg::messages.title');
 		assert.strictEqual(place.path, 'lang/vendor/pkg/messages.php');
 		assert.ok(place.paths?.has('lang/vendor/pkg/en/messages.php'));
 	});

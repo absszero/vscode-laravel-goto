@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { locate, moveToSymbol } from './Locator';
+import { locate, fireGotoSymbolEvent } from './Locator';
 import { IOpenAllArgs } from './IOpenAllArgs';
 
 export class HoverProvider implements vscode.HoverProvider {
@@ -23,28 +23,27 @@ export class HoverProvider implements vscode.HoverProvider {
 			if (undefined === place) {
 				return;
 			}
-			moveToSymbol(place);
+			fireGotoSymbolEvent(place);
 			let links = this.markdownUri(place.path, place.uris);
-			let isOpenAll = false;
 			if (place.paths?.size) {
 				links = '';
-				isOpenAll = true;
+				const fsPaths: Array<string> = [];
+
 				for (const [path, uris] of place.paths) {
 					links += "- " + this.markdownUri(path, uris) + "\n";
 
-					isOpenAll &&= (1 === uris.length);
+					// if every path has only one uri, add open all markdown
+					if (1 === uris.length) {
+						fsPaths.push(uris[0].fsPath);
+					}
+				}
+
+				if (fsPaths.length === place.paths.size) {
+					const openAllMarkdown = this.markdownOpenAllUri(place.location, fsPaths);
+					links += openAllMarkdown;
 				}
 			}
 			const contents = new vscode.MarkdownString(links);
-
-			if (isOpenAll) {
-				const openAllMarkdown = this.markdownOpenAllUri(
-					place.location,
-					place.paths as Map<string, Array<vscode.Uri>>
-				);
-				contents.appendMarkdown(openAllMarkdown);
-			}
-
 			contents.isTrusted = true;
 
 			return new vscode.Hover(contents);
@@ -64,14 +63,8 @@ export class HoverProvider implements vscode.HoverProvider {
 		return `[${path}](${commentCommandUri})`;
 	}
 
-	private markdownOpenAllUri(location: string, paths: Map<string, Array<vscode.Uri>>) {
-		const arg = {
-			location,
-			files: []
-		} as IOpenAllArgs;
-		for (const [, uris] of paths) {
-			arg.files.push(uris[0].fsPath);
-		}
+	private markdownOpenAllUri(location: string, files: Array<string>) {
+		const arg = {location, files} as IOpenAllArgs;
 
 		const command = 'extension.vscode-laravel-goto.new-window';
 		const args = encodeURI(JSON.stringify([arg]));

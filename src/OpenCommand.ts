@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { IOpenAllArgs } from './IOpenAllArgs';
-import { locationRange } from './Locator';
+import { locateByLocation } from './Locator';
 
 export async function newWindow(content: vscode.ExtensionContext, args: IOpenAllArgs) {
 	if (0 === args.files.length) {
@@ -28,8 +28,8 @@ export async function openAllfiles(content: vscode.ExtensionContext) {
 	}
 
 	const args = content.globalState.get('open_all') as IOpenAllArgs;
-	content.globalState.update('open_all', []);
-	if (args && 0 === args.files?.length) {
+	content.globalState.update('open_all', null);
+	if (!args || !args.files || args.files.length === 0) {
 		return;
 	}
 
@@ -38,14 +38,14 @@ export async function openAllfiles(content: vscode.ExtensionContext) {
 	if (fsPath !== args.files[0]) {
 		return;
 	}
-	locate(args.location);
+	locateByLocation(vscode.window.activeTextEditor, args.location);
 
 	// open all other language files
 	for (let index = 1; index < args.files.length; index++) {
 		const uri = vscode.Uri.file(args.files[index]);
 		const doc = await vscode.workspace.openTextDocument(uri);
 		await vscode.window.showTextDocument(doc, vscode.ViewColumn.Beside);
-		locate(args.location);
+		locateByLocation(vscode.window.activeTextEditor, args.location);
 	}
 
 	// set layout by total number of language files
@@ -56,19 +56,6 @@ export async function openAllfiles(content: vscode.ExtensionContext) {
 		orientation: 0,
 		groups: groups,
 	});
-}
-
-function locate(location: string) {
-	if (!location) {
-		return;
-	}
-
-	const editor = vscode.window.activeTextEditor as vscode.TextEditor;
-	const range = locationRange(editor.document, location);
-	if (range) {
-		editor.selection = new vscode.Selection(range.start, range.end);
-		editor.revealRange(range);
-	}
 }
 
 

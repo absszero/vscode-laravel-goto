@@ -3,7 +3,7 @@ import { HoverProvider } from './HoverProvider';
 import Command from './Command';
 import { Router } from './Router';
 import { Logging } from './Logging';
-import { newWindow, openAllfiles} from './OpenAllCommand';
+import { newWindow, openAllfiles} from './OpenCommand';
 
 export function activate(context: vscode.ExtensionContext) {
 	(new Logging()).setDevMode(context.extensionMode);
