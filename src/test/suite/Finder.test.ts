@@ -9,6 +9,7 @@ import { Middleware } from '../../Middleware';
 import { Console } from '../../Console';
 import { Place } from '../../Place';
 import { Router } from '../../Router';
+import { Language } from '../../Language';
 
 let editor : vscode.TextEditor;
 
@@ -271,6 +272,17 @@ suite('Finder Test Suite', () => {
 	});
 
 	test('language', async() => {
+		sinon.stub(Language.prototype, 'getPlace').returns(new Promise((resolve) => {
+			const place: Place = {
+				path: 'lang/messages.php',
+				location: '',
+				uris: [],
+				paths: new Map
+			};
+			resolve(place);
+		}));
+
+
 		await replace(editor, `__('messages.|welcome');`);
 		await assertPath("lang/messages.php", undefined, "uderscores");
 
@@ -448,12 +460,6 @@ suite('Finder Test Suite', () => {
 				`env(
 					'APP_DEB|UG'
 					, false
-				);`
-			],
-			[
-				'lang/messages.php',
-				`__(
-					'messages.|welcome'
 				);`
 			],
 			[

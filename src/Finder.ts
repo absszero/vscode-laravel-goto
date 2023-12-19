@@ -466,7 +466,7 @@ export class Finder {
 			}
 
 			if (routes === undefined) {
-				routes = await (new Router).all();
+				routes = (new Router).all();
 			}
 			let found = routes.get(ctx.path);
 			if (found) {

@@ -14,12 +14,12 @@ suite('Console Test Suite', () => {
 	test('all', async () => {
 		const subFindFiles = sinon.stub(workspace, 'findFiles');
 		const path = utils.testFixturesDirPath('/app/Console/');
-		const kernel = Uri.parse(__dirname + path + 'Kernel.php');
+		const kernel = Uri.parse(path + 'Kernel.php');
 		const files = [
-			Uri.parse(__dirname + path + 'Commands/SayHello.php'),
-			Uri.parse(__dirname + path + 'Commands/Subdir/SendEmails.php'),
+			Uri.parse(path + 'Commands/SayHello.php'),
+			Uri.parse(path + 'Commands/Subdir/SendEmails.php'),
 		];
-		const registerCmd = Uri.parse(__dirname + path + 'Commands/SayGoodbye.php');
+		const registerCmd = Uri.parse(path + 'Commands/SayGoodbye.php');
 		subFindFiles.onCall(0).returns(new Promise((resolve) => resolve([kernel])));
 		subFindFiles.onCall(1).returns(new Promise((resolve) => resolve(files)));
 		subFindFiles.onCall(2).returns(new Promise((resolve) => resolve([registerCmd])));

@@ -15,13 +15,13 @@ suite('Language Test Suite', () => {
 	test('init', async () => {
 		const subFindFiles = sinon.stub(workspace, 'findFiles');
 		const base  = realpathSync(utils.testFixturesDirPath('/resources/lang'));
-		const enLang = Uri.parse(base + '/en');
+		const enLang = Uri.parse(base + '/en/messages.php');
 		subFindFiles.returns(new Promise((resolve) => resolve([enLang])));
 
 		const language = new Language;
 		await language.init();
 		assert.strictEqual(language.base, base);
-		assert.deepStrictEqual(language.langs, ['en']);
+		assert.deepStrictEqual(language.langs, ['en', 'tw']);
 	});
 
 	test('getPlace', async () => {

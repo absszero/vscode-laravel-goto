@@ -71,8 +71,7 @@ Storage::disk('local')->put('example.txt', 'Contents');
 
 ### Go to Language
 
-Go to language files and highlight option.
-
+Go to single language file.
 ```php
 __('messages.welcome');
 
@@ -82,6 +81,10 @@ trans('messages.welcome');
 
 trans_choice('messages.apples', 10);
 ```
+
+Open all and highlight option.
+
+![](language.gif)
 
 ### Go to .env
 
