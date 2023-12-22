@@ -66,6 +66,6 @@ export class Language {
 		readdirSync(this.base).forEach((foloder) => {
 			this.langs.push(basename(foloder));
 		});
-		log('lang langs', this.langs);
+		log('lang langs', ...this.langs);
 	}
 }

@@ -16,7 +16,7 @@ export class Middleware {
 		if (this.httpKernel === undefined) {
 			this.httpKernel = await getFileContent('**/Http/Kernel.php');
 		}
-		log('middleware http kernel', this.httpKernel.length);
+		log('middleware', 'http kernel found');
 
 		if (!this.httpKernel) {
 			return middlewares;

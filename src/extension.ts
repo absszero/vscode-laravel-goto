@@ -2,11 +2,11 @@ import * as vscode from 'vscode';
 import { HoverProvider } from './HoverProvider';
 import Command from './Command';
 import { Router } from './Router';
-import { Logging } from './Logging';
+import { setDevMode } from './Logging';
 import { newWindow, openAllfiles} from './OpenCommand';
 
 export function activate(context: vscode.ExtensionContext) {
-	(new Logging()).setDevMode(context.extensionMode);
+	setDevMode(context.extensionMode);
 
 	const hoverDispose = vscode.languages.registerHoverProvider(HoverProvider.documentFilter(), new HoverProvider());
 	context.subscriptions.push(hoverDispose);

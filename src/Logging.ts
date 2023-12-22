@@ -1,29 +1,31 @@
 import * as vscode from 'vscode';
 import { ExtensionMode } from 'vscode';
 
-
 export class Logging {
     static devMode = false;
     static debug: boolean;
     static files: string;
-
-    constructor() {
-        if (undefined === Logging.debug) {
-            Logging.debug = vscode.workspace.getConfiguration().get('laravelGoto.dubug', false);
-        }
-    }
-
-    /**
-     *
-     * @param mode ExtensionMode
-     */
-    public setDevMode(mode: ExtensionMode) {
-        Logging.devMode = (mode === vscode.ExtensionMode.Development);
-    }
+    static channel: vscode.OutputChannel;
 }
 
-export function log(caption: String, ...args : any) {
+/**
+ *
+ * @param mode ExtensionMode
+ */
+export function setDevMode(mode: ExtensionMode) {
+    Logging.devMode = (mode === vscode.ExtensionMode.Development);
+}
+
+export function log(caption: String, ...args : Array<string>) {
+    if (undefined === Logging.debug) {
+        Logging.debug = vscode.workspace.getConfiguration().get('laravelGoto.debug', false);
+    }
+
+    if (undefined === Logging.channel) {
+        Logging.channel = vscode.window.createOutputChannel("Laravel Goto", {log: true});
+    }
+
     if (Logging.debug || Logging.devMode) {
-        console.log(`[LG]:${caption}`, ...args);
+        Logging.channel.appendLine(caption + ': ' + args.join(', '));
     }
 }
