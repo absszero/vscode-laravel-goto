@@ -2,7 +2,6 @@ import * as assert from 'assert';
 import { Router } from '../../Router';
 import { teardown } from 'mocha';
 import * as workspace from '../../Workspace';
-import * as cp from 'child_process';
 import * as sinon from 'sinon';
 import { Uri } from 'vscode';
 
@@ -16,7 +15,7 @@ suite('Route Test Suite', () => {
 		const artisan = Uri.file('artisan_path');
 		subFindFiles.returns(new Promise((resolve) => resolve([artisan])));
 
-		const subSpawnSync = sinon.stub(cp, 'spawnSync');
+		const subSpawnSync = sinon.stub(workspace, 'spawnSync');
 		subSpawnSync.returns({
 			status: 0,
 			pid: 0,

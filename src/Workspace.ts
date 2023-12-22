@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import {promises as fsp} from "fs";
+import { SpawnSyncReturns, spawnSync as spawn } from 'child_process';
 
 const MAX_RESULTS = 2;
 const excludes = vscode.workspace.getConfiguration().get('laravelGoto.exclusion', null);
@@ -72,4 +73,16 @@ export function class2path(className: string): string {
 	}
 
 	return className;
+}
+
+/**
+ *  spawns a new process using the given command
+ *
+ * @param   {string}                 command  [command description]
+ * @param   {string[]<any>}          args     [args description]
+ *
+ * @return  {SpawnSyncReturns<any>}           [return description]
+ */
+export function spawnSync(command: string, args: string[]): SpawnSyncReturns<any> {
+	return spawn(command, args);
 }

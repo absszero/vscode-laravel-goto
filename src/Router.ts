@@ -1,7 +1,6 @@
 import { Place } from './Place';
 import * as workspace from './Workspace';
 import { join } from 'path';
-import { spawnSync } from 'child_process';
 import { FileSystemWatcher } from 'vscode';
 
 interface RouteRow {
@@ -39,7 +38,7 @@ export class Router {
 			return;
 		}
 
-		const raw = spawnSync('php', [uris[0].fsPath, 'route:list', '--json', '--columns=name,action']);
+		const raw = workspace.spawnSync('php', [uris[0].fsPath, 'route:list', '--json', '--columns=name,action']);
 		if (raw.status !== 0) {
 			return;
 		}
