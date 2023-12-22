@@ -2,7 +2,7 @@ import { Place } from './Place';
 import * as workspace from './Workspace';
 import { basename, dirname } from 'path';
 import { log } from './Logging';
-import { existsSync, readdirSync, statSync } from 'fs';
+import { readdir, stat } from 'fs/promises';
 import { Uri } from 'vscode';
 
 export class Language {
@@ -41,9 +41,14 @@ export class Language {
 			const path = Language.langFilename(vendor, lang, keys[0]);;
 			const uris = [];
 			const uri = Uri.parse(this.base + '/' + path);
-			if (existsSync(uri.fsPath) && statSync(uri.fsPath).isFile()) {
-			    uris.push(uri);
+			try {
+				if ((await stat(uri.fsPath)).isFile()) {
+					uris.push(uri);
+				}
+			} catch (error) {
+				log('lang file not found', uri.fsPath);
 			}
+
 			place.paths.set('lang/' + path, uris);
 		}
 
@@ -63,7 +68,7 @@ export class Language {
 		this.base = dirname(dirname(files[0].fsPath));
 		log('lang base', this.base);
 
-		readdirSync(this.base).forEach((foloder) => {
+		(await readdir(this.base)).forEach((foloder) => {
 			this.langs.push(basename(foloder));
 		});
 		log('lang langs', ...this.langs);

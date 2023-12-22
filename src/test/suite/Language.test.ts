@@ -5,7 +5,6 @@ import * as workspace from '../../Workspace';
 import * as sinon from 'sinon';
 import { Uri } from 'vscode';
 import * as utils from './Utils';
-import { realpathSync } from 'fs';
 
 suite('Language Test Suite', () => {
 	teardown(() => {
@@ -14,19 +13,21 @@ suite('Language Test Suite', () => {
 
 	test('init', async () => {
 		const subFindFiles = sinon.stub(workspace, 'findFiles');
-		const base  = realpathSync(utils.testFixturesDirPath('/resources/lang'));
-		const enLang = Uri.parse(base + '/en/messages.php');
+		const base = utils.testFixturesDirPath('/resources/lang');
+		const enLang = Uri.file(base + '/en/messages.php');
+		console.log(enLang.fsPath, enLang.path);
 		subFindFiles.returns(new Promise((resolve) => resolve([enLang])));
 
 		const language = new Language;
 		await language.init();
 		assert.strictEqual(language.base, base);
+		language.langs.sort();
 		assert.deepStrictEqual(language.langs, ['en', 'tw']);
 	});
 
 	test('getPlace', async () => {
 		const language = new Language;
-		language.base = realpathSync(utils.testFixturesDirPath('/resources/lang'));
+		language.base = utils.testFixturesDirPath('/resources/lang');
 		language.langs = [
 			'en'
 		];

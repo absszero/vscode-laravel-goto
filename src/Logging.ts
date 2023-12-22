@@ -26,6 +26,8 @@ export function log(caption: String, ...args : Array<string>) {
     }
 
     if (Logging.debug || Logging.devMode) {
-        Logging.channel.appendLine(caption + ': ' + args.join(', '));
+        const message = caption + ': ' + args.join(', ');
+        console.log(message);
+        Logging.channel.appendLine(message);
     }
 }

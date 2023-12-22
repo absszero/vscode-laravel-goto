@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import { resolve } from 'path';
 
 export async function replace(editor :vscode.TextEditor, text: string) : Promise<void> {
 	let cursor : number = 0;
@@ -21,6 +22,6 @@ export async function replace(editor :vscode.TextEditor, text: string) : Promise
 
 // create a function for test-fixtures dir path
 export function testFixturesDirPath(path : string): string {
-    return __dirname + '/../../../src/test/test-fixtures' + path;
+    return resolve(__dirname + '/../../../src/test/test-fixtures' + path);
 }
 

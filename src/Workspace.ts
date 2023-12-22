@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import {promises as fsp} from "fs";
+import fsp from "fs/promises";
 import { SpawnSyncReturns, spawnSync as spawn } from 'child_process';
 
 const MAX_RESULTS = 2;
