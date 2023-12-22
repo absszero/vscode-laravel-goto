@@ -147,7 +147,7 @@
 		"lint": "eslint -c .eslintrc.js --ext .ts ./src"
 	},
 	"devDependencies": {
-		"@types/glob": "^7.1.4",
+		"@types/glob": "^8.1.0",
 		"@types/mocha": "^9.1.0",
 		"@types/node": "^10.17.60",
 		"@types/sinon": "^10.0.17",
@@ -158,7 +158,7 @@
     	"@vscode/test-electron": "^2.3.8",
 		"esbuild": "^0.19.2",
 		"eslint": "^7.32.0",
-		"glob": "^7.2.0",
+		"glob": "^10.3.10",
 		"mocha": "^9.1.2",
 		"sinon": "^16.0.0",
 		"typescript": "^4.3.2"
