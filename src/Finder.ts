@@ -217,7 +217,7 @@ export class Finder {
 		place = ctx.setControllerNamespace(blocks, place);
 
 		place.path = place.path
-			.replace('::class', '')
+			.replace('::class', '').replace(/\\\\/g, '\\')
 			.replace(/\\/g, '/') + '.php';
 
 		return place;
