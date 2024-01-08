@@ -27,18 +27,12 @@ export class HoverProvider implements vscode.HoverProvider {
 			let links = this.markdownUri(place.path, place.uris);
 			if (place.paths?.size) {
 				links = '';
-				const fsPaths: Array<string> = [];
-
 				for (const [path, uris] of place.paths) {
 					links += "- " + this.markdownUri(path, uris) + "\n";
-
-					// if every path has only one uri, add open all markdown
-					if (1 === uris.length) {
-						fsPaths.push(uris[0].fsPath);
-					}
 				}
 
-				if (fsPaths.length === place.paths.size) {
+				const fsPaths = place.getUniquePaths();
+				if (fsPaths.length) {
 					const openAllMarkdown = this.markdownOpenAllUri(place.location, fsPaths);
 					links += openAllMarkdown;
 				}

@@ -46,7 +46,7 @@ export class Router {
 			const routeRows: Array<RouteRow> = JSON.parse(raw.stdout);
 			routeRows.forEach(route => {
 				const [path, action] = route.action.split('@');
-				const place: Place = { path: path, location: '@' + action, uris: [] };
+				const place = new Place({ path: path, location: '@' + action, uris: [] });
 				place.path = workspace.class2path(place.path);
 
 				Router.routes.set(route.name, place);

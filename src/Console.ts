@@ -93,7 +93,7 @@ export class Console {
 			const content = await getFileContent(uri);
 			const signature = this.getCommandSignature(content);
 			if (signature) {
-				const place: Place = { path: basename(uri.path), location: '', uris: [uri] };
+				const place = new Place({ path: basename(uri.path), location: '', uris: [uri] });
 				commands.set(signature, place);
 			}
 		}
@@ -128,7 +128,7 @@ export class Console {
 			const content = await getFileContent(uris[0]);
 			const signature = this.getCommandSignature(content);
 			if (signature) {
-				const place: Place = { path: filename, location: '', uris: [] };
+				const place = new Place({ path: filename, location: '', uris: [] });
 				commands.set(signature, place);
 			}
 		}

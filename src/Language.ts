@@ -12,12 +12,12 @@ export class Language {
 	langs: string[] = [];
 
 	public async getPlace(path: string): Promise<Place> {
-		const place: Place = {
+		const place = new Place({
 			path: '',
 			location: '',
 			uris: [],
 			paths: new Map
-		};
+		});
 
 		if (undefined === this.base) {
 			await this.init();

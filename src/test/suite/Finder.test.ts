@@ -273,12 +273,12 @@ suite('Finder Test Suite', () => {
 
 	test('language', async() => {
 		sinon.stub(Language.prototype, 'getPlace').returns(new Promise((resolve) => {
-			const place: Place = {
+			const place = new Place({
 				path: 'lang/messages.php',
 				location: '',
 				uris: [],
 				paths: new Map
-			};
+			});
 			resolve(place);
 		}));
 
@@ -342,7 +342,7 @@ suite('Finder Test Suite', () => {
 	});
 
 	test('laravel 8 controller with namespace', async() => {
-		await replace(editor, `Route::get('/', [L8\\HelloControl|ler::class, 'index']);`);
+		await replace(editor, `Route::get('/', [L8\\\\\\\\HelloControl|ler::class, 'index']);`);
 		await assertPath("L8/HelloController.php", "@index");
 	});
 
@@ -366,8 +366,8 @@ suite('Finder Test Suite', () => {
 	test('middleware', async() => {
 		sinon.stub(Middleware.prototype, 'all').returns(new Promise((resolve) => {
 			const middlewares = new Map([
-				['auth', { path: 'Http/Middleware/Authenticate.php', location: '', uris: [] }],
-				['auth.basic', { path: 'Illuminate/Auth/Middleware/AuthenticateWithBasicAuth.php', location: '', uris: [] }],
+				['auth', new Place({ path: 'Http/Middleware/Authenticate.php', location: '', uris: [] })],
+				['auth.basic', new Place({ path: 'Illuminate/Auth/Middleware/AuthenticateWithBasicAuth.php', location: '', uris: [] })],
 			]);
 			resolve(middlewares);
 		}));
@@ -382,7 +382,7 @@ suite('Finder Test Suite', () => {
 	test('command', async() => {
 		sinon.stub(Console.prototype, 'all').returns(new Promise((resolve) => {
 			const commands = new Map([
-				['app:say-hello', { path: 'SayHello.php', location: '', uris: [] }],
+				['app:say-hello', new Place({ path: 'SayHello.php', location: '', uris: [] })],
 			]);
 			resolve(commands);
 		}));
@@ -396,7 +396,7 @@ suite('Finder Test Suite', () => {
 
 	test('route funciton', async() => {
 		sinon.stub(Router.prototype, 'all').returns(new Map([
-			['admin.index', { path: 'Http/Controllers/Admin/MainController.php', location: '@index', uris: [] }],
+			['admin.index', new Place({ path: 'Http/Controllers/Admin/MainController.php', location: '@index', uris: [] })],
 		]));
 
 		await replace(editor, `route('admin.in|dex');`);
@@ -409,8 +409,8 @@ suite('Finder Test Suite', () => {
 	test('multiline', async() => {
 		sinon.stub(Middleware.prototype, 'all').returns(new Promise((resolve) => {
 			const middlewares = new Map([
-				['auth', { path: 'Http/Middleware/Authenticate.php', location: '', uris: [] }],
-				['auth.basic', { path: 'Illuminate/Auth/Middleware/AuthenticateWithBasicAuth.php', location: '', uris: [] }],
+				['auth', new Place({ path: 'Http/Middleware/Authenticate.php', location: '', uris: [] })],
+				['auth.basic', new Place({ path: 'Illuminate/Auth/Middleware/AuthenticateWithBasicAuth.php', location: '', uris: [] })],
 			]);
 			resolve(middlewares);
 		}));

@@ -14,9 +14,10 @@ export function activate(context: vscode.ExtensionContext) {
 	const commandDispose = vscode.commands.registerTextEditorCommand('extension.vscode-laravel-goto', Command);
 	context.subscriptions.push(commandDispose);
 
-	const newWindowDispose = vscode.commands.registerCommand('extension.vscode-laravel-goto.new-window', (args) => {
-		newWindow(context, args);
-	} );
+	const newWindowDispose = vscode.commands.registerCommand(
+		'extension.vscode-laravel-goto.new-window',
+		(args) => newWindow(context, args)
+	);
 	context.subscriptions.push(newWindowDispose);
 	openAllfiles(context);
 

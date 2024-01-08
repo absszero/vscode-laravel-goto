@@ -172,5 +172,5 @@ To enable moving to Method directly after a Controller is opened. Make sure one 
 
 ## Usage
 
-- Move cursor on a text, and click the hover content, or press `Alt`+`;` to run the command.
+- Move cursor on a text, and click the hover content, or press <kbd>Alt</kbd> + <kbd>;</kbd> to run the command.
 - Or Select a text, `Right-Click` to open content menu, Choose `Laravel Goto`.

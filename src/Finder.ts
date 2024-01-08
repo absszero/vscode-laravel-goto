@@ -47,7 +47,7 @@ export class Finder {
 			this.routePlace,
 		];
 
-		let place: Place = { path: '', paths: new Map ,location: '', uris: [] };
+		let place = new Place({ path: '', paths: new Map ,location: '', uris: [] });
 		for (let i = 0; i < places.length; i++) {
 			place = await places[i](this, place, this.document, this.selection);
 			if (place.path) {
@@ -149,7 +149,7 @@ export class Finder {
 			/(resources\/views[^\s'"-]+)/,
 		];
 
-		const trasformFilename = (place: Place) => {
+		const transformFilename = (place: Place) => {
 			let split = ctx.path.split(':');
 			let vendor = '';
 			// namespace or vendor
@@ -173,7 +173,7 @@ export class Finder {
 		for (const pattern of patterns) {
 			let match = pattern.exec(ctx.line) || pattern.exec(ctx.lines);
 			if (match && match[match.length - 1] === ctx.path) {
-				place = trasformFilename(place);
+				place = transformFilename(place);
 
 				return place;
 			}
@@ -187,7 +187,7 @@ export class Finder {
 
 		for (const pattern of multiViewsPatterns) {
 			if (pattern.exec(ctx.line) || pattern.exec(ctx.lines)) {
-				place = trasformFilename(place);
+				place = transformFilename(place);
 				return place;
 			}
 		}
@@ -218,7 +218,7 @@ export class Finder {
 
 		place.path = place.path
 			.replace('::class', '')
-			.replace(/\\/g, '/') + '.php';
+			.replace(/\\+/g, '/') + '.php';
 
 		return place;
 	}

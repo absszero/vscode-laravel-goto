@@ -40,7 +40,7 @@ export class Middleware {
 			}
 
 			let className = match[2].replace('::class', '').trim();
-			let place: Place = { path: className, location: '', uris: [] };
+			let place = new Place({ path: className, location: '', uris: [] });
 			const found = classnames.get(place.path);
 			if (found) {
 				place.path = found;
