@@ -1,6 +1,6 @@
 import { Place } from './Place';
 import { class2path, getFileContent } from './Workspace';
-import { log } from './Logging';
+import { warn } from './Logging';
 
 
 export class Middleware {
@@ -16,7 +16,7 @@ export class Middleware {
 		if (this.httpKernel === undefined) {
 			this.httpKernel = await getFileContent('**/Http/Kernel.php');
 		}
-		log('middleware', 'http kernel found');
+		warn('middleware', 'http kernel found');
 
 		if (!this.httpKernel) {
 			return middlewares;

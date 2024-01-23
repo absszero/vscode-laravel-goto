@@ -5,7 +5,19 @@ export class Logging {
     static devMode = false;
     static debug: boolean;
     static files: string;
-    static channel: vscode.OutputChannel;
+    static channel: vscode.LogOutputChannel;
+
+    public static isEnabled(): boolean {
+        if (undefined === Logging.debug) {
+            Logging.debug = vscode.workspace.getConfiguration().get('laravelGoto.debug', false);
+        }
+
+        if (undefined === Logging.channel) {
+            Logging.channel = vscode.window.createOutputChannel("Laravel Goto", {log: true});
+        }
+
+        return (Logging.debug || Logging.devMode);
+    }
 }
 
 /**
@@ -16,18 +28,26 @@ export function setDevMode(mode: ExtensionMode) {
     Logging.devMode = (mode === vscode.ExtensionMode.Development);
 }
 
-export function log(caption: String, ...args : Array<string>) {
-    if (undefined === Logging.debug) {
-        Logging.debug = vscode.workspace.getConfiguration().get('laravelGoto.debug', false);
-    }
-
-    if (undefined === Logging.channel) {
-        Logging.channel = vscode.window.createOutputChannel("Laravel Goto", {log: true});
-    }
-
-    if (Logging.debug || Logging.devMode) {
+export function info(caption: String, ...args : Array<string>) {
+    if (Logging.isEnabled()) {
         const message = caption + ': ' + args.join(', ');
-        console.log(message);
-        Logging.channel.appendLine(message);
+        console.info(message);
+        Logging.channel.info(message);
+    }
+}
+
+export function error(caption: String, ...args : Array<string>) {
+    if (Logging.isEnabled()) {
+        const message = caption + ': ' + args.join(', ');
+        console.error(message);
+        Logging.channel.error(message);
+    }
+}
+
+export function warn(caption: String, ...args : Array<string>) {
+    if (Logging.isEnabled()) {
+        const message = caption + ': ' + args.join(', ');
+        console.warn(message);
+        Logging.channel.warn(message);
     }
 }

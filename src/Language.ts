@@ -1,7 +1,7 @@
 import { Place } from './Place';
 import * as workspace from './Workspace';
 import { basename, dirname } from 'path';
-import { log } from './Logging';
+import { info, warn } from './Logging';
 import { readdir, stat } from 'fs/promises';
 import { Uri } from 'vscode';
 
@@ -46,7 +46,7 @@ export class Language {
 					uris.push(uri);
 				}
 			} catch (error) {
-				log('lang file not found', uri.fsPath);
+				warn('lang file not found', uri.fsPath);
 			}
 
 			place.paths.set('lang/' + path, uris);
@@ -66,11 +66,11 @@ export class Language {
 		}
 
 		this.base = dirname(dirname(files[0].fsPath));
-		log('lang base', this.base);
+		info('lang base', this.base);
 
 		(await readdir(this.base)).forEach((foloder) => {
 			this.langs.push(basename(foloder));
 		});
-		log('lang langs', ...this.langs);
+		info('lang langs', ...this.langs);
 	}
 }

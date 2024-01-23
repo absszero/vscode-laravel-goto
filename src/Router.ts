@@ -2,6 +2,7 @@ import { Place } from './Place';
 import * as workspace from './Workspace';
 import { join } from 'path';
 import { FileSystemWatcher } from 'vscode';
+import { warn, error } from './Logging';
 
 interface RouteRow {
     name: string;
@@ -35,11 +36,13 @@ export class Router {
 
 		const uris = await workspace.findFiles(join('**', 'artisan'), 1);
 		if (uris.length === 0) {
+			warn('artisan not found');
 			return;
 		}
 
 		const raw = workspace.spawnSync('php', [uris[0].fsPath, 'route:list', '--json']);
 		if (raw.status !== 0) {
+			error('route:list failed', raw.stdout.toString());
 			return;
 		}
 		try {
@@ -51,7 +54,10 @@ export class Router {
 
 				Router.routes.set(route.name, place);
 			});
-		} catch (e) {
+		} catch (err) {
+				if (err instanceof Error) {
+					error('collect routes failed', err.message);
+				}
 			return;
 		}
 	}
