@@ -38,7 +38,7 @@ export class Router {
 			return;
 		}
 
-		const raw = workspace.spawnSync('php', [uris[0].fsPath, 'route:list', '--json', '--columns=name,action']);
+		const raw = workspace.spawnSync('php', [uris[0].fsPath, 'route:list', '--json']);
 		if (raw.status !== 0) {
 			return;
 		}
