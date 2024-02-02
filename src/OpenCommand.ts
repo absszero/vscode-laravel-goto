@@ -7,7 +7,7 @@ export async function newWindow(content: vscode.ExtensionContext, args: IOpenAll
 		return;
 	}
 	// store all language files
-	content.globalState.update('open_all', args);
+	await content.globalState.update('open_all', args);
 
 	// open a new window
 	const uri = vscode.Uri.file(args.files[0]);
@@ -27,9 +27,10 @@ export async function openAllfiles(content: vscode.ExtensionContext) {
 		return;
 	}
 
-	const args = content.globalState.get('open_all') as IOpenAllArgs;
-	content.globalState.update('open_all', null);
-	if (!args || !args.files || args.files.length === 0) {
+	// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+	const args = content.globalState.get('open_all')! as IOpenAllArgs;
+	await content.globalState.update('open_all', null);
+	if (!args?.files || args.files.length === 0) {
 		return;
 	}
 
@@ -50,9 +51,9 @@ export async function openAllfiles(content: vscode.ExtensionContext) {
 
 	// set layout by total number of language files
 	const size = 1 / args.files.length;
-	const groups:Array<Object> = [];
+	const groups:unknown[] = [];
 	groups.fill({ size: size } ,0 , args.files.length - 1);
-	vscode.commands.executeCommand("vscode.setEditorLayout", {
+	await vscode.commands.executeCommand("vscode.setEditorLayout", {
 		orientation: 0,
 		groups: groups,
 	});

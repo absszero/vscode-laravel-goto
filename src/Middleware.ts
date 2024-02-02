@@ -39,8 +39,8 @@ export class Middleware {
 				pattern.lastIndex++;
 			}
 
-			let className = match[2].replace('::class', '').trim();
-			let place = new Place({ path: className, location: '', uris: [] });
+			const className = match[2].replace('::class', '').trim();
+			const place = new Place({ path: className, location: '', uris: [] });
 			const found = classnames.get(place.path);
 			if (found) {
 				place.path = found;
@@ -61,7 +61,7 @@ export class Middleware {
 	 * @return  {Map<string, string>}              [return description]
 	 */
 	private collectClassNames(content: string) : Map<string, string> {
-		const classnames = new Map();
+		const classnames = new Map<string, string>;
 		const pattern = /use\s+([^\s]+)\s+as+\s+([^;]+)/g;
 		let match;
 		while ((match = pattern.exec(content)) !== null) {

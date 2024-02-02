@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { resolve } from 'path';
 
 export async function replace(editor :vscode.TextEditor, text: string) : Promise<void> {
-	let cursor : number = 0;
+	let cursor = 0;
 	return editor.edit((textEditorEdit) => {
 		const firstLine = editor.document.lineAt(0);
 		const lastLine = editor.document.lineAt(editor.document.lineCount - 1);

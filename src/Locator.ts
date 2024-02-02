@@ -45,23 +45,23 @@ export function getSelection(document: vscode.TextDocument, selected: vscode.Ran
 
 	const line = document.lineAt(start);
 	while (start.isAfter(line.range.start)) {
-		let next = start.with({ character: start.character - 1 });
-		let char = document.getText(new vscode.Range(next, start));
+		const next = start.with({ character: start.character - 1 });
+		const char = document.getText(new vscode.Range(next, start));
 		if (-1 !== delimiters.indexOf(char)) {
 			break;
 		}
 		start = next;
 	}
 	while (end.isBefore(line.range.end)) {
-		let next = end.with({ character: end.character + 1 });
-		let char = document.getText(new vscode.Range(end, next));
+		const next = end.with({ character: end.character + 1 });
+		const char = document.getText(new vscode.Range(end, next));
 		if (-1 !== delimiters.indexOf(char)) {
 			break;
 		}
 		end = next;
 	}
 
-	let range = new vscode.Range(start, end);
+	const range = new vscode.Range(start, end);
 	if (range.isEqual(line.range)) {
 		return undefined;
 	}
@@ -77,9 +77,9 @@ export function getSelection(document: vscode.TextDocument, selected: vscode.Ran
  * @returns
  */
 export function getLinesAfterDelimiter(document: vscode.TextDocument, lineNumber: number, delimiter = '(') : string {
-	let lines: string[] = [];
+	const lines: string[] = [];
 	while(lineNumber >= 0) {
-		let text = document.lineAt(lineNumber).text.trim();
+		const text = document.lineAt(lineNumber).text.trim();
 		lines.unshift(text);
 		if (text.includes(delimiter)) {
 			return lines.join('');
@@ -107,7 +107,7 @@ export function fireGotoSymbolEvent(place: Place): void {
 		event.dispose();
 		event = null;
 	}
-	event = vscode.window.onDidChangeActiveTextEditor(e => {
+	event = vscode.window.onDidChangeActiveTextEditor(async e => {
 		if (null === event) {
 			return;
 		}
@@ -122,7 +122,7 @@ export function fireGotoSymbolEvent(place: Place): void {
 		event.dispose();
 		// It's a controller method
 		if ('@' === place.location[0]) {
-			vscode.commands.executeCommand('workbench.action.quickOpen', place.location);
+			await vscode.commands.executeCommand('workbench.action.quickOpen', place.location);
 		} else {
 			locateByLocation(e, place.location);
 		}

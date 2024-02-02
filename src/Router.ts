@@ -10,7 +10,7 @@ interface RouteRow {
 }
 
 export class Router {
-	static routes = new Map;
+	static routes = new Map<string, Place>;
 
 	/**
 	 * [export description]
@@ -46,7 +46,7 @@ export class Router {
 			return;
 		}
 		try {
-			const routeRows: Array<RouteRow> = JSON.parse(raw.stdout);
+			const routeRows: RouteRow[] = JSON.parse(raw.stdout) as RouteRow[];
 			routeRows.forEach(route => {
 				const [path, action] = route.action.split('@');
 				const place = new Place({ path: path, location: '@' + action, uris: [] });

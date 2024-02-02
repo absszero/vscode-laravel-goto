@@ -13,7 +13,7 @@ export function run(): Promise<void> {
 
 	const testsRoot = path.resolve(__dirname, '..');
 
-	return new Promise(async (c, e) => {
+	return new Promise((c, e) => {
 		let filePattern = '**/**.test.js';
 
 		if (process.env.TEST_FILE) {
@@ -26,7 +26,7 @@ export function run(): Promise<void> {
 					lineNumber = process.env.TEST_FILE_LINE;
 				}
 
-				fs.writeFile(previous, filePattern + ':' + lineNumber, err => null);
+				fs.writeFile(previous, filePattern + ':' + lineNumber, () => null);
 			} else {
 				if (fs.existsSync(previous) ) {
 					const content = fs.readFileSync(previous, 'utf8').split(':');
@@ -35,10 +35,9 @@ export function run(): Promise<void> {
 				}
 			}
 
-			const testCase = await getTestCase(filePattern, +lineNumber);
-			if (testCase) {
-				mocha.grep(testCase);
-			}
+			getTestCase(filePattern, +lineNumber)
+			.then((testCase) => testCase && mocha.grep(testCase))
+			.catch(err => e(err));
 
 			filePattern = filePattern.replace(path.join('src/test/'), path.join('out/test'));
 			filePattern = filePattern.replace('.ts', '.js');
