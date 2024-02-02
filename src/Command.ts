@@ -42,6 +42,6 @@ export default async (editor: vscode.TextEditor) => {
 			return;
 		}
 
-	  vscode.commands.executeCommand('workbench.action.quickOpen', path);
+		await vscode.commands.executeCommand('workbench.action.quickOpen', path);
 	});
 };
