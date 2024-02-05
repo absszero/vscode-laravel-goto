@@ -17,4 +17,5 @@ jobs:
           fetch-depth: 0
 
       - run: |
+          npm install
           npx eslint -c .eslintrc.js $(git diff --name-only ${{ github.event.pull_request.base.sha }} |egrep '\.ts$')
