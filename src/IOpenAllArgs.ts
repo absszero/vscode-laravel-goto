@@ -1,4 +1,4 @@
 export interface IOpenAllArgs {
-	files: Array<string>;
+	files: string[];
 	location: string;
 }

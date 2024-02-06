@@ -17,13 +17,13 @@ export class Place implements IPlace {
 	/**
 	 * [getUniquePaths description]
 	 *
-	 * @return  {Array<string>}[return description]
+	 * @return  {string[]}[return description]
 	 */
-	public getUniquePaths(): Array<string> {
+	public getUniquePaths(): string[] {
 		if (this.paths?.size) {
-			const fsPaths: Array<string> = [];
+			const fsPaths: string[] = [];
 
-			for (const [path, uris] of this.paths) {
+			for (const [, uris] of this.paths) {
 				// if every path has only one uri
 				if (1 === uris.length) {
 					fsPaths.push(uris[0].fsPath);

@@ -26,9 +26,9 @@ export class Language {
 			return place;
 		}
 
-		let split = path.split(':');
-		let vendor = (3 === split.length) ? `vendor/${split[0]}/` : '';
-		let keys = split[split.length - 1].split('.');
+		const split = path.split(':');
+		const vendor = (3 === split.length) ? `vendor/${split[0]}/` : '';
+		const keys = split[split.length - 1].split('.');
 
 		place.path = Language.filename(vendor, keys[0]);
 		if (2 <= keys.length) {
@@ -38,7 +38,7 @@ export class Language {
 
 		place.paths = new Map;
 		for (const lang of this.langs) {
-			const path = Language.langFilename(vendor, lang, keys[0]);;
+			const path = Language.langFilename(vendor, lang, keys[0]);
 			const uris = [];
 			const uri = Uri.parse(this.base + '/' + path);
 			try {

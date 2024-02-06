@@ -14,8 +14,7 @@ export class HoverProvider implements vscode.HoverProvider {
 
 	public async provideHover (
 		document: vscode.TextDocument,
-		position: vscode.Position,
-		token: vscode.CancellationToken
+		position: vscode.Position
 	) {
 		const range = new vscode.Range(position, position);
 		return locate(document, range)
@@ -44,7 +43,7 @@ export class HoverProvider implements vscode.HoverProvider {
 		});
 	}
 
-	private markdownUri(path: string, uris: Array<vscode.Uri>) {
+	private markdownUri(path: string, uris: vscode.Uri[]) {
 		let arg : string|vscode.Uri = path;
 		let command = 'workbench.action.quickOpen';
 		if (1 === uris.length) {
@@ -54,16 +53,16 @@ export class HoverProvider implements vscode.HoverProvider {
 
 		const args = encodeURIComponent(JSON.stringify([arg]));
 		const commentCommandUri = vscode.Uri.parse(`command:${command}?${args}`);
-		return `[${path}](${commentCommandUri})`;
+		return `[${path}](${commentCommandUri.toString()})`;
 	}
 
-	private markdownOpenAllUri(location: string, files: Array<string>) {
+	private markdownOpenAllUri(location: string, files: string[]) {
 		const arg = {location, files} as IOpenAllArgs;
 
 		const command = 'extension.vscode-laravel-goto.new-window';
 		const args = encodeURI(JSON.stringify([arg]));
 		const commentCommandUri = vscode.Uri.parse(`command:${command}?${args}`);
-		return `\n\n[Open all files above in new window](${commentCommandUri})`;
+		return `\n\n[Open all files above in new window](${commentCommandUri.toString()})`;
 	}
 }
 

@@ -4,8 +4,8 @@ import { SpawnSyncReturns, spawnSync as spawn } from 'child_process';
 
 const MAX_RESULTS = 2;
 const excludes = vscode.workspace.getConfiguration().get('laravelGoto.exclusion', null);
-let contents = new Map<string, string>;
-let mTimes  = new Map<string, string>;
+const contents = new Map<string, string>;
+const mTimes  = new Map<string, string>;
 
 export function createFileSystemWatcher(glob: string) {
 	return vscode.workspace.createFileSystemWatcher(glob);
@@ -41,7 +41,7 @@ export async function getFileContent(glob: string | vscode.Uri): Promise<string>
 	// read from cache
 	const mTime = (await fsp.stat(filepath)).mtime.toString();
 	if (mTimes.get(filepath) === mTime) {
-		return contents.get(filepath) || '';
+		return contents.get(filepath) ?? '';
 
 	}
 
@@ -81,8 +81,8 @@ export function class2path(className: string): string {
  * @param   {string}                 command  [command description]
  * @param   {string[]<any>}          args     [args description]
  *
- * @return  {SpawnSyncReturns<any>}           [return description]
+ * @return  {SpawnSyncReturns<Buffer>}           [return description]
  */
-export function spawnSync(command: string, args: string[]): SpawnSyncReturns<any> {
+export function spawnSync(command: string, args: string[]): SpawnSyncReturns<Buffer> {
 	return spawn(command, args);
 }

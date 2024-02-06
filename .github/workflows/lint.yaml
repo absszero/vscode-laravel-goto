@@ -1,0 +1,21 @@
+name: Run lint
+
+on:
+  pull_request:
+    paths:
+      - "**.ts"
+      - "**.js"
+      - ".eslintrc.js"
+      - ".github/workflows/lint.yaml"
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - run: |
+          npm install
+          npx eslint -c .eslintrc.js $(git diff --name-only ${{ github.event.pull_request.base.sha }} |egrep '\.ts$')

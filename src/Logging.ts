@@ -28,7 +28,7 @@ export function setDevMode(mode: ExtensionMode) {
     Logging.devMode = (mode === vscode.ExtensionMode.Development);
 }
 
-export function info(caption: String, ...args : Array<string>) {
+export function info(caption: string, ...args : string[]) {
     if (Logging.isEnabled()) {
         const message = caption + ': ' + args.join(', ');
         console.info(message);
@@ -36,7 +36,7 @@ export function info(caption: String, ...args : Array<string>) {
     }
 }
 
-export function error(caption: String, ...args : Array<string>) {
+export function error(caption: string, ...args : string[]) {
     if (Logging.isEnabled()) {
         const message = caption + ': ' + args.join(', ');
         console.error(message);
@@ -44,7 +44,7 @@ export function error(caption: String, ...args : Array<string>) {
     }
 }
 
-export function warn(caption: String, ...args : Array<string>) {
+export function warn(caption: string, ...args : string[]) {
     if (Logging.isEnabled()) {
         const message = caption + ': ' + args.join(', ');
         console.warn(message);

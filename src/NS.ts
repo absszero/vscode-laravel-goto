@@ -10,7 +10,7 @@ export interface Block {
 export class Namespace {
 	patterns = new Map([
 		[/namespace\s*\(\s*(['"])\s*([^'"]+)\1/g, true],
-		[/['\"]namespace['"]\s*=>\s*(['"])([^'"]+)\1/g, true],
+		[/['"]namespace['"]\s*=>\s*(['"])([^'"]+)\1/g, true],
 		[/(controller)\s*\(\s*['"]?([^'")]+)/g, false],
 		[/resource\s*\(\s*['"][^'"]+['"]\s*,\s*(['"]?)([^,'"]+)/g, false],
 	]);
@@ -47,15 +47,15 @@ export class Namespace {
 	 */
 	public blocks(selection: vscode.Range) : Block[] {
 		let match;
-		let blocks : Block[] = [];
+		const blocks : Block[] = [];
 		for (const pattern of this.patterns) {
 			while ((match = pattern[0].exec(this.fullText)) !== null) {
-				let start = this.document.positionAt(match.index);
+				const start = this.document.positionAt(match.index);
 				if (start.isAfter(selection.start)) {
 					continue;
 				}
 
-				let end = this.document.positionAt(this.getEndPosition(match.index));
+				const end = this.document.positionAt(this.getEndPosition(match.index));
 				if (end.isBefore(selection.end)) {
 					continue;
 				}
@@ -76,7 +76,7 @@ export class Namespace {
 	 */
 	private getEndPosition(start: number) : number
 	{
-		let result : number[] = [];
+		const result : number[] = [];
 		const length = this.fullText.length;
 		while(length > start++) {
 			if ('{' === this.fullText[start]) {

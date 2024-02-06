@@ -12,13 +12,20 @@ https://github.com/typescript-eslint/tslint-to-eslint-config/blob/master/docs/FA
 Happy linting! 💖
 */
 module.exports = {
+	extends: [
+		'eslint:recommended',
+		'plugin:@typescript-eslint/recommended-type-checked',
+		'plugin:@typescript-eslint/stylistic-type-checked',
+	],
 	"env": {
 		"es6": true,
-		"node": true
+		"node": true,
+		"mocha": true
 	},
 	"parser": "@typescript-eslint/parser",
 	"parserOptions": {
-		"sourceType": "module"
+		"sourceType": "module",
+		"project": ["tsconfig.json"],
 	},
 	"plugins": [
 		"@typescript-eslint"

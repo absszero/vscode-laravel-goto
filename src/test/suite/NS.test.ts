@@ -23,7 +23,7 @@ suite('NS Test Suite', () => {
 		Route::group(['namespace' => '52'], function () {
 			Route::get('/', 'HelloContro|ller@index');
 		});`);
-		let blocks = (new Namespace(editor.document)).blocks(editor.selection);
+		const blocks = (new Namespace(editor.document)).blocks(editor.selection);
 		assert.strictEqual(blocks.length, 1);
 		assert.strictEqual(blocks[0].namespace, '52');
 	});
@@ -32,7 +32,7 @@ suite('NS Test Suite', () => {
 		await replace(editor, `Route::group(['namespace' => '52'], function () {
 			Route::get('/', 'HelloController@i|ndex');
 		});`);
-		let blocks = (new Namespace(editor.document)).blocks(editor.selection);
+		const blocks = (new Namespace(editor.document)).blocks(editor.selection);
 		assert.strictEqual(blocks[0].namespace, '52');
 	});
 
@@ -40,7 +40,7 @@ suite('NS Test Suite', () => {
 		await replace(editor, `Route::namespace('58')->group(function () {
 			Route::get('/', 'HelloControll|er@index');
 		});`);
-		let blocks = (new Namespace(editor.document)).blocks(editor.selection);
+		const blocks = (new Namespace(editor.document)).blocks(editor.selection);
 		assert.strictEqual(blocks[0].namespace, '58');
 	});
 
@@ -49,7 +49,7 @@ suite('NS Test Suite', () => {
 			Route::get('/post|s/{id}', 'show');
 			Route::post('/posts', 'store');
 		});`);
-		let blocks = (new Namespace(editor.document)).blocks(editor.selection);
+		const blocks = (new Namespace(editor.document)).blocks(editor.selection);
 		assert.strictEqual(blocks[0].namespace, 'HelloController');
 	});
 
@@ -58,7 +58,7 @@ suite('NS Test Suite', () => {
 			Route::get('/post|s/{id}', 'show');
 			Route::post('/posts', 'store');
 		});`);
-		let blocks = (new Namespace(editor.document)).blocks(editor.selection);
+		const blocks = (new Namespace(editor.document)).blocks(editor.selection);
 		assert.strictEqual(blocks[0].namespace, 'HelloController');
 	});
 
@@ -68,7 +68,7 @@ suite('NS Test Suite', () => {
 				'ind|ex', 'show'
 			]]);
 		});`);
-		let blocks = (new Namespace(editor.document)).blocks(editor.selection);
+		const blocks = (new Namespace(editor.document)).blocks(editor.selection);
 		assert.strictEqual(blocks[1].namespace, 'Resource');
 	});
 });

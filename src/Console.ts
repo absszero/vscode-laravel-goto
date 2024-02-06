@@ -6,14 +6,14 @@ import { join, basename } from 'path';
 export class Console {
 	static kernelFilename = 'Console/Kernel.php';
 
-	consoleKernel: string = '';
+	consoleKernel = '';
 	/**
 	 * get all command places
 	 *
 	 * @return  {Promise<Map<string, Place>>}              [return description]
 	 */
 	public async all(): Promise<Map<string, Place>> {
-		let commands: Map<string, Place> = new Map;
+		let commands = new Map;
 		const uris = await findFiles(join('**', Console.kernelFilename), 1);
 		if (uris.length === 0) {
 			return commands;
@@ -40,7 +40,7 @@ export class Console {
 	 */
 	private async collectFiles() : Promise<Map<string, Uri>> {
 		const files = new Map;
-		const cmdFnPattern = /function commands\([^\)]*[^{]+([^}]+)/m;
+		const cmdFnPattern = /function commands\([^)]*[^{]+([^}]+)/m;
 		let match;
 		match = cmdFnPattern.exec(this.consoleKernel);
 		if (!match) {
@@ -88,7 +88,7 @@ export class Console {
 	 * @return  {Place}                      [return description]
 	 */
 	private async collectFileCmds(files: Map<string, Uri>): Promise<Map<string, Place>> {
-		let commands = new Map;
+		const commands = new Map;
 		for (const uri of files.values()) {
 			const content = await getFileContent(uri);
 			const signature = this.getCommandSignature(content);
@@ -107,16 +107,16 @@ export class Console {
 	 * @return  {Promise<Map><string>}           [return description]
 	 */
 	private async collectRegisteredCmds(): Promise<Map<string, Place>> {
-		let commands = new Map;
+		const commands = new Map;
 		const cmdAttrPattern = /\$commands\s*=\s*\[([^\]]+)/m;
-		let match = cmdAttrPattern.exec(this.consoleKernel);
+		const match = cmdAttrPattern.exec(this.consoleKernel);
 		if (!match) {
 			return commands;
 		}
 
 		const classes = match[1].split('\n');
 		for (const className of classes) {
-			let filename = class2path(className);
+			const filename = class2path(className);
 
 			if (filename === '.php') {
 				continue;

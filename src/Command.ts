@@ -2,11 +2,11 @@ import * as vscode from 'vscode';
 import { locate, fireGotoSymbolEvent } from './Locator';
 import { IOpenAllArgs } from './IOpenAllArgs';
 
-export default (editor: vscode.TextEditor, edit: vscode.TextEditorEdit, args: any[]) => {
-	locate(editor.document, editor.selection)
+export default async (editor: vscode.TextEditor) => {
+	await locate(editor.document, editor.selection)
 	.then(async place => {
 		if (undefined === place) {
-			vscode.window.showWarningMessage('Laravel Goto: unidentified string.');
+			await vscode.window.showWarningMessage('Laravel Goto: unidentified string.');
 			return;
 		}
 
@@ -23,14 +23,14 @@ export default (editor: vscode.TextEditor, edit: vscode.TextEditorEdit, args: an
 				items.push(openAll);
 			}
 
-			path = await vscode.window.showQuickPick(items) || '';
+			path = await vscode.window.showQuickPick(items) ?? '';
 			if (openAll === path) {
 				const arg = {location: place.location, files: fsPaths} as IOpenAllArgs;
-				vscode.commands.executeCommand('extension.vscode-laravel-goto.new-window', arg);
+				await vscode.commands.executeCommand('extension.vscode-laravel-goto.new-window', arg);
 				return;
 			}
 
-			uris = place.paths.get(path) || [];
+			uris = place.paths.get(path) ?? [];
 		}
 
 		if (!path) {
@@ -38,10 +38,10 @@ export default (editor: vscode.TextEditor, edit: vscode.TextEditorEdit, args: an
 		}
 
 		if (1 === uris.length) {
-			vscode.commands.executeCommand('vscode.open', vscode.Uri.file(uris[0].fsPath));
+			await vscode.commands.executeCommand('vscode.open', vscode.Uri.file(uris[0].fsPath));
 			return;
 		}
 
-		vscode.commands.executeCommand('workbench.action.quickOpen', path);
+		await vscode.commands.executeCommand('workbench.action.quickOpen', path);
 	});
 };
