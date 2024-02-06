@@ -21,7 +21,7 @@ suite('Language Test Suite', () => {
 		await language.init();
 		assert.strictEqual(language.base, base);
 		language.langs.sort();
-		assert.deepStrictEqual(language.langs, ['en', 'tw']);
+		assert.deepStrictEqual(language.langs, ['en', 'nl.json', 'tw']);
 	});
 
 	test('getPlace', async () => {

@@ -37,8 +37,15 @@ export class Language {
 
 
 		place.paths = new Map;
+		place.locations = new Map;
 		for (const lang of this.langs) {
-			const path = Language.langFilename(vendor, lang, keys[0]);
+			let filepath = Language.langFilename(vendor, lang, keys[0]);
+			if (lang.endsWith('.json')) {
+				filepath = lang;
+				const jsonKey = keys.join('\\.');
+				place.locations.set(filepath, `"${jsonKey}"`);
+			}
+
 			const uris = [];
 			const uri = Uri.parse(this.base + '/' + path);
 			try {
@@ -49,7 +56,7 @@ export class Language {
 				warn('lang file not found', uri.fsPath);
 			}
 
-			place.paths.set('lang/' + path, uris);
+			place.paths.set('lang/' + filepath, uris);
 		}
 
 		return place;
@@ -60,16 +67,16 @@ export class Language {
 	 */
 	public async init() {
 		this.base = '';
-		const files = await workspace.findFiles('**/resources/lang/**', 1);
+		const files = await workspace.findFiles('**/lang/**', 1);
 		if (files.length === 0) {
 			return;
 		}
 
-		this.base = dirname(dirname(files[0].fsPath));
+		this.base = dirname(files[0].fsPath);
 		info('lang base', this.base);
 
-		(await readdir(this.base)).forEach((foloder) => {
-			this.langs.push(basename(foloder));
+		(await readdir(this.base)).forEach((folder) => {
+			this.langs.push(basename(folder));
 		});
 		info('lang langs', ...this.langs);
 	}
