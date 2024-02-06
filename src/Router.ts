@@ -46,7 +46,7 @@ export class Router {
 			return;
 		}
 		try {
-			const routeRows: RouteRow[] = JSON.parse(raw.stdout) as RouteRow[];
+			const routeRows = JSON.parse(raw.stdout.toString()) as RouteRow[];
 			routeRows.forEach(route => {
 				const [path, action] = route.action.split('@');
 				const place = new Place({ path: path, location: '@' + action, uris: [] });
