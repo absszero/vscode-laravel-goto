@@ -12,10 +12,9 @@ suite('Language Test Suite', () => {
 	});
 
 	test('init', async () => {
-		const subFindFiles = sinon.stub(workspace, 'findFiles');
+		const findFolder = sinon.stub(workspace, 'findFolder');
 		const base = utils.testFixturesDirPath('/resources/lang');
-		const enLang = Uri.file(base + '/en/messages.php');
-		subFindFiles.returns(new Promise((resolve) => resolve([enLang])));
+		findFolder.returns(new Promise((resolve) => resolve(base)));
 
 		const language = new Language;
 		await language.init();

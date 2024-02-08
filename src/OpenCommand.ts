@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { IOpenAllArgs } from './IOpenAllArgs';
 import { locateByLocation } from './Locator';
+import { basename } from 'path';
 
 export async function newWindow(content: vscode.ExtensionContext, args: IOpenAllArgs) {
 	if (0 === args.files.length) {
@@ -16,37 +17,38 @@ export async function newWindow(content: vscode.ExtensionContext, args: IOpenAll
 	});
 }
 
-export async function openAllfiles(content: vscode.ExtensionContext) {
+export async function openAllFiles(content: vscode.ExtensionContext) {
 	// a new window should be focused
 	if (!vscode.window.state.focused) {
 		return;
 	}
 
-	// first lanaguage file should be loaded
+	// first language file should be loaded
 	if (!vscode.window.activeTextEditor) {
 		return;
 	}
 
-	// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-	const args = content.globalState.get('open_all')! as IOpenAllArgs;
+	const args: IOpenAllArgs = content.globalState.get('open_all')!;
 	await content.globalState.update('open_all', null);
-	if (!args?.files || args.files.length === 0) {
+	if (args.files.length === 0) {
 		return;
 	}
+
+	args.locations = new Map<string, string>(Object.entries(args.locations));
 
 	// if the opened file is not the first language file, return
 	const fsPath = vscode.window.activeTextEditor.document.uri.fsPath;
 	if (fsPath !== args.files[0]) {
 		return;
 	}
-	locateByLocation(vscode.window.activeTextEditor, args.location);
+	locateByFSPath(vscode.window.activeTextEditor, args, fsPath);
 
 	// open all other language files
 	for (let index = 1; index < args.files.length; index++) {
 		const uri = vscode.Uri.file(args.files[index]);
 		const doc = await vscode.workspace.openTextDocument(uri);
 		await vscode.window.showTextDocument(doc, vscode.ViewColumn.Beside);
-		locateByLocation(vscode.window.activeTextEditor, args.location);
+		locateByFSPath(vscode.window.activeTextEditor, args, uri.fsPath);
 	}
 
 	// set layout by total number of language files
@@ -59,4 +61,14 @@ export async function openAllfiles(content: vscode.ExtensionContext) {
 	});
 }
 
-
+/**
+ * locate by file system path
+ * @param editor
+ * @param args
+ * @param fsPath
+ */
+function locateByFSPath(editor: vscode.TextEditor, args: IOpenAllArgs, fsPath: string): void {
+	const filename = basename(fsPath);
+	const location = args.locations.get(filename) ?? args.location;
+	locateByLocation(editor, location);
+}

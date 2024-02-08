@@ -4,7 +4,7 @@ import Command from './Command';
 import { Router } from './Router';
 import { setDevMode } from './Logging';
 import { IOpenAllArgs} from './IOpenAllArgs';
-import { newWindow, openAllfiles} from './OpenCommand';
+import { newWindow, openAllFiles} from './OpenCommand';
 
 export async function activate(context: vscode.ExtensionContext) {
 	setDevMode(context.extensionMode);
@@ -20,7 +20,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		(args) => newWindow(context, args as IOpenAllArgs)
 	);
 	context.subscriptions.push(newWindowDispose);
-	await openAllfiles(context);
+	await openAllFiles(context);
 
 	const router = new Router;
 	await router.update();

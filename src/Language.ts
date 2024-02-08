@@ -1,6 +1,5 @@
 import { Place } from './Place';
 import * as workspace from './Workspace';
-import { basename, dirname } from 'path';
 import { info, warn } from './Logging';
 import { readdir, stat } from 'fs/promises';
 import { Uri } from 'vscode';
@@ -47,7 +46,7 @@ export class Language {
 			}
 
 			const uris = [];
-			const uri = Uri.parse(this.base + '/' + path);
+			const uri = Uri.parse(this.base + '/' + filepath);
 			try {
 				if ((await stat(uri.fsPath)).isFile()) {
 					uris.push(uri);
@@ -66,17 +65,14 @@ export class Language {
 	 * init
 	 */
 	public async init() {
-		this.base = '';
-		const files = await workspace.findFiles('**/lang/**', 1);
-		if (files.length === 0) {
+		this.base = await workspace.findFolder('**/lang');
+		info('lang base', this.base);
+		if (this.base === '') {
 			return;
 		}
 
-		this.base = dirname(files[0].fsPath);
-		info('lang base', this.base);
-
 		(await readdir(this.base)).forEach((folder) => {
-			this.langs.push(basename(folder));
+			this.langs.push(folder);
 		});
 		info('lang langs', ...this.langs);
 	}
