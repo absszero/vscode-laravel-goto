@@ -115,16 +115,33 @@ export function fireGotoSymbolEvent(place: Place): void {
 		if (undefined === e) {
 			return;
 		}
-		if (basename(place.path) !== basename(e.document.uri.path)) {
-			event.dispose();
-			return;
+
+		const activePath = basename(e.document.uri.path);
+		if (basename(place.path) !== activePath) {
+			if (!place.paths) {
+				event.dispose();
+				return;
+			}
+
+			const paths = Array.from(place.paths.keys());
+			if (paths.every((path: string) => basename(path) !== activePath)) {
+				event.dispose();
+				return;
+			}
 		}
+
+
+
 		event.dispose();
 		// It's a controller method
 		if ('@' === place.location[0]) {
 			await vscode.commands.executeCommand('workbench.action.quickOpen', place.location);
 		} else {
-			locateByLocation(e, place.location);
+			let location = place.location;
+			if (place.locations?.has(activePath)) {
+				location = place.locations?.get(activePath) ?? '';
+			}
+			locateByLocation(e, location);
 		}
 	});
 }
@@ -139,8 +156,8 @@ export function locateByLocation(editor: vscode.TextEditor, location: string) : 
 		return;
 	}
 
-	const regx = new RegExp(location);
-	const match = regx.exec(editor.document.getText());
+	const regex = new RegExp(location);
+	const match = regex.exec(editor.document.getText());
 	if (match) {
 		const range = new vscode.Range(
 			editor.document.positionAt(match.index),

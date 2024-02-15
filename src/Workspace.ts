@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import fsp from "fs/promises";
 import { SpawnSyncReturns, spawnSync as spawn } from 'child_process';
+import path from 'path';
 
 const MAX_RESULTS = 2;
 const excludes = vscode.workspace.getConfiguration().get('laravelGoto.exclusion', null);
@@ -17,6 +18,27 @@ export function createFileSystemWatcher(glob: string) {
  */
 export async function findFiles(glob: string, maxResults = MAX_RESULTS) {
 	return await vscode.workspace.findFiles(glob, excludes, maxResults);
+}
+
+export async function findFolder(glob: string): Promise<string> {
+	// get first file via glob
+	const files = await findFiles(glob + '/**', 1);
+	if (files.length === 0) {
+		return '';
+	}
+
+	if (glob.startsWith('**/')) {
+		glob = path.sep + glob.slice(3);
+	}
+
+	// get dir via first file
+	const filepath = files[0].fsPath;
+	const pos = filepath.indexOf(glob);
+	if (-1 !== pos) {
+		return filepath.slice(0, pos + glob.length);
+	}
+
+	return '';
 }
 
 /**

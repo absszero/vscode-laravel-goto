@@ -1,6 +1,5 @@
 import * as vscode from 'vscode';
 import { locate, fireGotoSymbolEvent } from './Locator';
-import { IOpenAllArgs } from './IOpenAllArgs';
 
 export class HoverProvider implements vscode.HoverProvider {
 	static documentFilter() {
@@ -12,35 +11,31 @@ export class HoverProvider implements vscode.HoverProvider {
 		return php;
 	}
 
-	public async provideHover (
-		document: vscode.TextDocument,
-		position: vscode.Position
-	) {
+	public async provideHover (document: vscode.TextDocument, position: vscode.Position) {
 		const range = new vscode.Range(position, position);
-		return locate(document, range)
-		.then(place => {
-			if (undefined === place) {
-				return;
-			}
-			fireGotoSymbolEvent(place);
-			let links = this.markdownUri(place.path, place.uris);
-			if (place.paths?.size) {
-				links = '';
-				for (const [path, uris] of place.paths) {
-					links += "- " + this.markdownUri(path, uris) + "\n";
-				}
+		const place = await locate(document, range);
+		if (undefined === place) {
+			return;
+		}
 
-				const fsPaths = place.getUniquePaths();
-				if (fsPaths.length) {
-					const openAllMarkdown = this.markdownOpenAllUri(place.location, fsPaths);
-					links += openAllMarkdown;
-				}
+		fireGotoSymbolEvent(place);
+		let links = this.markdownUri(place.path, place.uris);
+		if (place.paths?.size) {
+			links = '';
+			for (const [path, uris] of place.paths) {
+				links += "- " + this.markdownUri(path, uris) + "\n";
 			}
-			const contents = new vscode.MarkdownString(links);
-			contents.isTrusted = true;
 
-			return new vscode.Hover(contents);
-		});
+			const fsPaths = place.getUniquePaths();
+			if (fsPaths.length) {
+				const openAllMarkdown = this.markdownOpenAllUri(fsPaths, place.location, place.locations ?? new Map<string, string>);
+				links += openAllMarkdown;
+			}
+		}
+		const contents = new vscode.MarkdownString(links);
+		contents.isTrusted = true;
+
+		return new vscode.Hover(contents);
 	}
 
 	private markdownUri(path: string, uris: vscode.Uri[]) {
@@ -56,9 +51,8 @@ export class HoverProvider implements vscode.HoverProvider {
 		return `[${path}](${commentCommandUri.toString()})`;
 	}
 
-	private markdownOpenAllUri(location: string, files: string[]) {
-		const arg = {location, files} as IOpenAllArgs;
-
+	private markdownOpenAllUri(files: string[], location: string, locations: Map<string, string>) {
+		const arg = {files, location, locations: Object.fromEntries(locations)};
 		const command = 'extension.vscode-laravel-goto.new-window';
 		const args = encodeURI(JSON.stringify([arg]));
 		const commentCommandUri = vscode.Uri.parse(`command:${command}?${args}`);

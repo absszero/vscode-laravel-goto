@@ -5,4 +5,5 @@ export interface IPlace {
 	uris: vscode.Uri[]; // the real paths of the keyword path
 	location: string; // the text in document
 	paths?: Map<string, vscode.Uri[]>; // multi keyword paths
+	locations?: Map<string, string>; // multi keyword locations
 }

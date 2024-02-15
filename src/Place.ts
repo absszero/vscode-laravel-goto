@@ -5,7 +5,8 @@ export class Place implements IPlace {
 	path: string;
 	uris: vscode.Uri[];
 	location: string;
-	paths?: Map<string, vscode.Uri[]> | undefined;
+	paths?: Map<string, vscode.Uri[]>;
+	locations?: Map<string, string>;
 
 	constructor(place: IPlace) {
 		this.path = place.path;
