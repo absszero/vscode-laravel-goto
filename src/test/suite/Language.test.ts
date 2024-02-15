@@ -3,7 +3,6 @@ import { Language } from '../../Language';
 import { teardown } from 'mocha';
 import * as workspace from '../../Workspace';
 import * as sinon from 'sinon';
-import { Uri } from 'vscode';
 import * as utils from './Utils';
 
 suite('Language Test Suite', () => {
