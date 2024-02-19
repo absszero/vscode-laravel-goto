@@ -6,6 +6,7 @@ import { Middleware } from './Middleware';
 import { Console } from './Console';
 import { Router } from './Router';
 import { Language } from './Language';
+import { Blade } from './Blade';
 
 
 export class Finder {
@@ -49,7 +50,7 @@ export class Finder {
 
 		let place = new Place({ path: '', paths: new Map ,location: '', uris: [] });
 		for(const thePlace of places) {
-			place = await thePlace(this, place, this.document, this.selection);
+			place = await thePlace(place, this.document, this.selection);
 			if (place.path) {
 				return place;
 			}
@@ -61,11 +62,11 @@ export class Finder {
 	/**
 	* get path helper place
 	*/
-	pathHelperPlace(ctx: Finder, place: Place): Place {
+	pathHelperPlace(place: Place): Place {
 		const pattern = /([\w^_]+)_path\(\s*(['"])([^'"]*)\2/;
-		const match = pattern.exec(ctx.line) ?? pattern.exec(ctx.lines);
+		const match = pattern.exec(this.line) ?? pattern.exec(this.lines);
 
-		if ((match && match[3] === ctx.path)) {
+		if ((match && match[3] === this.path)) {
 			let prefix = match[1] + '/';
 			if ('base/' === prefix) {
 				prefix = '';
@@ -73,7 +74,7 @@ export class Finder {
 				prefix = 'resources/';
 			}
 
-			place.path = prefix + ctx.path;
+			place.path = prefix + this.path;
 			return place;
 		}
 
@@ -84,11 +85,11 @@ export class Finder {
 	 * get component place
 	 *
 	 */
-	componentPlace(ctx: Finder, place: Place): Place {
+	componentPlace(place: Place): Place {
 		const pattern = /<\/?x-([^/\s>]*)/;
 
-		const match = pattern.exec(ctx.line) ?? pattern.exec(ctx.lines);
-		if (match && ctx.path.includes(match[1])) {
+		const match = pattern.exec(this.line) ?? pattern.exec(this.lines);
+		if (match && this.path.includes(match[1])) {
 			const split = match[1].split(':');
 			let vendor = 'View/Components/';
 			let resVendor = 'views/components/';
@@ -131,90 +132,32 @@ export class Finder {
 	 * get view place
 	 *
 	 */
-	bladePlace(ctx: Finder, place: Place): Place {
-		const patterns = [
-			/view\(\s*(['"])([^'"]*)\1/,
-			/[lL]ayout\(\s*(['"])([^'"]*)\1/,
-			/\$view\s*=\s*(['"])([^'"]*)\1/,
-			/View::exists\(\s*(['"])([^'"]*)\1/,
-			/View::first[^'"]*(['"])([^'"]*)\1/,
-			/View::composer[^'"]*(['"])([^'"]*)\1/,
-			/View::creator[^'"]*(['"])([^'"]*)\1/,
-			/view:\s*(['"])([^'"]*)\1/,
-			/view\(\s*['"][^'"]*['"],\s*(['"])([^'"]*)\1/,
-			/['"]layout['"]\s*=>\s*(['"])([^'"]*)\1/,
-			/@include(If\b)?\(\s*(['"])([^'"]*)\2/,
-			/@extends\(\s*(['"])([^'"]*)\1/,
-			/@include(When|Unless\b)?\([^'"]+(['"])([^'"]+)/,
-			/(resources\/views[^\s'"-]+)/,
-		];
+	bladePlace(): Place {
+		const blade = new Blade;
 
-		const transformFilename = (place: Place) => {
-			const split = ctx.path.split(':');
-			let vendor = '';
-			// namespace or vendor
-			if (3 === split.length) {
-				// it's vendor
-				if (split[0] === split[0].toLowerCase()) {
-					vendor = split[0] + '/';
-				}
-			}
-
-			place.path = split[split.length - 1];
-			place.path = vendor + place.path.replace(/\./g, '/');
-			if (place.path.endsWith('/blade/php')) {
-				place.path = place.path.slice(0, place.path.length - '/blade/php'.length);
-			}
-			place.path += '.blade.php';
-
-			return place;
-		};
-
-		for (const pattern of patterns) {
-			const match = pattern.exec(ctx.line) ?? pattern.exec(ctx.lines);
-			if (match && match[match.length - 1] === ctx.path) {
-				place = transformFilename(place);
-
-				return place;
-			}
-		}
-
-		const multiViewsPatterns = [
-			/@includeFirst\(\[(\s*['"][^'"]+['"]\s*[,]?\s*){2,}\]/,
-			/View::composer\(\[(\s*['"][^'"]+['"]\s*[,]?\s*){2,}\]/,
-			/@each\(['"][^'"]+['"]\s*,[^,]+,[^,]+,[^)]+/,
-		];
-
-		for (const pattern of multiViewsPatterns) {
-			if (pattern.exec(ctx.line) ?? pattern.exec(ctx.lines)) {
-				place = transformFilename(place);
-				return place;
-			}
-		}
-
-		return place;
+		return blade.getPlace(this.path, this.line, this.lines);
 	}
 
 	/**
 	 * get controller place
 	 *
 	 */
-	controllerPlace(ctx: Finder, place: Place, document: vscode.TextDocument, selection: vscode.Range): Place {
+	controllerPlace(place: Place, document: vscode.TextDocument, selection: vscode.Range): Place {
 		const blocks = (new Namespace(document)).blocks(selection);
-		const controllerNotInPath = (-1 === ctx.line.indexOf('Controller'));
+		const controllerNotInPath = (-1 === this.line.indexOf('Controller'));
 		if (0 === blocks.length && controllerNotInPath) {
 			return place;
 		}
 		const pattern = /\[\s*(.*::class)\s*,\s*["']([^"']+)/;
-		const match = pattern.exec(ctx.line) ?? pattern.exec(ctx.lines);
-		place.path = ctx.path;
+		const match = pattern.exec(this.line) ?? pattern.exec(this.lines);
+		place.path = this.path;
 		if (match) {
 			place.path = match[1];
 			place.location = match[2];
 		}
 
-		place = ctx.setControllerAction(ctx, blocks, place);
-		place = ctx.setControllerNamespace(blocks, place);
+		place = this.setControllerAction(blocks, place);
+		place = this.setControllerNamespace(blocks, place);
 
 		place.path = place.path
 			.replace('::class', '')
@@ -226,7 +169,7 @@ export class Finder {
 	/**
 	 * get config place
 	 */
-	configPlace(ctx: Finder, place: Place): Place {
+	configPlace(place: Place): Place {
 		const patterns = [
 			/Config::[^'"]*(['"])([^'"]*)\1/,
 			/config\([^'"]*(['"])([^'"]*)\1/g
@@ -235,9 +178,9 @@ export class Finder {
 		for (const pattern of patterns) {
 			let match;
 			do {
-				match = pattern.exec(ctx.line) ?? pattern.exec(ctx.lines);
-				if (match && match[2] === ctx.path) {
-					const split = ctx.path.split('.');
+				match = pattern.exec(this.line) ?? pattern.exec(this.lines);
+				if (match && match[2] === this.path) {
+					const split = this.path.split('.');
 					place.path = 'config/' + split[0] + '.php';
 					if (2 <= split.length) {
 						place.location = "(['\"]{1})" + split[1] + "\\1\\s*=>";
@@ -253,10 +196,10 @@ export class Finder {
 	/**
 	 * get file system place
 	 */
-	filesystemPlace(ctx: Finder, place: Place): Place {
+	filesystemPlace(place: Place): Place {
 		const pattern = /Storage::disk\(\s*['"]([^'"]+)/;
-		const match = pattern.exec(ctx.line) ?? pattern.exec(ctx.lines);
-		if (match && match[1] === ctx.path) {
+		const match = pattern.exec(this.line) ?? pattern.exec(this.lines);
+		if (match && match[1] === this.path) {
 			place.path = 'config/filesystems.php';
 			place.location = "(['\"]{1})" + match[1] + "\\1\\s*=>";
 			return place;
@@ -270,7 +213,7 @@ export class Finder {
 	 * get language place
 	 *
 	 */
-	async langPlace(ctx: Finder, place: Place): Promise<Place> {
+	async langPlace(place: Place): Promise<Place> {
 		const patterns = [
 			/__\([^'"]*(['"])([^'"]*)\1/,
 			/@lang\([^'"]*(['"])([^'"]*)\1/,
@@ -279,9 +222,9 @@ export class Finder {
 		];
 
 		for (const pattern of patterns) {
-			const match = pattern.exec(ctx.line) ?? pattern.exec(ctx.lines);
-			if (match && match[2] === ctx.path) {
-				return await (new Language()).getPlace(ctx.path);
+			const match = pattern.exec(this.line) ?? pattern.exec(this.lines);
+			if (match && match[2] === this.path) {
+				return await (new Language()).getPlace(this.path);
 			}
 		}
 
@@ -291,12 +234,12 @@ export class Finder {
 	/**
 	 * get env place
 	 */
-	envPlace(ctx: Finder, place: Place): Place {
+	envPlace(place: Place): Place {
 		const pattern = /env\(\s*(['"])([^'"]*)\1/;
-		const match = pattern.exec(ctx.line) ?? pattern.exec(ctx.lines);
+		const match = pattern.exec(this.line) ?? pattern.exec(this.lines);
 
-		if ((match && match[2] === ctx.path)) {
-			place.location = ctx.path;
+		if ((match && match[2] === this.path)) {
+			place.location = this.path;
 			place.path = '.env';
 		}
 
@@ -306,15 +249,15 @@ export class Finder {
 	/**
 	 * get static place
 	 */
-	staticPlace(ctx: Finder, place: Place): Place {
-		const split = ctx.path.split('.');
+	staticPlace(place: Place): Place {
+		const split = this.path.split('.');
 		const ext = split[split.length - 1].toLocaleLowerCase();
 
 		let extensions: string[] = vscode.workspace.getConfiguration().get('laravelGoto.staticFileExtensions', []);
 		extensions = extensions.map(ext => ext.toLowerCase());
 
 		if (-1 !== extensions.indexOf(ext)) {
-			let split = ctx.path.split('/');
+			let split = this.path.split('/');
 			split = split.filter(d => (d !== '..' && d !== '.'));
 			place.path = split.join('/');
 		}
@@ -324,7 +267,7 @@ export class Finder {
 	/**
 	 * get Inertia.js place
 	 */
-	inertiajsPlace(ctx: Finder, place: Place): Place {
+	inertiajsPlace(place: Place): Place {
 		const patterns = [
 			/Route::inertia\s*\([^,]+,\s*['"]([^'"]+)/,
 			/Inertia::render\s*\(\s*['"]([^'"]+)/,
@@ -332,9 +275,9 @@ export class Finder {
 		];
 
 		for (const pattern of patterns) {
-			const match = pattern.exec(ctx.line) ?? pattern.exec(ctx.lines);
-			if ((match && match[1] === ctx.path)) {
-				place.path = ctx.path;
+			const match = pattern.exec(this.line) ?? pattern.exec(this.lines);
+			if ((match && match[1] === this.path)) {
+				place.path = this.path;
 				return place;
 			}
 		}
@@ -345,7 +288,7 @@ export class Finder {
 	/**
 	 * get Livewire place
 	 */
-	livewirePlace(ctx: Finder, place: Place): Place {
+	livewirePlace(place: Place): Place {
 		const patterns = [
 			/livewire:([^\s/>]+)/,
 			/@livewire\s*\(\s*['"]([^"']+)/,
@@ -360,12 +303,12 @@ export class Finder {
 			);
 
 		for (const pattern of patterns) {
-			const match = pattern.exec(ctx.line) ?? pattern.exec(ctx.lines);
+			const match = pattern.exec(this.line) ?? pattern.exec(this.lines);
 			if (null === match) {
 				continue;
 			}
 
-			if ((match && ctx.path.includes(match[1]))) {
+			if ((match && this.path.includes(match[1]))) {
 				place.path = snakeToCamel(match[1]);
 				place.path = place.path.charAt(0).toUpperCase() + place.path.slice(1) + '.php';
 				return place;
@@ -378,12 +321,12 @@ export class Finder {
 	/**
 	 * get namespace place
 	 */
-	namespacePlace(ctx: Finder, place: Place): Place {
+	namespacePlace(place: Place): Place {
 		const pattern = /([A-Z][\w]+[\\])+[A-Z][\w]+/;
-		const match = pattern.exec(ctx.path) ?? pattern.exec(ctx.lines);
+		const match = pattern.exec(this.path) ?? pattern.exec(this.lines);
 
 		if (match) {
-			place.path = ctx.path + '.php';
+			place.path = this.path + '.php';
 		}
 
 		return place;
@@ -392,7 +335,7 @@ export class Finder {
 	/**
 	 * get middleware place
 	 */
-	async middlewarePlace(ctx: Finder, place: Place): Promise<Place> {
+	async middlewarePlace(place: Place): Promise<Place> {
 		const patterns = [
 			/[m|M]iddleware\(\s*\[?\s*(['"][^'"]+['"]\s*,?\s*)+/,
 			/['"]middleware['"]\s*=>\s*\s*\[?\s*(['"][^'"]+['"]\s*,?\s*){1,}\]?/,
@@ -400,13 +343,13 @@ export class Finder {
 
 		let middlewares;
 		for (const pattern of patterns) {
-			const match = pattern.exec(ctx.line) ?? pattern.exec(ctx.lines);
+			const match = pattern.exec(this.line) ?? pattern.exec(this.lines);
 			if (!match) {
 				continue;
 			}
 
 			// remove middleware parameters
-			const alias = ctx.path.split(':')[0];
+			const alias = this.path.split(':')[0];
 			if (middlewares === undefined) {
 				middlewares = await (new Middleware).all();
 			}
@@ -422,7 +365,7 @@ export class Finder {
 	/**
 	 * get command place
 	 */
-	async commandPlace(ctx: Finder, place: Place): Promise<Place> {
+	async commandPlace(place: Place): Promise<Place> {
 		const patterns = [
 			/Artisan::call\(\s*['"]([^\s'"]+)/,
 			/command\(\s*['"]([^\s'"]+)/,
@@ -430,7 +373,7 @@ export class Finder {
 
 		let commands;
 		for (const pattern of patterns) {
-			const match = pattern.exec(ctx.line) ?? pattern.exec(ctx.lines);
+			const match = pattern.exec(this.line) ?? pattern.exec(this.lines);
 			if (!match) {
 				continue;
 			}
@@ -453,7 +396,7 @@ export class Finder {
 	 * get route place
 	 */
 	// eslint-disable-next-line @typescript-eslint/require-await
-	async routePlace(ctx: Finder, place: Place): Promise<Place> {
+	async routePlace(place: Place): Promise<Place> {
 		const patterns = [
 			/route\(\s*['"]([^'"]+)/,
 			/['"]route['"]\s*=>\s*(['"])([^'"]+)/
@@ -461,7 +404,7 @@ export class Finder {
 
 		let routes;
 		for (const pattern of patterns) {
-			const match = pattern.exec(ctx.line) ?? pattern.exec(ctx.lines);
+			const match = pattern.exec(this.line) ?? pattern.exec(this.lines);
 			if (!match) {
 				continue;
 			}
@@ -469,7 +412,7 @@ export class Finder {
 			if (routes === undefined) {
 				routes = (new Router).all();
 			}
-			const found = routes.get(ctx.path);
+			const found = routes.get(this.path);
 			if (found) {
 				return found;
 			}
@@ -483,7 +426,7 @@ export class Finder {
 	 *
 	 * @param place
 	 */
-	setControllerAction(ctx: Finder, blocks: Block[], place: Place): Place {
+	setControllerAction(blocks: Block[], place: Place): Place {
 		if (-1 !== place.path.indexOf('@')) {
 			const split = place.path.split('@');
 			place.path = split[0];
@@ -500,8 +443,8 @@ export class Finder {
 			}
 		} else if (blocks.length && !blocks[0].isNamespace) { // resource or controller route
 			place.path = blocks[0].namespace;
-			if (place.path !== ctx.path) {
-				place.location = '@' + ctx.path;
+			if (place.path !== this.path) {
+				place.location = '@' + this.path;
 			}
 		}
 

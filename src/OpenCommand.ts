@@ -30,6 +30,10 @@ export async function openAllFiles(content: vscode.ExtensionContext) {
 
 	const args: IOpenAllArgs = content.globalState.get('open_all')!;
 	await content.globalState.update('open_all', null);
+	if (!args) {
+		return;
+	}
+
 	if (args.files.length === 0) {
 		return;
 	}

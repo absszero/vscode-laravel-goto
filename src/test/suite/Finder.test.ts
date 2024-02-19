@@ -37,11 +37,6 @@ suite('Finder Test Suite', () => {
 		await assertPath("Nav/ShowPost.php");
 	});
 
-	test('Livewire method', async () => {
-		await replace(editor, "layout('lay|outs.app')");
-		await assertPath("layouts/app.blade.php");
-	});
-
 	test('inertia.js function', async () => {
 		await replace(editor, 'inertia("About/AboutCo|mponent");');
 		await assertPath("About/AboutComponent");
@@ -77,107 +72,6 @@ suite('Finder Test Suite', () => {
 	test('component with sub-view', async () => {
 		await replace(editor, '<x-form.|input type="error"/>');
 		await assertPath("views/components/form/input.blade.php");
-	});
-
-	test('view file', async () => {
-		await replace(editor, "view('hello|_view', ['name' => 'James']);");
-		await assertPath("hello_view.blade.php");
-	});
-
-	test('view file in mailable class', async () => {
-		await replace(editor, "view: 'ema|ils.test',");
-		await assertPath("emails/test.blade.php");
-	});
-
-	test('view file in Route::view', async () => {
-		await replace(editor, "Route::view('/welcome', 'pages.wel|come', ['name' => 'Taylor']);");
-		await assertPath("pages/welcome.blade.php");
-	});
-
-	test('view file in config/livewire.php', async () => {
-		await replace(editor, "'layout' => 'layou|ts.app',");
-		await assertPath("layouts/app.blade.php");
-	});
-
-	test('html comment', async () => {
-		await replace(editor, "<!-- resources/views/compo|nents/layout -->");
-		await assertPath("resources/views/components/layout.blade.php");
-	});
-
-	test('blade comment', async () => {
-		await replace(editor, "'{{-- resources/views/compo|nents/layout --}}'");
-		await assertPath("resources/views/components/layout.blade.php");
-	});
-
-	test('blade comment with .blade.php', async () => {
-		await replace(editor, "'{{-- resources/views/compo|nents/layout.blade.php --}}'");
-		await assertPath("resources/views/components/layout.blade.php");
-	});
-
-	test('view var', async () => {
-		await replace(editor, "$view = 'he|llo'");
-		await assertPath("hello.blade.php");
-	});
-
-	test('view file with Namespace', async () => {
-		await replace(editor, "view('Namespace::hel|lo_view');");
-		await assertPath("hello_view.blade.php");
-	});
-
-	test('vendor view', async () => {
-		await replace(editor, "view('vendor::he|llo_view');");
-		await assertPath("vendor/hello_view.blade.php");
-	});
-
-	test('View::first', async () => {
-		await replace(editor, "View::first(['firs|t_view', 'second_view']);");
-		await assertPath("first_view.blade.php");
-	});
-
-	test('View::exists', async () => {
-		await replace(editor, "View::exists('hello|_view');");
-		await assertPath("hello_view.blade.php");
-	});
-
-	test('View::composer', async () => {
-		await replace(editor, "View::composer(['pro|file', 'dashboard'], MultiComposer::class);");
-		await assertPath('profile.blade.php');
-
-		await replace(editor, "View::composer(['profile', 'das|hboard'], MultiComposer::class);");
-		await assertPath('dashboard.blade.php');
-
-		await replace(editor, "View::composer('prof|ile', ProfileComposer::class);");
-		await assertPath('profile.blade.php');
-	});
-
-	test('View::creator', async () => {
-		await replace(editor, "View::creator('prof|ile', ProfileComposer::class);");
-		await assertPath('profile.blade.php');
-	});
-
-	test('@includeIf, @include', async () => {
-		await replace(editor, "@includeIf('view.na|me', ['status' => 'complete'])");
-		await assertPath("view/name.blade.php");
-	});
-
-	test('@extends', async () => {
-		await replace(editor, "@extends('view.na|me')");
-		await assertPath("view/name.blade.php");
-	});
-
-	test('@includeUnless, @includeWhen', async () => {
-		await replace(editor, "@includeUnless($boolean, 'view|.name', ['status' => 'complete'])");
-		await assertPath("view/name.blade.php");
-	});
-
-	test('@includeFirst', async () => {
-		await replace(editor, "@includeFirst(['custom.admin', 'ad|min'], ['status' => 'complete'])");
-		await assertPath("admin.blade.php");
-	});
-
-	test('@each', async () => {
-		await replace(editor, "@each('view.name', $jobs, 'job', 'view|.empty')");
-		await assertPath("view/empty.blade.php");
 	});
 
 	test('controller', async () => {
@@ -394,7 +288,7 @@ suite('Finder Test Suite', () => {
 		await assertPath('SayHello.php');
 	});
 
-	test('route funciton', async () => {
+	test('route function', async () => {
 		sinon.stub(Router.prototype, 'all').returns(new Map([
 			['admin.index', new Place({ path: 'Http/Controllers/Admin/MainController.php', location: '@index', uris: [] })],
 		]));
@@ -436,12 +330,6 @@ suite('Finder Test Suite', () => {
 				`inertia(
 					'About/AboutCo|mponent'
 				);`,
-			],
-			[
-				'hello_view.blade.php',
-				`view(
-					'hello|_view', ['name' => 'James']
-				);`
 			],
 			[
 				'HelloController.php',
