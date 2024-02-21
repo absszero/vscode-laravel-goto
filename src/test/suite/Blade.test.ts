@@ -15,6 +15,10 @@ suite('Blade Test Suite', () => {
 		// vendor view
 		place = blade.getPlace('vendor::hello_view', "view('vendor::hello_view');");
 		assert.strictEqual(place.path, "vendor/hello_view.blade.php");
+
+		// notification markdown view
+		place = blade.getPlace('hello_view', "markdown('hello_view');");
+		assert.strictEqual(place.path, "hello_view.blade.php");
 	});
 
 	test('Livewire method', () => {
@@ -99,13 +103,20 @@ suite('Blade Test Suite', () => {
 		assert.strictEqual(place.path, "resources/views/components/layout.blade.php");
 	});
 
-
 	test('View::first', () => {
 		let place = blade.getPlace('first_view', "View::first(['first_view', 'second_view']);");
 		assert.strictEqual(place.path, "first_view.blade.php");
 
 		place = blade.getPlace('second_view', "View::first(['first_view', 'second_view']);");
 		assert.strictEqual(place.path, "second_view.blade.php");
+	});
+
+	test('notification multi view', () => {
+		let place = blade.getPlace('emails.name.html', "view(['emails.name.html', 'emails.name.plain']);");
+		assert.strictEqual(place.path, "emails/name/html.blade.php");
+
+		place = blade.getPlace('emails.name.plain', "view(['emails.name.html', 'emails.name.plain']);");
+		assert.strictEqual(place.path, "emails/name/plain.blade.php");
 	});
 
 	test('@includeFirst', () => {

@@ -5,7 +5,7 @@ export class Blade {
 		let place = new Place({ path: '', paths: new Map, location: '', uris: [] });
 
 		const patterns = [
-			/view\(\s*(['"])([^'"]*)\1/,
+			/[\bview\b|\bmarkdown\b]\(\s*(['"])([^'"]*)\1/,
 			/[lL]ayout\(\s*(['"])([^'"]*)\1/,
 			/\$view\s*=\s*(['"])([^'"]*)\1/,
 			/View::exists\(\s*(['"])([^'"]*)\1/,
@@ -32,6 +32,7 @@ export class Blade {
 		const multiViewsPatterns = [
 			/View::first\(\[(\s*['"][^'"]+['"]\s*[,]?\s*){2,}\]/,
 			/View::composer\(\[(\s*['"][^'"]+['"]\s*[,]?\s*){2,}\]/,
+			/view\(\[(\s*['"][^'"]+['"]\s*[,]?\s*){2,}\]/,
 			/@includeFirst\(\[(\s*['"][^'"]+['"]\s*[,]?\s*){2,}\]/,
 			/@each\(['"][^'"]+['"]\s*,[^,]+,[^,]+,[^)]+/,
 		];
