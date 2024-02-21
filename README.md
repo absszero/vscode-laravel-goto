@@ -1,6 +1,11 @@
 # Laravel Goto
 
+[![Visual Studio Marketplace](https://img.shields.io/visual-studio-marketplace/v/absszero.vscode-laravel-goto?style=for-the-badge&label=VS%20Marketplace&logo=visual-studio-code)](https://marketplace.visualstudio.com/items?itemName=absszero.vscode-laravel-goto)
+[![Installs](https://img.shields.io/visual-studio-marketplace/i/absszero.vscode-laravel-goto?style=for-the-badge)](https://marketplace.visualstudio.com/items?itemName=absszero.vscode-laravel-goto)
+
 ![actions/workflows/test.yaml](https://github.com/absszero/vscode-laravel-goto/workflows/.github/workflows/test.yaml/badge.svg)
+
+[![Build Status](https://img.shields.io/github/actions/workflow/status/absszero/vscode-laravel-goto/test.yml?branch=master&style=for-the-badge&logo=github)](https://github.com/absszero/vscode-laravel-goto/actions/workflows/test.yaml)
 
 Go to various Laravel files.
 
