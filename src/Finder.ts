@@ -38,7 +38,6 @@ export class Finder {
 			this.middlewarePlace.bind(this), // before controllerPlace
 			this.controllerPlace.bind(this),
 			this.namespacePlace.bind(this),
-			this.bladePlace.bind(this),
 			this.staticPlace.bind(this),
 			this.inertiajsPlace.bind(this),
 			this.livewirePlace.bind(this),
@@ -46,6 +45,7 @@ export class Finder {
 			this.commandPlace.bind(this),
 			this.filesystemPlace.bind(this),
 			this.routePlace.bind(this),
+			this.bladePlace.bind(this),
 		];
 
 		let place = new Place({ path: '', paths: new Map ,location: '', uris: [] });
