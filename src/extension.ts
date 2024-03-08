@@ -12,7 +12,8 @@ export async function activate(context: vscode.ExtensionContext) {
 	const hoverDispose = vscode.languages.registerHoverProvider(HoverProvider.documentFilter(), new HoverProvider());
 	context.subscriptions.push(hoverDispose);
 
-	const commandDispose = vscode.commands.registerTextEditorCommand('extension.vscode-laravel-goto', () => Command);
+	// eslint-disable-next-line @typescript-eslint/no-misused-promises
+	const commandDispose = vscode.commands.registerTextEditorCommand('extension.vscode-laravel-goto', Command);
 	context.subscriptions.push(commandDispose);
 
 	const newWindowDispose = vscode.commands.registerCommand(
