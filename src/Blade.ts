@@ -5,13 +5,13 @@ export class Blade {
 		let place = new Place({ path: '', paths: new Map, location: '', uris: [] });
 
 		const patterns = [
-			/[\bview\b|\bmarkdown\b]\(\s*(['"])([^'"]*)\1/,
+			/\b(?:view|markdown)\b\(\s*(['"])([^'"]*)\1/,
 			/[lL]ayout\(\s*(['"])([^'"]*)\1/,
 			/\$view\s*=\s*(['"])([^'"]*)\1/,
 			/View::exists\(\s*(['"])([^'"]*)\1/,
 			/View::composer[^'"]*(['"])([^'"]*)\1/,
 			/View::creator[^'"]*(['"])([^'"]*)\1/,
-			/[\bview\b|\btext\b|\bhtml\b|\bmarkdown\b]\s*:\s*(['"])([^'"]*)\1/,
+			/\b(?:view|text|html|markdown)\b\s*:\s*(['"])([^'"]*)\1/,
 			/view\(\s*['"][^'"]*['"],\s*(['"])([^'"]*)\1/,
 			/['"]layout['"]\s*=>\s*(['"])([^'"]*)\1/,
 			/@include(If\b)?\(\s*(['"])([^'"]*)\2/,
