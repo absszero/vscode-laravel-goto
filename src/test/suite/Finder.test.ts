@@ -54,7 +54,10 @@ suite('Finder Test Suite', () => {
 
 	test('namespace file', async () => {
 		await replace(editor, '"App\\Use|r"');
-		await assertPath("App\\User.php");
+		await assertPath("app\\User.php");
+
+		await replace(editor, '"\\App\\Use|r"');
+		await assertPath("app\\User.php");
 	});
 
 	test('closing tag Component', async () => {

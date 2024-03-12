@@ -329,6 +329,14 @@ export class Finder {
 			place.path = this.path + '.php';
 		}
 
+		if (place.path.startsWith('\\')) {
+			place.path = place.path.substring(1);
+		}
+
+		if (place.path.startsWith('App\\')) {
+			place.path = 'a' + place.path.substring(1);
+		}
+
 		return place;
 	}
 
