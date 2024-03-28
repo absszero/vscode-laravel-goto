@@ -1,26 +1,34 @@
 import { Place } from './Place';
 
 export class Blade {
+	static readonly patterns = [
+		/\b(?:view|markdown)\b\(\s*(['"])([^'"]*)\1/,
+		/[lL]ayout\(\s*(['"])([^'"]*)\1/,
+		/\$view\s*=\s*(['"])([^'"]*)\1/,
+		/View::exists\(\s*(['"])([^'"]*)\1/,
+		/View::composer[^'"]*(['"])([^'"]*)\1/,
+		/View::creator[^'"]*(['"])([^'"]*)\1/,
+		/\b(?:view|text|html|markdown)\b\s*:\s*(['"])([^'"]*)\1/,
+		/view\(\s*['"][^'"]*['"],\s*(['"])([^'"]*)\1/,
+		/['"]layout['"]\s*=>\s*(['"])([^'"]*)\1/,
+		/@include(If\b)?\(\s*(['"])([^'"]*)\2/,
+		/@extends\(\s*(['"])([^'"]*)\1/,
+		/@include(When|Unless\b)?\([^'"]+(['"])([^'"]+)/,
+		/(resources\/views[^\s'"-]+)/,
+	];
+
+	static readonly multiViewsPatterns = [
+		/View::first\(\[(\s*['"][^'"]+['"]\s*[,]?\s*){2,}\]/,
+		/View::composer\(\[(\s*['"][^'"]+['"]\s*[,]?\s*){2,}\]/,
+		/view\(\[(\s*['"][^'"]+['"]\s*[,]?\s*){2,}\]/,
+		/@includeFirst\(\[(\s*['"][^'"]+['"]\s*[,]?\s*){2,}\]/,
+		/@each\(['"][^'"]+['"]\s*,[^,]+,[^,]+,[^)]+/,
+	];
+
 	public getPlace(path: string, line: string, lines = ''): Place {
 		let place = new Place({ path: '', paths: new Map, location: '', uris: [] });
 
-		const patterns = [
-			/\b(?:view|markdown)\b\(\s*(['"])([^'"]*)\1/,
-			/[lL]ayout\(\s*(['"])([^'"]*)\1/,
-			/\$view\s*=\s*(['"])([^'"]*)\1/,
-			/View::exists\(\s*(['"])([^'"]*)\1/,
-			/View::composer[^'"]*(['"])([^'"]*)\1/,
-			/View::creator[^'"]*(['"])([^'"]*)\1/,
-			/\b(?:view|text|html|markdown)\b\s*:\s*(['"])([^'"]*)\1/,
-			/view\(\s*['"][^'"]*['"],\s*(['"])([^'"]*)\1/,
-			/['"]layout['"]\s*=>\s*(['"])([^'"]*)\1/,
-			/@include(If\b)?\(\s*(['"])([^'"]*)\2/,
-			/@extends\(\s*(['"])([^'"]*)\1/,
-			/@include(When|Unless\b)?\([^'"]+(['"])([^'"]+)/,
-			/(resources\/views[^\s'"-]+)/,
-		];
-
-		for (const pattern of patterns) {
+		for (const pattern of Blade.patterns) {
 			const match = pattern.exec(line) ?? pattern.exec(lines);
 			if (match && match[match.length - 1] === path) {
 				place = this.transformFilename(path, place);
@@ -29,15 +37,8 @@ export class Blade {
 			}
 		}
 
-		const multiViewsPatterns = [
-			/View::first\(\[(\s*['"][^'"]+['"]\s*[,]?\s*){2,}\]/,
-			/View::composer\(\[(\s*['"][^'"]+['"]\s*[,]?\s*){2,}\]/,
-			/view\(\[(\s*['"][^'"]+['"]\s*[,]?\s*){2,}\]/,
-			/@includeFirst\(\[(\s*['"][^'"]+['"]\s*[,]?\s*){2,}\]/,
-			/@each\(['"][^'"]+['"]\s*,[^,]+,[^,]+,[^)]+/,
-		];
 
-		for (const pattern of multiViewsPatterns) {
+		for (const pattern of Blade.multiViewsPatterns) {
 			if (pattern.exec(line) ?? pattern.exec(lines)) {
 				place = this.transformFilename(path, place);
 				return place;

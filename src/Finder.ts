@@ -7,6 +7,7 @@ import { Console } from './Console';
 import { Router } from './Router';
 import { Language } from './Language';
 import { Blade } from './Blade';
+import { Config } from './Config';
 
 
 export class Finder {
@@ -21,6 +22,8 @@ export class Finder {
 		this.selection = selection;
 		this.path = document.getText(selection).trim();
 		this.path = this.path.replace(/^[\s{<!-]+|[-\s>}]+$/g, '');
+		this.path = this.path.replace(/{.*/g, ''); // remove the rest of string after {
+		this.path = this.path.replace(/\.$/, ''); // remove dot at the end
 		this.line = document.lineAt(selection.start).text;
 		this.lines = getLinesAfterDelimiter(document, selection.start.line);
 	}
@@ -169,28 +172,10 @@ export class Finder {
 	/**
 	 * get config place
 	 */
-	configPlace(place: Place): Place {
-		const patterns = [
-			/Config::[^'"]*(['"])([^'"]*)\1/,
-			/config\([^'"]*(['"])([^'"]*)\1/g
-		];
+	configPlace(): Place {
+		const config = new Config;
 
-		for (const pattern of patterns) {
-			let match;
-			do {
-				match = pattern.exec(this.line) ?? pattern.exec(this.lines);
-				if (match && match[2] === this.path) {
-					const split = this.path.split('.');
-					place.path = 'config/' + split[0] + '.php';
-					if (2 <= split.length) {
-						place.location = "(['\"]{1})" + split[1] + "\\1\\s*=>";
-					}
-					return place;
-				}
-			} while (match);
-		}
-
-		return place;
+		return config.getPlace(this.path, this.line, this.lines);
 	}
 
 	/**
