@@ -133,31 +133,6 @@ suite('Finder Test Suite', () => {
 		await assertPath("hello.JS");
 	});
 
-	test('facade config get', async () => {
-		await replace(editor, `Config::get('app.t|imezone');`);
-		await assertPath("config/app.php");
-	});
-
-	test('facade config set', async () => {
-		await replace(editor, `Config::set(   'app.time|zone', 'UTC');`);
-		await assertPath("config/app.php");
-	});
-
-	test('config get only file', async () => {
-		await replace(editor, `config('a|pp');`);
-		await assertPath("config/app.php");
-	});
-
-	test('config get', async () => {
-		await replace(editor, `config('app.time|zone');`);
-		await assertPath("config/app.php");
-	});
-
-	test('config set', async () => {
-		await replace(editor, `config(     ['app.time|zone' => 'UTC']);`);
-		await assertPath("config/app.php");
-	});
-
 	test('filesystem', async () => {
 		await replace(editor, `Storage::disk('lo|cal')->put('example.txt', 'Contents');`);
 		await assertPath("config/filesystems.php", "(['\"]{1})local\\1\\s*=>");

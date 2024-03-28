@@ -35,7 +35,9 @@ Route::group(['namespace' => 'Abc'], function () {
 
 'hello.JS';
 
-Config::get('app.timezone');
+Config::get('app.timezone.{$var}');
+
+Config::get("app.{$var}.hello");
 
 Config::set(   'app.timezone', 'UTC');
 

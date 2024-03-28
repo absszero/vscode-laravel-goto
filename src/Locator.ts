@@ -12,7 +12,7 @@ let event: vscode.Disposable | null;
  * @var {[type]}
  */
 export async function locate(document: vscode.TextDocument, range: vscode.Range): Promise<Place | undefined> {
-	const selection = getSelection(document, range, "<(\"'[,)>");
+	const selection = getSelection(document, range, `<("'[,)>`);
 	if (!selection) {
 		return undefined;
 	}
