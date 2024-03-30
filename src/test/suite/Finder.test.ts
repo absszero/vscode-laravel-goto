@@ -2,7 +2,7 @@ import * as sinon from 'sinon';
 import * as assert from 'assert';
 import * as vscode from 'vscode';
 import { before, after, afterEach } from 'mocha';
-import { getSelection } from '../../Locator';
+import { Selection } from '../../Selection';
 import { Finder } from '../../Finder';
 import { replace } from './Utils';
 import { Middleware } from '../../Middleware';
@@ -344,7 +344,7 @@ suite('Finder Test Suite', () => {
 });
 
 async function assertPath(expected: string, location?: string, message?: string): Promise<Place> {
-	const selection = getSelection(editor.document, editor.selection, "<\"'[,)>");
+	const selection = Selection.getByDelimiter(editor.document, editor.selection);
 	if (!selection) {
 		assert.fail();
 	}

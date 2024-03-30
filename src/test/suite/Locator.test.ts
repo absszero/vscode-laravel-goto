@@ -15,24 +15,6 @@ suite('Locator Test Suite', () => {
 		return await vscode.commands.executeCommand('workbench.action.closeAllEditors');
 	});
 
-	test('getSelection', async () => {
-		await replace(editor, `--Hello|World--`);
-		const selection = Locator.getSelection(editor.document, editor.selection, "-");
-		const text = editor.document.getText(selection).trim();
-		assert.strictEqual(text, 'HelloWorld');
-	});
-
-	test('getLinesAfterDelimiter', async () => {
-		await replace(editor, `
-view(
-	'hello|_view',
-	['name' => 'James']
-);`);
-
-		const lines = Locator.getLinesAfterDelimiter(editor.document, 2);
-		assert.strictEqual(lines, `view('hello_view',`);
-	});
-
 	test('locateByLocation', async () => {
 		await replace(editor, `return [
 			'hello' => 'Hello',
