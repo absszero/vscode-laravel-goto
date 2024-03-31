@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { Namespace, Block } from './NS';
-import { getSelection, getLinesAfterDelimiter } from "./Locator";
+import { Selection } from "./Selection";
 import { Place } from './Place';
 import { Middleware } from './Middleware';
 import { Console } from './Console';
@@ -12,20 +12,17 @@ import { Config } from './Config';
 
 export class Finder {
 	document: vscode.TextDocument;
-	selection: vscode.Range;
+	selection: Selection;
 	path: string;
 	line: string;
 	lines: string;
 
-	constructor(document: vscode.TextDocument, selection: vscode.Range) {
+	constructor(document: vscode.TextDocument, selection: Selection) {
 		this.document = document;
 		this.selection = selection;
-		this.path = document.getText(selection).trim();
-		this.path = this.path.replace(/^[\s{<!-]+|[-\s>}]+$/g, '');
-		this.path = this.path.replace(/{.*/g, ''); // remove the rest of string after {
-		this.path = this.path.replace(/\.$/, ''); // remove dot at the end
+		this.path = selection.getPath(document);
 		this.line = document.lineAt(selection.start).text;
-		this.lines = getLinesAfterDelimiter(document, selection.start.line);
+		this.lines = selection.getLinesAfterDelimiter(document);
 	}
 
 	/**
@@ -425,7 +422,7 @@ export class Finder {
 			place.path = split[0];
 			place.location = '@' + split[1];
 		} else if (place.path.endsWith('::class')) {
-			const action = getSelection(this.document, this.selection, "[]");
+			const action = Selection.getByDelimiter(this.document, this.selection, "[]");
 			if (action) {
 				// HiController, 'index' => index
 				place.location = '@' + this.document

@@ -3,6 +3,7 @@ import * as vscode from 'vscode';
 import { Finder } from './Finder';
 import { Place } from './Place';
 import { findFiles } from './Workspace';
+import { Selection } from './Selection';
 
 let event: vscode.Disposable | null;
 
@@ -12,7 +13,7 @@ let event: vscode.Disposable | null;
  * @var {[type]}
  */
 export async function locate(document: vscode.TextDocument, range: vscode.Range): Promise<Place | undefined> {
-	const selection = getSelection(document, range, `<("'[,)>`);
+	const selection = Selection.getByDelimiter(document, range);
 	if (!selection) {
 		return undefined;
 	}
@@ -33,61 +34,6 @@ export async function locate(document: vscode.TextDocument, range: vscode.Range)
 		place.uris = await findFiles('**/' + place.path);
 		return place;
 	}
-}
-
-/**
- * get selection from cursor or first selection
- * @param selected
- */
-export function getSelection(document: vscode.TextDocument, selected: vscode.Range, delimiters: string): vscode.Range | undefined {
-	let start = selected.start;
-	let end = selected.end;
-
-	const line = document.lineAt(start);
-	while (start.isAfter(line.range.start)) {
-		const next = start.with({ character: start.character - 1 });
-		const char = document.getText(new vscode.Range(next, start));
-		if (-1 !== delimiters.indexOf(char)) {
-			break;
-		}
-		start = next;
-	}
-	while (end.isBefore(line.range.end)) {
-		const next = end.with({ character: end.character + 1 });
-		const char = document.getText(new vscode.Range(end, next));
-		if (-1 !== delimiters.indexOf(char)) {
-			break;
-		}
-		end = next;
-	}
-
-	const range = new vscode.Range(start, end);
-	if (range.isEqual(line.range)) {
-		return undefined;
-	}
-
-	return range;
-}
-
-/**
- * get lines after delimiter
- * @param document
- * @param lineNumber
- * @param delimiter
- * @returns
- */
-export function getLinesAfterDelimiter(document: vscode.TextDocument, lineNumber: number, delimiter = '(') : string {
-	const lines: string[] = [];
-	while(lineNumber >= 0) {
-		const text = document.lineAt(lineNumber).text.trim();
-		lines.unshift(text);
-		if (text.includes(delimiter)) {
-			return lines.join('');
-		}
-		lineNumber--;
-	}
-
-	return '';
 }
 
 /**
