@@ -1,4 +1,5 @@
 <?php
+
 view('hello_view', ['name' => 'James']);
 
 view('Namespace::hello_view');
@@ -34,6 +35,8 @@ Route::group(['namespace' => 'Abc'], function () {
 });
 
 'hello.JS';
+
+Config::get('app.timezone');
 
 Config::get('app.timezone.{$var}');
 
@@ -146,3 +149,8 @@ command('app:say-hello');
 command('app:say-goodbye');
 
 Storage::disk('local')->put('example.txt', 'Contents');
+
+config(['app.timezone' => config('app.tz')]);
+
+config('app.{$var}');
+
