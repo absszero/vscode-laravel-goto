@@ -18,10 +18,6 @@ export class ClassName {
 
 		if (colons[1]) {
 			place.location = '@' + colons[1];
-		/**
-		 * TODO
-		 * 確認轉跳
-		 */
 		}
 
 		if (place.path.startsWith('\\')) {
