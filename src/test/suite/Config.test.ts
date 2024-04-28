@@ -16,7 +16,7 @@ suite('Config Test Suite', () => {
 		let place = config.getPlace('app', `config('app');`);
 		assert.strictEqual(place.path, "config/app.php");
 
-		place = config.getPlace('app', `config('app.{$var}');`);
+		place = config.getPlace('app.{$var}', "config('app.{$var}');");
 		assert.strictEqual(place.path, "config/app.php");
 
 		place = config.getPlace('app.timezone', `config('app.timezone');`);
@@ -24,6 +24,9 @@ suite('Config Test Suite', () => {
 		assert.ok(place.location.includes('timezone'));
 
     place = config.getPlace('app.timezone', `config(     ['app.timezone' => 'UTC']);`);
+		assert.strictEqual(place.path, "config/app.php");
+
+    place = config.getPlace('app.tz', `config(['app.timezone' => config('app.tz')]);`);
 		assert.strictEqual(place.path, "config/app.php");
   });
 });

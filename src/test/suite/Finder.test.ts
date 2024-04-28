@@ -52,14 +52,6 @@ suite('Finder Test Suite', () => {
 		await assertPath("About/AboutComponent");
 	});
 
-	test('namespace file', async () => {
-		await replace(editor, '"App\\Use|r"');
-		await assertPath("app\\User.php");
-
-		await replace(editor, '"\\App\\Use|r"');
-		await assertPath("app\\User.php");
-	});
-
 	test('closing tag Component', async () => {
 		await replace(editor, "</x-hello-al|ert>");
 		const place = await assertPath("views/components/hello-alert.blade.php");
@@ -171,11 +163,6 @@ suite('Finder Test Suite', () => {
 	test('relative static file path', async () => {
 		await replace(editor, `'./../../he|llo.JS';`);
 		await assertPath("hello.JS");
-	});
-
-	test('config in config', async () => {
-		await replace(editor, `config(['app.timezone' => config('ap|p.tz')]);`);
-		await assertPath("config/app.php");
 	});
 
 	test('app_path', async () => {

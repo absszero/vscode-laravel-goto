@@ -7,6 +7,7 @@ export class Place implements IPlace {
 	location: string;
 	paths?: Map<string, vscode.Uri[]>;
 	locations?: Map<string, string>;
+	source?: string;
 
 	constructor(place: IPlace) {
 		this.path = place.path;

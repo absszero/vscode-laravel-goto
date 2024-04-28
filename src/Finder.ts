@@ -8,7 +8,7 @@ import { Router } from './Router';
 import { Language } from './Language';
 import { Blade } from './Blade';
 import { Config } from './Config';
-
+import { ClassName } from './ClassName';
 
 export class Finder {
 	document: vscode.TextDocument;
@@ -37,7 +37,7 @@ export class Finder {
 			this.envPlace.bind(this),
 			this.middlewarePlace.bind(this), // before controllerPlace
 			this.controllerPlace.bind(this),
-			this.namespacePlace.bind(this),
+			this.classNamePlace.bind(this),
 			this.staticPlace.bind(this),
 			this.inertiajsPlace.bind(this),
 			this.livewirePlace.bind(this),
@@ -51,6 +51,7 @@ export class Finder {
 		let place = new Place({ path: '', paths: new Map ,location: '', uris: [] });
 		for(const thePlace of places) {
 			place = await thePlace(place, this.document, this.selection);
+			place.source = thePlace.name;
 			if (place.path) {
 				return place;
 			}
@@ -303,23 +304,10 @@ export class Finder {
 	/**
 	 * get namespace place
 	 */
-	namespacePlace(place: Place): Place {
-		const pattern = /([A-Z][\w]+[\\])+[A-Z][\w]+/;
-		const match = pattern.exec(this.path) ?? pattern.exec(this.lines);
+	classNamePlace(): Place {
+		const className = new ClassName;
 
-		if (match) {
-			place.path = this.path + '.php';
-		}
-
-		if (place.path.startsWith('\\')) {
-			place.path = place.path.substring(1);
-		}
-
-		if (place.path.startsWith('App\\')) {
-			place.path = 'a' + place.path.substring(1);
-		}
-
-		return place;
+		return className.getPlace(this.path, this.line, this.lines);
 	}
 
 	/**
