@@ -25,7 +25,8 @@
 		"url": "https://ko-fi.com/absszero"
 	},
 	"activationEvents": [
-		"onLanguage:php"
+		"onLanguage:php",
+		"onLanguage:blade"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
