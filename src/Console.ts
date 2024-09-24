@@ -47,7 +47,7 @@ export class Console {
 			return files;
 		}
 
-		const pattern = /\$this->load\(\s*__DIR__\.['"]([^'"]+)/g;
+		const pattern = /\$this->load\(\s*__DIR__\s*\.\s*['"]([^'"]+)/g;
 		while ((match = pattern.exec(match[1])) !== null) {
 			if (match.index === pattern.lastIndex) {
 				pattern.lastIndex++;
