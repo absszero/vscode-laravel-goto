@@ -25,6 +25,16 @@ export class Blade {
 		/@each\(['"][^'"]+['"]\s*,[^,]+,[^,]+,[^)]+/,
 	];
 
+	static readonly fragmentPatterns = [
+		/->fragment\(\s*['"]([^'"]+)/,
+		/->fragmentIf\(\s*.*,\s*['"]([^'"]+)/
+	];
+
+	static readonly multiFragmentsPatterns = [
+		/->fragments\(\s*\[(\s*['"][^'"]+['"]\s*[,]?\s*){2,}\s*\]/,
+		/->fragmentsIf\(\s*.*,\s*\[(\s*['"][^'"]+['"]\s*[,]?\s*){2,}\s*\]/,
+	]
+
 	public getPlace(path: string, line: string, lines = ''): Place {
 		let place = new Place({ path: '', paths: new Map, location: '', uris: [] });
 
@@ -32,16 +42,46 @@ export class Blade {
 			const match = pattern.exec(line) ?? pattern.exec(lines);
 			if (match && match[match.length - 1] === path) {
 				place = this.transformFilename(path, place);
-
 				return place;
 			}
 		}
-
 
 		for (const pattern of Blade.multiViewsPatterns) {
 			if (pattern.exec(line) ?? pattern.exec(lines)) {
 				place = this.transformFilename(path, place);
 				return place;
+			}
+		}
+
+		for (const fragmentPattern of Blade.fragmentPatterns) {
+			const fragmentMatch = fragmentPattern.exec(lines) ?? fragmentPattern.exec(line);
+			if (!fragmentMatch) {
+				continue;
+			}
+
+			for (const pattern of Blade.patterns) {
+				const match = pattern.exec(fragmentMatch.input);
+				if (match) {
+					place = this.transformFilename(match[match.length - 1], place);
+					place.location = `fragment\\(\\s*['"]${path}['"]\\s*\\)`;
+					return place;
+				}
+			}
+		}
+
+		for (const fragmentPattern of Blade.multiFragmentsPatterns) {
+			const fragmentMatch = fragmentPattern.exec(lines) ?? fragmentPattern.exec(line);
+			if (!fragmentMatch) {
+				continue;
+			}
+
+			for (const pattern of Blade.patterns) {
+				const match = pattern.exec(fragmentMatch.input);
+				if (match) {
+					place = this.transformFilename(match[match.length - 1], place);
+					place.location = `fragment\\(\\s*['"]${path}['"]\\s*\\)`;
+					return place;
+				}
 			}
 		}
 

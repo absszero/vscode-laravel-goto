@@ -6,5 +6,7 @@
 </head>
 <body>
 
+@fragment('user-list')
+@endfragment
 </body>
 </html>
