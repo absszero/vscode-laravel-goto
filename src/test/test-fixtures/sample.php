@@ -154,3 +154,9 @@ config(['app.timezone' => config('app.tz')]);
 
 config('app.{$var}');
 
+return view('hello_view', ['users' => $users])->fragment('user-list');
+
+view('dashboard', ['users' => $users])->fragments(['user-list', 'comment-list']);
+
+view('dashboard', ['users' => $users])
+->fragmentsIf($request->hasHeader('HX-Request'), ['user-list', 'comment-list']);

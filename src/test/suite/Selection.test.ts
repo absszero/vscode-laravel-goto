@@ -34,6 +34,18 @@ view(
 		assert.strictEqual(lines, `view('hello_view',`);
 	});
 
+	test('getLinesAfterDelimiterWithArrow', async () => {
+		await replace(editor, `
+view('dashboard', ['users' => $users])
+	->fragments(
+		['user-list', 'comment-list']
+);`);
+
+		const selection = new Selection(new vscode.Position(3, 0), new vscode.Position(3, 0));
+		const lines = selection.getLinesAfterDelimiter(editor.document);
+		assert.strictEqual(lines, `view('dashboard', ['users' => $users])->fragments(['user-list', 'comment-list']`);
+	});
+
 	test('getPath', async () => {
 		await replace(editor, `'ap|p.{$var}.timezone'`);
 		let selection = Selection.getByDelimiter(editor.document, editor.selection);

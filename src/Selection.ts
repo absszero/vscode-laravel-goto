@@ -50,7 +50,7 @@ export class Selection extends vscode.Range {
 		while(lineNumber >= 0) {
 			const text = document.lineAt(lineNumber).text.trim();
 			lines.unshift(text);
-			if (text.includes(delimiter)) {
+			if (text.includes(delimiter) && !text.startsWith('->')) {
 				return lines.join('');
 			}
 			lineNumber--;

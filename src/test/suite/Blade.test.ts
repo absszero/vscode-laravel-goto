@@ -149,4 +149,48 @@ suite('Blade Test Suite', () => {
 		);`);
 		assert.strictEqual(place.path, "hello_view.blade.php");
 	});
+
+	test('fragment', () => {
+		const place = blade.getPlace(
+			'user-list',
+			`view('dashboard', ['users' => $users])->fragment('user-list');`);
+		assert.strictEqual(place.path, "dashboard.blade.php");
+		assert.strictEqual(place.location, `fragment\\(\\s*['"]user-list['"]\\s*\\)`);
+	});
+
+	test('fragmentIf', () => {
+		const place = blade.getPlace(
+			'user-list',
+			`view('dashboard', ['users' => $users])->fragmentIf($request->hasHeader('HX-Request'), 'user-list');`);
+		assert.strictEqual(place.path, "dashboard.blade.php");
+		assert.strictEqual(place.location, `fragment\\(\\s*['"]user-list['"]\\s*\\)`);
+	});
+
+	test('fragments', () => {
+		const place = blade.getPlace(
+			'user-list',
+			`view('dashboard', ['users' => $users])->fragments(['user-list', 'comment-list']);`);
+		assert.strictEqual(place.path, "dashboard.blade.php");
+		assert.strictEqual(place.location, `fragment\\(\\s*['"]user-list['"]\\s*\\)`);
+	});
+
+	test('fragmentsIf', () => {
+		const place = blade.getPlace(
+			'user-list',
+			`view('dashboard', ['users' => $users])->fragmentsIf($request->hasHeader('HX-Request'), ['user-list', 'comment-list']);`);
+		assert.strictEqual(place.path, "dashboard.blade.php");
+		assert.strictEqual(place.location, `fragment\\(\\s*['"]user-list['"]\\s*\\)`);
+	});
+
+	test('MultiLine fragmentsIf', () => {
+		const place = blade.getPlace(
+			'user-list',
+			`view('dashboard', ['users' => $users])
+			->fragmentsIf(
+				$request->hasHeader('HX-Request'),
+				['user-list', 'comment-list']
+			);`);
+		assert.strictEqual(place.path, "dashboard.blade.php");
+		assert.strictEqual(place.location, `fragment\\(\\s*['"]user-list['"]\\s*\\)`);
+	});
 });
