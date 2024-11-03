@@ -9,6 +9,7 @@ import { Language } from './Language';
 import { Blade } from './Blade';
 import { Config } from './Config';
 import { ClassName } from './ClassName';
+import { Attribute } from './Attribute';
 
 export class Finder {
 	document: vscode.TextDocument;
@@ -45,6 +46,7 @@ export class Finder {
 			this.commandPlace.bind(this),
 			this.filesystemPlace.bind(this),
 			this.routePlace.bind(this),
+			this.attributePlace.bind(this),
 			this.bladePlace.bind(this),
 		];
 
@@ -174,6 +176,15 @@ export class Finder {
 		const config = new Config;
 
 		return config.getPlace(this.path, this.line, this.lines);
+	}
+
+	/**
+	 * get attribute place
+	 */
+	attributePlace(): Place {
+		const attribute = new Attribute;
+
+		return attribute.getPlace(this.path, this.line, this.lines);
 	}
 
 	/**
