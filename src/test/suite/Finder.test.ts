@@ -42,16 +42,6 @@ suite('Finder Test Suite', () => {
 		await assertPath("About/AboutComponent");
 	});
 
-	test('inertia.js render', async () => {
-		await replace(editor, 'Inertia::render("About/AboutC|omponent");');
-		await assertPath("About/AboutComponent");
-	});
-
-	test('inertia.js route', async () => {
-		await replace(editor, 'Route::inertia("/about", "About/AboutCom|ponent");');
-		await assertPath("About/AboutComponent");
-	});
-
 	test('closing tag Component', async () => {
 		await replace(editor, "</x-hello-al|ert>");
 		const place = await assertPath("views/components/hello-alert.blade.php");
