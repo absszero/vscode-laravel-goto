@@ -8,6 +8,7 @@ import { Router } from './Router';
 import { Language } from './Language';
 import { Blade } from './Blade';
 import { Config } from './Config';
+import { Inertia } from './Inertia';
 import { ClassName } from './ClassName';
 import { Attribute } from './Attribute';
 
@@ -40,7 +41,7 @@ export class Finder {
 			this.controllerPlace.bind(this),
 			this.classNamePlace.bind(this),
 			this.staticPlace.bind(this),
-			this.inertiajsPlace.bind(this),
+			this.inertiaPlace.bind(this),
 			this.livewirePlace.bind(this),
 			this.componentPlace.bind(this),
 			this.commandPlace.bind(this),
@@ -261,22 +262,10 @@ export class Finder {
 	/**
 	 * get Inertia.js place
 	 */
-	inertiajsPlace(place: Place): Place {
-		const patterns = [
-			/Route::inertia\s*\([^,]+,\s*['"]([^'"]+)/,
-			/Inertia::render\s*\(\s*['"]([^'"]+)/,
-			/inertia\s*\(\s*['"]([^'"]+)/,
-		];
+	inertiaPlace(): Place {
+		const inertia = new Inertia;
 
-		for (const pattern of patterns) {
-			const match = pattern.exec(this.line) ?? pattern.exec(this.lines);
-			if ((match && match[1] === this.path)) {
-				place.path = this.path;
-				return place;
-			}
-		}
-
-		return place;
+		return inertia.getPlace(this.path, this.line, this.lines);
 	}
 
 	/**

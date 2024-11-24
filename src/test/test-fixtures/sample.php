@@ -112,6 +112,8 @@ Route::controller('HelloController')->group(function () {
 
 Route::inertia('/about', 'About/AboutComponent');
 
+Route::inertia('/about', component: 'About/AboutComponent');
+
 return Inertia::render('About/AboutComponent');
 
 return inertia('About/AboutComponent');
