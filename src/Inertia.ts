@@ -3,11 +3,11 @@ import { Place } from './Place';
 export class Inertia {
 	static readonly patterns = [
 		/Route::inertia\s*\([^,]+,\s*['"]([^'"]+)/,
-		/Route::inertia\s*\([^,]+,\s*component:\s*['"]([^'"]+)/,
+		/Route::inertia\s*\([^,]+,\s*component\s*:\s*['"]([^'"]+)/,
 		/Inertia::render\s*\(\s*['"]([^'"]+)/,
 		/Inertia::render\s*\(\s*component\s*:\s*['"]([^'"]+)/,
 		/inertia\s*\(\s*['"]([^'"]+)/,
-		/inertia\s*\(\s*component:\s*['"]([^'"]+)/,
+		/inertia\s*\(\s*component\s*:\s*['"]([^'"]+)/,
 	];
 
 	public getPlace(path: string, line: string, lines = ''): Place {
