@@ -17,5 +17,8 @@ suite('ClassName Test Suite', () => {
 		// Test case 3: Valid ClassName with leading backslash
 		place = interpreter.getPlace('\\App\\Models\\Comment', 'new \\App\\Models\\Comment');
 		assert.strictEqual(place.path, 'app\\Models\\Comment.php');
+
+		place = interpreter.getPlace('Livewire/Admin/Elevator/Elevator', '{{-- "Livewire/Admin/Elevator/Elevator" --}}');
+		assert.strictEqual(place.path, 'Livewire\\Admin\\Elevator\\Elevator.php');
 	});
 });
