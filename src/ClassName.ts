@@ -2,8 +2,7 @@ import { Place } from './Place';
 
 export class ClassName {
 	static readonly patterns = [
-		/([A-Z][\w]+[\\])+[A-Z][\w]+/,
-		/([A-Z][\w]+[/])+[A-Z][\w]+/,
+		/([A-Z][\w]+[/\\])+[A-Z][\w]+/,
 	];
 
 	public getPlace(path: string, line: string, lines = ''): Place {
