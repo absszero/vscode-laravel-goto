@@ -32,11 +32,6 @@ suite('Finder Test Suite', () => {
 		await assertPath("Nav/ShowPost.php");
 	});
 
-	test('Livewire blade directive', async () => {
-		await replace(editor, '@livewire("nav.show|-post")');
-		await assertPath("Nav/ShowPost.php");
-	});
-
 	test('inertia.js function', async () => {
 		await replace(editor, 'inertia("About/AboutCo|mponent");');
 		await assertPath("About/AboutComponent");

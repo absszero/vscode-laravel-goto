@@ -9,6 +9,7 @@ import { Language } from './Language';
 import { Blade } from './Blade';
 import { Config } from './Config';
 import { Inertia } from './Inertia';
+import { Livewire } from './Livewire';
 import { ClassName } from './ClassName';
 import { Attribute } from './Attribute';
 
@@ -39,7 +40,6 @@ export class Finder {
 			this.envPlace.bind(this),
 			this.middlewarePlace.bind(this), // before controllerPlace
 			this.controllerPlace.bind(this),
-			this.classNamePlace.bind(this),
 			this.staticPlace.bind(this),
 			this.inertiaPlace.bind(this),
 			this.livewirePlace.bind(this),
@@ -49,6 +49,7 @@ export class Finder {
 			this.routePlace.bind(this),
 			this.attributePlace.bind(this),
 			this.bladePlace.bind(this),
+			this.classNamePlace.bind(this),
 		];
 
 		let place = new Place({ path: '', paths: new Map ,location: '', uris: [] });
@@ -271,34 +272,10 @@ export class Finder {
 	/**
 	 * get Livewire place
 	 */
-	livewirePlace(place: Place): Place {
-		const patterns = [
-			/livewire:([^\s/>]+)/,
-			/@livewire\s*\(\s*['"]([^"']+)/,
-		];
+	livewirePlace(): Place {
+		const livewire = new Livewire;
 
-		const snakeToCamel = (str: string) => str.toLowerCase()
-			.replace(/([-_.][a-z])/g, group => group
-				.toUpperCase()
-				.replace('-', '')
-				.replace('_', '')
-				.replace('.', '/')
-			);
-
-		for (const pattern of patterns) {
-			const match = pattern.exec(this.line) ?? pattern.exec(this.lines);
-			if (null === match) {
-				continue;
-			}
-
-			if ((match && this.path.includes(match[1]))) {
-				place.path = snakeToCamel(match[1]);
-				place.path = place.path.charAt(0).toUpperCase() + place.path.slice(1) + '.php';
-				return place;
-			}
-		}
-
-		return place;
+		return livewire.getPlace(this.path, this.line, this.lines);
 	}
 
 	/**
