@@ -6,11 +6,13 @@ import { warn, error } from './Logging';
 
 interface RouteRow {
     name: string;
+		uri: string;
     action: string;
 }
 
 export class Router {
-	static routes = new Map<string, Place>;
+	static namedRoutes = new Map<string, Place>;
+	static uriRoutes = new Map<string, Place>;
 
 	/**
 	 * [export description]
@@ -18,7 +20,16 @@ export class Router {
 	 * @return  {Map<string, Place>}              [return description]
 	 */
 	public all(): Map<string, Place> {
-		return Router.routes;
+		return Router.namedRoutes;
+	}
+
+	/**
+	 * [export description]
+	 *
+	 * @return  {Map<string, Place>}              [return description]
+	 */
+	public uris(): Map<string, Place> {
+		return Router.uriRoutes;
 	}
 
 	public watch() : FileSystemWatcher {
@@ -32,7 +43,8 @@ export class Router {
 	}
 
 	public async update() {
-		Router.routes = new Map;
+		Router.namedRoutes = new Map;
+		Router.uriRoutes = new Map;
 
 		const uris = await workspace.findFiles(join('**', 'artisan'), 1);
 		if (uris.length === 0) {
@@ -49,10 +61,16 @@ export class Router {
 			const routeRows = JSON.parse(raw.stdout.toString()) as RouteRow[];
 			routeRows.forEach(route => {
 				const [path, action] = route.action.split('@');
-				const place = new Place({ path: path, location: '@' + action, uris: [] });
+				// Closure routes do not have a controller
+				if ('Closure' === path) {
+					return;
+				}
+
+				const place = new Place({ path: path, location: action ? '@' + action : '', uris: [] });
 				place.path = workspace.class2path(place.path);
 
-				Router.routes.set(route.name, place);
+				Router.namedRoutes.set(route.name, place);
+				Router.uriRoutes.set(route.uri, place);
 			});
 		} catch (err) {
 				if (err instanceof Error) {

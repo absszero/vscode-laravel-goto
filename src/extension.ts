@@ -4,7 +4,8 @@ import Command from './Command';
 import { Router } from './Router';
 import { setDevMode } from './Logging';
 import { IOpenAllArgs} from './IOpenAllArgs';
-import { newWindow, openAllFiles} from './OpenCommand';
+import { newWindow, openAllFiles } from './OpenCommand';
+import controllerCommand from './ControllerCommand';
 
 export async function activate(context: vscode.ExtensionContext) {
 	setDevMode(context.extensionMode);
@@ -22,6 +23,12 @@ export async function activate(context: vscode.ExtensionContext) {
 	);
 	context.subscriptions.push(newWindowDispose);
 	await openAllFiles(context);
+
+	const controllerDispose = vscode.commands.registerCommand(
+		'extension.vscode-laravel-goto.controller',
+		controllerCommand
+	);
+	context.subscriptions.push(controllerDispose);
 
 	const router = new Router;
 	await router.update();
