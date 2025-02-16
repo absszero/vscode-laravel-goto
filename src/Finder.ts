@@ -350,7 +350,6 @@ export class Finder {
 	/**
 	 * get route place
 	 */
-	// eslint-disable-next-line @typescript-eslint/require-await
 	async routePlace(place: Place): Promise<Place> {
 		const patterns = [
 			/route\(\s*['"]([^'"]+)/,
