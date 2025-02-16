@@ -1,3 +1,5 @@
+name: Run test
+
 on:
   pull_request
 
