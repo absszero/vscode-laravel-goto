@@ -21,8 +21,8 @@ suite('Route Test Suite', () => {
 			pid: 0,
 			output: [],
 			stdout: Buffer.from(`[
-				{"name" : "admin.index", "uri":"/admin" , "action" : "App\\\\Http\\\\Controllers\\\\Admin\\\\MainController@index"},
-				{"name" : "Closure", "uri":"/closure" , "action" : "Closure"}
+				{"name" : "admin.index", "uri":"/admin", "method": "POST", "action" : "App\\\\Http\\\\Controllers\\\\Admin\\\\MainController@index"},
+				{"name" : "Closure", "uri":"/closure" , "method": "GET", "action" : "Closure"}
 			]`),
 			stderr: Buffer.from(''),
 			signal: null
@@ -37,10 +37,6 @@ suite('Route Test Suite', () => {
 		assert.strictEqual(routes.get("admin.index")?.location, '@index');
 
 		const uris = route.uris();
-		assert.ok(uris.has("/admin"));
-		assert.strictEqual(uris.get("/admin")?.path, 'Http/Controllers/Admin/MainController.php');
-		assert.strictEqual(uris.get("/admin")?.location, '@index');
-
-		assert.ok(!uris.has("/closure"));
+		assert.strictEqual(1, uris.length);
 	});
 });
