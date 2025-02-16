@@ -45,6 +45,10 @@ Route::resource('photo', 'HelloController', ['only' => [
 ]]);
 ```
 
+### Go to Controller via Uris
+
+![](go-to-controller.gif)
+
 ### Go to Controller from route helper
 
 ![](route.gif)
