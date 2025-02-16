@@ -37,7 +37,7 @@
 			},
 			{
 				"command": "extension.vscode-laravel-goto.controller",
-				"title": "Laravel Goto: Go to Controller via Uri"
+				"title": "Laravel Goto: Go to Controller via Uris"
 			}
 		],
 		"menus": {
