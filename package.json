@@ -2,7 +2,7 @@
 	"name": "vscode-laravel-goto",
 	"displayName": "Laravel Goto",
 	"description": "Go to various Laravel files",
-	"version": "4.31.0",
+	"version": "4.31.1",
 	"publisher": "absszero",
 	"license": "MIT",
 	"icon": "icon.png",
@@ -34,6 +34,10 @@
 			{
 				"command": "extension.vscode-laravel-goto",
 				"title": "Laravel Goto"
+			},
+			{
+				"command": "extension.vscode-laravel-goto.controller",
+				"title": "Laravel Goto: Go to Controller via Uris"
 			}
 		],
 		"menus": {
@@ -145,21 +149,22 @@
 		"watch": "tsc -watch -p ./",
 		"pretest": "npm run compile",
 		"test": "node ./out/test/runTest.js",
-		"lint": "eslint -c .eslintrc.js --ext .ts ./src"
+		"lint": "eslint src"
 	},
 	"devDependencies": {
-		"@types/mocha": "^10.0.6",
-		"@types/node": "18.x",
+		"@stylistic/eslint-plugin": "^3.1.0",
+		"@types/mocha": "^10.0.10",
+		"@types/node": "20.x",
 		"@types/sinon": "^10.0.17",
 		"@types/vscode": "^1.76.0",
-		"@typescript-eslint/eslint-plugin": "^6.15.0",
-		"@typescript-eslint/parser": "^6.15.0",
+		"@typescript-eslint/eslint-plugin": "^8.22.0",
+		"@typescript-eslint/parser": "^8.22.0",
 		"@vscode/test-electron": "^2.3.8",
-		"esbuild": "^0.19.2",
-		"eslint": "^7.32.0",
+		"esbuild": "^0.25",
+		"eslint": "^9.19.0",
 		"glob": "^10.3.10",
 		"mocha": "^10.2.0",
 		"sinon": "^16.0.0",
-		"typescript": "^5.3.3"
+		"typescript": "5.5"
 	}
 }

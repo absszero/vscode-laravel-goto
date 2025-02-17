@@ -33,7 +33,7 @@ export class Blade {
 	static readonly multiFragmentsPatterns = [
 		/->fragments\(\s*\[(\s*['"][^'"]+['"]\s*[,]?\s*){2,}\s*\]/,
 		/->fragmentsIf\(\s*.*,\s*\[(\s*['"][^'"]+['"]\s*[,]?\s*){2,}\s*\]/,
-	]
+	];
 
 	public getPlace(path: string, line: string, lines = ''): Place {
 		let place = new Place({ path: '', paths: new Map, location: '', uris: [] });

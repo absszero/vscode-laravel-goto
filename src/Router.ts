@@ -3,14 +3,12 @@ import * as workspace from './Workspace';
 import { join } from 'path';
 import { FileSystemWatcher } from 'vscode';
 import { warn, error } from './Logging';
-
-interface RouteRow {
-    name: string;
-    action: string;
-}
+import { IRouteRow } from './IRouteRow';
+import { RouteItem } from './RouteItem';
 
 export class Router {
-	static routes = new Map<string, Place>;
+	static namedRoutes = new Map<string, Place>;
+	static uriRoutes = new Array<RouteItem>;
 
 	/**
 	 * [export description]
@@ -18,7 +16,16 @@ export class Router {
 	 * @return  {Map<string, Place>}              [return description]
 	 */
 	public all(): Map<string, Place> {
-		return Router.routes;
+		return Router.namedRoutes;
+	}
+
+	/**
+	 * [export description]
+	 *
+	 * @return  {Array<RouteItem>}              [return description]
+	 */
+	public uris(): RouteItem[] {
+		return Router.uriRoutes;
 	}
 
 	public watch() : FileSystemWatcher {
@@ -32,7 +39,8 @@ export class Router {
 	}
 
 	public async update() {
-		Router.routes = new Map;
+		Router.namedRoutes = new Map;
+		Router.uriRoutes = [];
 
 		const uris = await workspace.findFiles(join('**', 'artisan'), 1);
 		if (uris.length === 0) {
@@ -46,13 +54,19 @@ export class Router {
 			return;
 		}
 		try {
-			const routeRows = JSON.parse(raw.stdout.toString()) as RouteRow[];
+			const routeRows = JSON.parse(raw.stdout.toString()) as IRouteRow[];
 			routeRows.forEach(route => {
 				const [path, action] = route.action.split('@');
-				const place = new Place({ path: path, location: '@' + action, uris: [] });
+				// Closure routes do not have a controller
+				if ('Closure' === path) {
+					return;
+				}
+
+				const place = new Place({ path: path, location: action ? '@' + action : '', uris: [] });
 				place.path = workspace.class2path(place.path);
 
-				Router.routes.set(route.name, place);
+				Router.namedRoutes.set(route.name, place);
+				Router.uriRoutes.push(new RouteItem(route, place));
 			});
 		} catch (err) {
 				if (err instanceof Error) {
