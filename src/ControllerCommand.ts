@@ -42,6 +42,10 @@ export default async function () {
 		}
 
 		const place = item.place;
+		if (undefined === place) {
+			return;
+		}
+
 		if (place.path) {
 			place.uris = await findFiles('**/' + place.path);
 		}
