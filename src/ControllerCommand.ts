@@ -8,13 +8,30 @@ import { error } from './Logging';
 export default async function () {
 	const uris = (new Router).uris();
 	const quickPick = vscode.window.createQuickPick<RouteItem>();
-	quickPick.items = Array.from(uris.values());
+	quickPick.matchOnDetail = true;
+
+	// insert a separator between difference controllers
+	let lastController = '';
+	const items: RouteItem[] = [];
+	Array.from(uris.values()).forEach((item) => {
+		if (item.controller !== lastController) {
+			lastController = item.controller;
+			const separator = new RouteItem();
+			separator.label = item.controller;
+			separator.kind = vscode.QuickPickItemKind.Separator;
+			items.push(separator);
+		}
+		items.push(item);
+	});
+	quickPick.items = items;
 
 	if (0 === quickPick.items.length) {
 		error('Go to Controller', 'No routes found.');
 		await vscode.window.showInformationMessage('No routes found.');
 		return;
 	}
+
+	quickPick.placeholder = 'Select a route';
 
 	quickPick.onDidAccept(async () => {
 		quickPick.hide();
