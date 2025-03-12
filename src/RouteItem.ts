@@ -15,8 +15,11 @@ export class RouteItem implements QuickPickItem {
 		this.label = '';
 		this.controller = '';
 		if (route) {
-			this.label = route.uri;
-			this.description = route.method;
+			if ('GET|HEAD' === route.method) {
+				route.method = 'GET';
+			}
+
+			this.label = route.method + ' ' + route.uri;
 			this.detail = route.action;
 			this.controller = route.action.split('@')[0];
 		}
