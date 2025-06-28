@@ -33,6 +33,11 @@ export default async function () {
 
 	quickPick.placeholder = 'Select a route';
 
+	quickPick.onDidChangeValue((value) => {
+		if (value.startsWith('/')) {
+			quickPick.value = value.slice(1);
+		}
+	});
 	quickPick.onDidAccept(async () => {
 		quickPick.hide();
 
