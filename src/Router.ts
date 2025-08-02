@@ -8,7 +8,7 @@ import { RouteItem } from './RouteItem';
 
 export class Router {
 	static namedRoutes = new Map<string, Place>;
-	static uriRoutes = new Array<RouteItem>;
+	static uriRoutes = new Set<RouteItem>();
 
 	/**
 	 * [export description]
@@ -22,9 +22,9 @@ export class Router {
 	/**
 	 * [export description]
 	 *
-	 * @return  {Array<RouteItem>}              [return description]
+	 * @return  {Set<RouteItem>}              [return description]
 	 */
-	public uris(): RouteItem[] {
+	public uris(): Set<RouteItem> {
 		return Router.uriRoutes;
 	}
 
@@ -40,7 +40,7 @@ export class Router {
 
 	public async update() {
 		Router.namedRoutes = new Map;
-		Router.uriRoutes = [];
+		Router.uriRoutes = new Set;
 
 		const uris = await workspace.findFiles(join('**', 'artisan'), 1);
 		if (uris.length === 0) {
@@ -66,7 +66,7 @@ export class Router {
 				place.path = workspace.class2path(place.path);
 
 				Router.namedRoutes.set(route.name, place);
-				Router.uriRoutes.push(new RouteItem(route, place));
+				Router.uriRoutes.add(new RouteItem(route, place));
 			});
 		} catch (err) {
 				if (err instanceof Error) {
