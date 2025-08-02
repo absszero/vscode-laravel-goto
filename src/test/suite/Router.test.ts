@@ -37,6 +37,6 @@ suite('Route Test Suite', () => {
 		assert.strictEqual(routes.get("admin.index")?.location, '@index');
 
 		const uris = route.uris();
-		assert.strictEqual(1, uris.length);
+		assert.strictEqual(1, uris.size);
 	});
 });
