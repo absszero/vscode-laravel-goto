@@ -2,7 +2,7 @@
 	"name": "vscode-laravel-goto",
 	"displayName": "Laravel Goto",
 	"description": "Go to various Laravel files",
-	"version": "4.32.2",
+	"version": "4.32.3",
 	"publisher": "absszero",
 	"license": "MIT",
 	"icon": "icon.png",
