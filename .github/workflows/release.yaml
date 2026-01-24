@@ -5,6 +5,8 @@ on:
 
 permissions:
   contents: write
+  issues: write
+  pull-requests: write
 
 jobs:
   build:
@@ -29,3 +31,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npx --package semantic-release@25 --package @semantic-release/exec --package @semantic-release/git semantic-release
+
+      - name: Publish to VS Code Marketplace
+        if: success()
+        run: npx vsce publish -p ${{ secrets.VSCE_PAT }}
+      # - name: Publish to Open VSX Registry
+      #   if: success()
+      #   run: npx ovsx publish -p ${{ secrets.OVSX_PAT }}
