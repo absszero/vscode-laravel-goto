@@ -12,7 +12,7 @@
     [
       "@semantic-release/exec",
       {
-        "prepareCmd": "npx vsce package"
+        "prepareCmd": "npx --package @vscode/vsce vsce package"
       }
     ],
     [
