@@ -1,7 +1,7 @@
 # Laravel Goto
 
 [![Visual Studio Marketplace](https://img.shields.io/visual-studio-marketplace/v/absszero.vscode-laravel-goto?style=for-the-badge&label=VS%20Marketplace&logo=visual-studio-code)](https://marketplace.visualstudio.com/items?itemName=absszero.vscode-laravel-goto)
-[![Installs](https://img.shields.io/visual-studio-marketplace/i/absszero.vscode-laravel-goto?style=for-the-badge)](https://marketplace.visualstudio.com/items?itemName=absszero.vscode-laravel-goto)
+![Open VSX Version](https://img.shields.io/open-vsx/v/absszero/vscode-laravel-goto?style=for-the-badge)
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/absszero/vscode-laravel-goto/test.yaml?style=for-the-badge)
 
 Go to various Laravel files.
@@ -172,8 +172,6 @@ Default supported static file extensions:
 To enable moving to Method directly after a Controller is opened. Make sure one of these extensions is installed.
 
 - https://marketplace.visualstudio.com/items?itemName=linyang95.php-symbols
-
-- https://marketplace.visualstudio.com/items?itemName=felixfbecker.php-intellisense
 
 - https://marketplace.visualstudio.com/items?itemName=bmewburn.vscode-intelephense-client
 
