@@ -1,4 +1,4 @@
-name: Publish VSIX to Release
+name: Release
 
 on:
   workflow_dispatch:
@@ -28,4 +28,4 @@ jobs:
       - name: Run Semantic Release & Package Extension
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx semantic-release
+        run: npx --package semantic-release@25 --package @semantic-release/exec --package @semantic-release/git semantic-release
