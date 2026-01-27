@@ -99,20 +99,4 @@ suite('NS Test Suite', () => {
 		let blocks = (new Namespace(editor.document)).blocks(editor.selection);
 		assert.strictEqual(blocks[1].namespace, 'Resource');
 	});
-
-// 	middlewareFor` method to assign middleware to one or more specific methods of a given resource controller:
-
-// ```php
-// Route::resource('users', UserController::class)
-//     ->middlewareFor('show', 'auth');
-
-// Route::apiResource('users', UserController::class)
-//     ->middlewareFor(['show', 'update'], 'auth');
-
-// Route::resource('users', UserController::class)
-//     ->middlewareFor('show', 'auth')
-//     ->middlewareFor('update', 'auth');
-
-// Route::apiResource('users', UserController::class)
-//     ->middlewareFor(['show', 'update'], ['auth', 'verified']);
-// });
+});
