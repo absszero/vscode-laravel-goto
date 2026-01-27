@@ -68,7 +68,35 @@ suite('NS Test Suite', () => {
 				'ind|ex', 'show'
 			]]);
 		});`);
-		const blocks = (new Namespace(editor.document)).blocks(editor.selection);
+		let blocks = (new Namespace(editor.document)).blocks(editor.selection);
+		assert.strictEqual(blocks[1].namespace, 'Resource');
+
+		await replace(editor, `Route::group(['namespace' => 'Resource'], function () {
+			Route::softDeletableResources('photo', 'HelloController', ['only' => [
+				'ind|ex', 'show'
+			]]);
+		});`);
+		blocks = (new Namespace(editor.document)).blocks(editor.selection);
+		assert.strictEqual(blocks[1].namespace, 'Resource');
+	});
+
+	test('route::singleton, route:apiSingleton', async () => {
+		await replace(editor, `Route::group(['namespace' => 'Resource'], function () {
+			Route::resource('photo', 'HelloController', ['only' => [
+				'ind|ex', 'show'
+			]]);
+		});`);
+		let blocks = (new Namespace(editor.document)).blocks(editor.selection);
+		assert.strictEqual(blocks[1].namespace, 'Resource');
+	});
+
+	test('middlewareFor', async () => {
+		await replace(editor, `Route::group(['namespace' => 'Resource'], function () {
+			Route::resource('photo', 'HelloController', ['only' => [
+				'ind|ex', 'show'
+			]]);
+		});`);
+		let blocks = (new Namespace(editor.document)).blocks(editor.selection);
 		assert.strictEqual(blocks[1].namespace, 'Resource');
 	});
 });

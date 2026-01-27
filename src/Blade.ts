@@ -11,7 +11,7 @@ export class Blade {
 		/\b(?:view|text|html|markdown)\b\s*:\s*(['"])([^'"]*)\1/,
 		/view\(\s*['"][^'"]*['"],\s*(['"])([^'"]*)\1/,
 		/['"]layout['"]\s*=>\s*(['"])([^'"]*)\1/,
-		/@include(If\b)?\(\s*(['"])([^'"]*)\2/,
+		/@include(Isolated|If\b)?\(\s*(['"])([^'"]*)\2/,
 		/@extends\(\s*(['"])([^'"]*)\1/,
 		/@include(When|Unless\b)?\([^'"]+(['"])([^'"]+)/,
 		/(resources\/views[^\s'"-]+)/,

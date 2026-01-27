@@ -28,6 +28,8 @@ suite('Finder Test Suite', () => {
 	});
 
 	test('Livewire tag', async () => {
+		const document = await vscode.workspace.openTextDocument({ language: 'blade' });
+		editor = await vscode.window.showTextDocument(document);
 		await replace(editor, '<livewire:nav.sho|w-post>');
 		await assertPath("Nav/ShowPost.php");
 	});
@@ -38,6 +40,8 @@ suite('Finder Test Suite', () => {
 	});
 
 	test('closing tag Component', async () => {
+		const document = await vscode.workspace.openTextDocument({ language: 'blade' });
+		editor = await vscode.window.showTextDocument(document);
 		await replace(editor, "</x-hello-al|ert>");
 		const place = await assertPath("views/components/hello-alert.blade.php");
 		assert.ok(place.paths?.has("View/Components/HelloAlert.php"));
@@ -45,11 +49,15 @@ suite('Finder Test Suite', () => {
 	});
 
 	test('component with namespace', async () => {
+		const document = await vscode.workspace.openTextDocument({ language: 'blade' });
+		editor = await vscode.window.showTextDocument(document);
 		await replace(editor, "<x-namespace::|alert/>");
 		await assertPath("namespace/alert.blade.php");
 	});
 
 	test('component with sub-view', async () => {
+		const document = await vscode.workspace.openTextDocument({ language: 'blade' });
+		editor = await vscode.window.showTextDocument(document);
 		await replace(editor, '<x-form.|input type="error"/>');
 		await assertPath("views/components/form/input.blade.php");
 	});

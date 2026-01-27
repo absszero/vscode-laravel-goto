@@ -12,6 +12,23 @@ suite('Config Test Suite', () => {
 		assert.strictEqual(place.path, "config/app.php");
 	});
 
+	test('facade config with types', () => {
+		let place = config.getPlace('config-key', `Config::string('config-key');`);
+		assert.strictEqual(place.path, "config/config-key.php");
+
+		place = config.getPlace('config-key', `Config::integer('config-key');`);
+		assert.strictEqual(place.path, "config/config-key.php");
+
+		place = config.getPlace('config-key', `Config::float('config-key');`);
+		assert.strictEqual(place.path, "config/config-key.php");
+
+		place = config.getPlace('config-key', `Config::boolean('config-key');`);
+		assert.strictEqual(place.path, "config/config-key.php");
+
+		place = config.getPlace('config-key', `Config::array('config-key');`);
+		assert.strictEqual(place.path, "config/config-key.php");
+	});
+
 	test('config helper', () => {
 		let place = config.getPlace('app', `config('app');`);
 		assert.strictEqual(place.path, "config/app.php");

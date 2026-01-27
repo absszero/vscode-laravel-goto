@@ -71,11 +71,14 @@ suite('Blade Test Suite', () => {
 		assert.strictEqual(place.path, "layouts/app.blade.php");
 	});
 
-	test('@includeIf, @include', () => {
+	test('@includeIf, @include, @includeIsolated', () => {
 		let place = blade.getPlace('view.name', "@include('view.name', ['status' => 'complete'])");
 		assert.strictEqual(place.path, "view/name.blade.php");
 
 		place = blade.getPlace('view.name', "@includeIf('view.name', ['status' => 'complete'])");
+		assert.strictEqual(place.path, "view/name.blade.php");
+
+		place = blade.getPlace('view.name', "@includeIsolated('view.name', ['status' => 'complete'])");
 		assert.strictEqual(place.path, "view/name.blade.php");
 	});
 
