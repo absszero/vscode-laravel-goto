@@ -3,12 +3,18 @@ import { locate, fireGotoSymbolEvent } from './Locator';
 
 export class HoverProvider implements vscode.HoverProvider {
 	static documentFilter() {
-		const php: vscode.DocumentFilter = {
-			language: "php",
-			scheme: "file"
-		};
+		const filter: vscode.DocumentFilter[] = [
+			{
+				language: "php",
+				scheme: "file"
+			},
+			{
+				language: "blade",
+				scheme: "file"
+			}
+		];
 
-		return php;
+		return filter;
 	}
 
 	public async provideHover (document: vscode.TextDocument, position: vscode.Position) {

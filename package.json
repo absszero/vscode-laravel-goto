@@ -24,12 +24,20 @@
 	"sponsor": {
 		"url": "https://ko-fi.com/absszero"
 	},
-	"activationEvents": [
-		"onLanguage:php",
-		"onLanguage:blade"
-	],
 	"main": "./out/extension.js",
 	"contributes": {
+		"languages": [
+			{
+        "id": "blade",
+        "aliases": [
+          "Blade",
+          "blade"
+        ],
+        "extensions": [
+          ".blade.php"
+        ]
+      }
+		],
 		"commands": [
 			{
 				"command": "extension.vscode-laravel-goto",
@@ -140,6 +148,10 @@
 			}
 		]
 	},
+	"activationEvents": [
+		"onLanguage:php",
+		"onLanguage:blade"
+	],
 	"scripts": {
 		"vscode:prepublish": "npm run esbuild-base -- --minify",
 		"esbuild-base": "esbuild ./src/extension.ts --bundle --outfile=out/extension.js --external:vscode --format=cjs --platform=node",
