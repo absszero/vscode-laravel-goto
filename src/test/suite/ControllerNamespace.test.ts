@@ -2,10 +2,10 @@ import * as assert from 'assert';
 import * as vscode from 'vscode';
 import { before, after } from 'mocha';
 import { replace } from './Utils';
-import { Namespace } from '../../NS';
+import { Namespace } from '../../ControllerNamespace';
 
 let editor : vscode.TextEditor;
-suite('NS Test Suite', () => {
+suite('ControllerNamespace Test Suite', () => {
 	before(async () => {
 		const document = await vscode.workspace.openTextDocument({language: 'php'});
 		editor = await vscode.window.showTextDocument(document);
@@ -68,7 +68,7 @@ suite('NS Test Suite', () => {
 				'ind|ex', 'show'
 			]]);
 		});`);
-		const blocks = (new Namespace(editor.document)).blocks(editor.selection);
+		let blocks = (new Namespace(editor.document)).blocks(editor.selection);
 		assert.strictEqual(blocks[1].namespace, 'Resource');
 	});
 });

@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { Namespace, Block } from './NS';
+import { Namespace, Block } from './ControllerNamespace';
 import { Selection } from "./Selection";
 import { Place } from './Place';
 import { Middleware } from './Middleware';
@@ -12,6 +12,7 @@ import { Inertia } from './Inertia';
 import { Livewire } from './Livewire';
 import { ClassName } from './ClassName';
 import { Attribute } from './Attribute';
+import { Log } from './Log';
 
 export class Finder {
 	document: vscode.TextDocument;
@@ -36,6 +37,7 @@ export class Finder {
 		const places = [
 			this.pathHelperPlace.bind(this),
 			this.configPlace.bind(this),
+			this.logPlace.bind(this),
 			this.langPlace.bind(this),
 			this.envPlace.bind(this),
 			this.middlewarePlace.bind(this), // before controllerPlace
@@ -137,7 +139,10 @@ export class Finder {
 	 * get view place
 	 *
 	 */
-	bladePlace(): Place {
+	bladePlace(place: Place,document: vscode.TextDocument): Place {
+		if (document.languageId !== 'blade') {
+			return place;
+		}
 		const blade = new Blade;
 
 		return blade.getPlace(this.path, this.line, this.lines);
@@ -178,6 +183,15 @@ export class Finder {
 		const config = new Config;
 
 		return config.getPlace(this.path, this.line, this.lines);
+	}
+
+	/**
+	 * get log place
+	 */
+	logPlace(): Place {
+		const log = new Log;
+
+		return log.getPlace(this.path, this.line, this.lines);
 	}
 
 	/**
@@ -272,7 +286,10 @@ export class Finder {
 	/**
 	 * get Livewire place
 	 */
-	livewirePlace(): Place {
+	livewirePlace(place: Place, document: vscode.TextDocument): Place {
+		if (document.languageId !== 'blade') {
+			return place;
+		}
 		const livewire = new Livewire;
 
 		return livewire.getPlace(this.path, this.line, this.lines);
