@@ -11,9 +11,8 @@ export class Namespace {
 	patterns = new Map([
 		[/namespace\s*\(\s*(['"])\s*([^'"]+)\1/g, true],
 		[/['"]namespace['"]\s*=>\s*(['"])([^'"]+)\1/g, true],
-		[/(controller)\s*\(\s*['"]?([^'")]+)/g, false],
-		[/resource\s*\(\s*['"][^'"]+['"]\s*,\s*(['"]?)([^,'"]+)/g, false],
-		[/softDeletableResources\s*\(\s*['"][^'"]+['"]\s*,\s*(['"]?)([^,'"]+)/g, false],
+		[/(controller)\s*\(\s*['"]?([^:'")]+)/g, false],
+		[/resource\s*\(\s*['"][^'"]+['"]\s*,\s*(['"]?)([^,:'"]+)/g, false],
 	]);
 	document: vscode.TextDocument;
 	fullText : string;

@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { Namespace, Block } from './NS';
+import { Namespace, Block } from './ControllerNamespace';
 import { Selection } from "./Selection";
 import { Place } from './Place';
 import { Middleware } from './Middleware';
@@ -186,7 +186,7 @@ export class Finder {
 	}
 
 	/**
-	 * get config place
+	 * get log place
 	 */
 	logPlace(): Place {
 		const log = new Log;

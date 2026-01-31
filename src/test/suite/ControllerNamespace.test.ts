@@ -2,10 +2,10 @@ import * as assert from 'assert';
 import * as vscode from 'vscode';
 import { before, after } from 'mocha';
 import { replace } from './Utils';
-import { Namespace } from '../../NS';
+import { Namespace } from '../../ControllerNamespace';
 
 let editor : vscode.TextEditor;
-suite('NS Test Suite', () => {
+suite('ControllerNamespace Test Suite', () => {
 	before(async () => {
 		const document = await vscode.workspace.openTextDocument({language: 'php'});
 		editor = await vscode.window.showTextDocument(document);
@@ -63,34 +63,6 @@ suite('NS Test Suite', () => {
 	});
 
 	test('route::resource', async () => {
-		await replace(editor, `Route::group(['namespace' => 'Resource'], function () {
-			Route::resource('photo', 'HelloController', ['only' => [
-				'ind|ex', 'show'
-			]]);
-		});`);
-		let blocks = (new Namespace(editor.document)).blocks(editor.selection);
-		assert.strictEqual(blocks[1].namespace, 'Resource');
-
-		await replace(editor, `Route::group(['namespace' => 'Resource'], function () {
-			Route::softDeletableResources('photo', 'HelloController', ['only' => [
-				'ind|ex', 'show'
-			]]);
-		});`);
-		blocks = (new Namespace(editor.document)).blocks(editor.selection);
-		assert.strictEqual(blocks[1].namespace, 'Resource');
-	});
-
-	test('route::singleton, route:apiSingleton', async () => {
-		await replace(editor, `Route::group(['namespace' => 'Resource'], function () {
-			Route::resource('photo', 'HelloController', ['only' => [
-				'ind|ex', 'show'
-			]]);
-		});`);
-		let blocks = (new Namespace(editor.document)).blocks(editor.selection);
-		assert.strictEqual(blocks[1].namespace, 'Resource');
-	});
-
-	test('middlewareFor', async () => {
 		await replace(editor, `Route::group(['namespace' => 'Resource'], function () {
 			Route::resource('photo', 'HelloController', ['only' => [
 				'ind|ex', 'show'
