@@ -1,6 +1,6 @@
 import { Place } from './Place';
 import { class2path, getFileContent } from './Workspace';
-import { warn } from './Logging';
+import { warn } from './LogManager';
 
 
 export class Middleware {

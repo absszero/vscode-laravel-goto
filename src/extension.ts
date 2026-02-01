@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { HoverProvider } from './HoverProvider';
 import Command from './Command';
 import { Router } from './Router';
-import { setDevMode } from './Logging';
+import { setDevMode } from './LogManager';
 import { IOpenAllArgs} from './IOpenAllArgs';
 import { newWindow, openAllFiles } from './OpenCommand';
 import controllerCommand from './ControllerCommand';

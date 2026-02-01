@@ -1,8 +1,8 @@
 import * as assert from 'assert';
-import { Log } from '../../Log';
+import { Logging } from '../../Logging';
 
 suite('log Test Suite', () => {
-	const log = new Log;
+	const log = new Logging;
 
 	test('channel', () => {
 		const place = log.getPlace('slack', "Log::channel('slack')");
