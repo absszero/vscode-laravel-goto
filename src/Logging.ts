@@ -1,53 +1,39 @@
-import * as vscode from 'vscode';
-import { ExtensionMode } from 'vscode';
+import { Place } from './Place';
 
 export class Logging {
-    static devMode = false;
-    static debug: boolean;
-    static files: string;
-    static channel: vscode.LogOutputChannel;
+	static readonly patterns = [
+		/Log::channel[^'"]*['"]([^'"]*)/g,
+	];
 
-    public static isEnabled(): boolean {
-        if (undefined === Logging.debug) {
-            Logging.debug = vscode.workspace.getConfiguration().get('laravelGoto.debug', false);
-        }
+	static readonly multiChannelPatterns = [
+		/Log::stack\(\[(\s*['"][^'"]+['"]\s*[,]?\s*){2,}\]/,
+	];
 
-        if (undefined === Logging.channel) {
-            Logging.channel = vscode.window.createOutputChannel("Laravel Goto", {log: true});
-        }
+	public getPlace(path: string, line: string, lines = ''): Place {
+		const place = new Place({ path: '', paths: new Map, location: '', uris: [] });
 
-        return (Logging.debug || Logging.devMode);
-    }
-}
+		for (const pattern of Logging.patterns) {
+			const matches = [...line.matchAll(pattern), ...lines.matchAll(pattern)];
+			for (const match of matches) {
+				if (match[1] !== path) {
+					continue;
+				}
+				return this.setPlace(place, match[1]);
+			}
+		}
 
-/**
- *
- * @param mode ExtensionMode
- */
-export function setDevMode(mode: ExtensionMode) {
-    Logging.devMode = (mode === vscode.ExtensionMode.Development);
-}
+		for (const pattern of Logging.multiChannelPatterns) {
+			if (pattern.exec(line) ?? pattern.exec(lines)) {
+				return this.setPlace(place, path);
+			}
+		}
 
-export function info(caption: string, ...args : string[]) {
-    if (Logging.isEnabled()) {
-        const message = caption + ': ' + args.join(', ');
-        console.info(message);
-        Logging.channel.info(message);
-    }
-}
+		return place;
+	}
 
-export function error(caption: string, ...args : string[]) {
-    if (Logging.isEnabled()) {
-        const message = caption + ': ' + args.join(', ');
-        console.error(message);
-        Logging.channel.error(message);
-    }
-}
-
-export function warn(caption: string, ...args : string[]) {
-    if (Logging.isEnabled()) {
-        const message = caption + ': ' + args.join(', ');
-        console.warn(message);
-        Logging.channel.warn(message);
-    }
+	private setPlace(place: Place, location: string): Place {
+		place.path = 'config/logging.php';
+		place.location = "(['\"]{1})" + location + "\\1\\s*=>";
+		return place;
+	}
 }

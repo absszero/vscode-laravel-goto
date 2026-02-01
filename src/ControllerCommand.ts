@@ -3,7 +3,7 @@ import { Router } from './Router';
 import { findFiles } from './Workspace';
 import { fireGotoSymbolEvent } from './Locator';
 import { RouteItem } from './RouteItem';
-import { error } from './Logging';
+import { error } from './LogManager';
 
 export default async function () {
 	const uris = (new Router).uris();
