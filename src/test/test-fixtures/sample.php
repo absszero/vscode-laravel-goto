@@ -164,3 +164,5 @@ view('dashboard', ['users' => $users])->fragments(['user-list', 'comment-list'])
 
 view('dashboard', ['users' => $users])
 ->fragmentsIf($request->hasHeader('HX-Request'), ['user-list', 'comment-list']);
+
+to_action([UserController::class, 'show'], ['user' => 1]);

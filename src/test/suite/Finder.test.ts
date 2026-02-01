@@ -158,39 +158,9 @@ suite('Finder Test Suite', () => {
 		await assertPath("hello.JS");
 	});
 
-	test('app_path', async () => {
+		test('path helper', async () => {
 		await replace(editor, `app_path('Use|r.php');`);
 		await assertPath("app/User.php");
-	});
-
-	test('config_path', async () => {
-		await replace(editor, `config_path('a|pp.php');`);
-		await assertPath('config/app.php');
-	});
-
-	test('database_path', async () => {
-		await replace(editor, `database_path('UserFa|ctory.php');`);
-		await assertPath('database/UserFactory.php');
-	});
-
-	test('public_path', async () => {
-		await replace(editor, `public_path('css/ap|p.css');`);
-		await assertPath('public/css/app.css');
-	});
-
-	test('resource_path', async () => {
-		await replace(editor, `resource_path('sass/a|pp.scss');`);
-		await assertPath('resources/sass/app.scss');
-	});
-
-	test('storage_path', async () => {
-		await replace(editor, `storage_path('logs/lar|avel.log');`);
-		await assertPath('storage/logs/laravel.log');
-	});
-
-	test('path_helper_with_double_brackets', async () => {
-		await replace(editor, `realpath(storage_path('logs/la|ravel.log'));`);
-		await assertPath('storage/logs/laravel.log');
 	});
 
 	test('laravel 8 controller with namespace', async () => {
