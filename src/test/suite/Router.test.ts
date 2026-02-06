@@ -29,6 +29,7 @@ suite('Route Test Suite', () => {
 		});
 
 		const route = new Router;
+		Router.isUpdating = false;
 		await route.update();
 		const routes = route.all();
 

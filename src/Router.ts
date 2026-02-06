@@ -9,6 +9,7 @@ import { RouteItem } from './RouteItem';
 export class Router {
 	static namedRoutes = new Map<string, Place>;
 	static uriRoutes = new Set<RouteItem>();
+	static isUpdating = false;
 
 	/**
 	 * [export description]
@@ -39,6 +40,11 @@ export class Router {
 	}
 
 	public async update() {
+		if (Router.isUpdating) {
+			return;
+		}
+		Router.isUpdating = true;
+
 		Router.namedRoutes = new Map;
 		Router.uriRoutes = new Set;
 
@@ -73,6 +79,8 @@ export class Router {
 					error('collect routes failed', err.message);
 				}
 			return;
+		} finally {
+			Router.isUpdating = false;
 		}
 	}
 }
