@@ -13,6 +13,7 @@ import { Livewire } from './Livewire';
 import { ClassName } from './ClassName';
 import { Attribute } from './Attribute';
 import { Logging } from './Logging';
+import { Helper } from './Helper';
 
 export class Finder {
 	document: vscode.TextDocument;
@@ -35,7 +36,7 @@ export class Finder {
 	 */
 	public async getPlace(): Promise<Place> {
 		const places = [
-			this.pathHelperPlace.bind(this),
+			this.helperPlace.bind(this),
 			this.configPlace.bind(this),
 			this.loggingPlace.bind(this),
 			this.langPlace.bind(this),
@@ -67,24 +68,11 @@ export class Finder {
 	}
 
 	/**
-	* get path helper place
+	* get helper place
 	*/
-	pathHelperPlace(place: Place): Place {
-		const pattern = /([\w^_]+)_path\(\s*(['"])([^'"]*)\2/;
-		const match = pattern.exec(this.line) ?? pattern.exec(this.lines);
-
-		if ((match && match[3] === this.path)) {
-			let prefix = match[1] + '/';
-			if ('base/' === prefix) {
-				prefix = '';
-			} else if ('resource/' === prefix) {
-				prefix = 'resources/';
-			}
-
-			place.path = prefix + this.path;
-			return place;
-		}
-
+	helperPlace(place: Place): Place {
+		const helper = new Helper;
+		place = helper.getPlace(this.path, this.line, this.lines);
 		return place;
 	}
 
