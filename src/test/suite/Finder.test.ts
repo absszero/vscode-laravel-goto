@@ -158,7 +158,7 @@ suite('Finder Test Suite', () => {
 		await assertPath("hello.JS");
 	});
 
-		test('path helper', async () => {
+	test('path helper', async () => {
 		await replace(editor, `app_path('Use|r.php');`);
 		await assertPath("app/User.php");
 	});
