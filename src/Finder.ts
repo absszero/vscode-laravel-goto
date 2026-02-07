@@ -12,7 +12,7 @@ import { Inertia } from './Inertia';
 import { Livewire } from './Livewire';
 import { ClassName } from './ClassName';
 import { Attribute } from './Attribute';
-import { Log } from './Log';
+import { Logging } from './Logging';
 import { Helper } from './Helper';
 
 export class Finder {
@@ -38,7 +38,7 @@ export class Finder {
 		const places = [
 			this.helperPlace.bind(this),
 			this.configPlace.bind(this),
-			this.logPlace.bind(this),
+			this.loggingPlace.bind(this),
 			this.langPlace.bind(this),
 			this.envPlace.bind(this),
 			this.middlewarePlace.bind(this), // before controllerPlace
@@ -176,10 +176,10 @@ export class Finder {
 	/**
 	 * get log place
 	 */
-	logPlace(): Place {
-		const log = new Log;
+	loggingPlace(): Place {
+		const logging = new Logging;
 
-		return log.getPlace(this.path, this.line, this.lines);
+		return logging.getPlace(this.path, this.line, this.lines);
 	}
 
 	/**

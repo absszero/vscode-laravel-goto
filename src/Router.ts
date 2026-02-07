@@ -2,7 +2,7 @@ import { Place } from './Place';
 import * as workspace from './Workspace';
 import { join } from 'path';
 import { FileSystemWatcher } from 'vscode';
-import { warn, error } from './Logging';
+import { warn, error } from './LogManager';
 import { IRouteRow } from './IRouteRow';
 import { RouteItem } from './RouteItem';
 
