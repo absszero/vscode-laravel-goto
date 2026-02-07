@@ -1,6 +1,6 @@
 import { Place } from './Place';
 import * as workspace from './Workspace';
-import { info, warn } from './Logging';
+import { info, warn } from './LogManager';
 import { readdir, stat } from 'fs/promises';
 import { Uri } from 'vscode';
 
