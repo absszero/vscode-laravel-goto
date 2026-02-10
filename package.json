@@ -5,7 +5,7 @@
 	"version": "4.36.0",
 	"publisher": "absszero",
 	"license": "MIT",
-	"icon": "icon.png",
+	"icon": "doc/icon.png",
 	"repository": "https://github.com/absszero/vscode-laravel-goto",
 	"engines": {
 		"vscode": "^1.76.0"
@@ -46,6 +46,10 @@
 			{
 				"command": "extension.vscode-laravel-goto.controller",
 				"title": "Laravel Goto: Go to Controller via Uris"
+			},
+			{
+				"command": "extension.vscode-laravel-goto.log",
+				"title": "Laravel Goto: Go to Log File"
 			}
 		],
 		"menus": {

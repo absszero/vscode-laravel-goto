@@ -6,6 +6,7 @@ import { setDevMode } from './LogManager';
 import { IOpenAllArgs} from './IOpenAllArgs';
 import { newWindow, openAllFiles } from './OpenCommand';
 import controllerCommand from './ControllerCommand';
+import logCommand from './LogCommand';
 
 export async function activate(context: vscode.ExtensionContext) {
 	setDevMode(context.extensionMode);
@@ -28,6 +29,12 @@ export async function activate(context: vscode.ExtensionContext) {
 		controllerCommand
 	);
 	context.subscriptions.push(controllerDispose);
+
+	const logDispose = vscode.commands.registerCommand(
+		'extension.vscode-laravel-goto.log',
+		logCommand
+	);
+	context.subscriptions.push(logDispose);
 
 	const router = new Router;
 	await router.update();
