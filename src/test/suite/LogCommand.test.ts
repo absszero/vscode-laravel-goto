@@ -31,12 +31,11 @@ suite('LogCommand Test Suite', () => {
 	});
 
 	test('findLogFiles', async () => {
-		sinon.stub(workspace, 'findFiles').resolves([
-			Uri.parse('file:///path/to/storage/logs/laravel.log')
-		]);
+		const fs = Uri.parse('file:///path/to/storage/logs/laravel.log')
+		sinon.stub(workspace, 'findFiles').resolves([fs]);
 
 		const pathExpression = "storage_path('logs/laravel.log')";
 		const files = await findLogFiles(pathExpression);
-		assert.strictEqual(files[0].fsPath, '/path/to/storage/logs/laravel.log');
+		assert.strictEqual(files[0].fsPath, fs.fsPath);
 	});
 });
