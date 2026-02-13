@@ -6,7 +6,7 @@
 
 Go to various Laravel files.
 
-![](example.gif)
+![](doc/example.gif)
 
 
 ## Features
@@ -47,17 +47,23 @@ Route::resource('photo', 'HelloController', ['only' => [
 
 ### Go to Controller via Uris
 
-Go to the controller via the "Laravel Goto: Go to Controller via Uris" command.
+Go to the controller via the `Laravel Goto: Go to Controller via Uris` command.
 
-![](go-to-controller.gif)
+![](doc/go-to-controller.gif)
 
 ### Go to Controller from route helper
 
-![](route.gif)
+![](doc/route.gif)
+
+### Go to Log file
+
+Go to the log file via the `Laravel Goto: Go to Log file` command.
+
+![](doc/go-to-log.png)
 
 ### Go to Middleware
 
-![](middleware.gif)
+![](doc/middleware.gif)
 
 ### Go to Config
 
@@ -92,7 +98,7 @@ trans_choice('messages.apples', 10);
 
 Open all and highlight option.
 
-![](language.gif)
+![](doc/language.gif)
 
 ### Go to .env
 
@@ -102,7 +108,7 @@ env('APP_DEBUG', false);
 
 ### Go to Command
 
-![](command.gif)
+![](doc/command.gif)
 
 
 ### Go to Inertia.js
