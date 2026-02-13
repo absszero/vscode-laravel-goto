@@ -4,10 +4,13 @@ out/**
 !out/extension.js
 src/**
 .gitignore
-vsc-extension-quickstart.md
 **/tsconfig.json
 **/tslint.json
 **/*.map
 **/*.ts
-**/*.gif
+doc/**
+!doc/icon.png
 node_modules/
+.github/**
+.releaserc.json
+eslint.config.mjs
