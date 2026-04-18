@@ -2,7 +2,7 @@ import { Place } from './Place';
 import * as workspace from './Workspace';
 import { join } from 'path';
 import { FileSystemWatcher } from 'vscode';
-import { warn, error } from './LogManager';
+import { warn, error, info } from './LogManager';
 import { IRouteRow } from './IRouteRow';
 import { RouteItem } from './RouteItem';
 
@@ -30,7 +30,7 @@ export class Router {
 	}
 
 	public watch() : FileSystemWatcher {
-		const watcher = workspace.createFileSystemWatcher('**/routes/*.php');
+		const watcher = workspace.createFileSystemWatcher('**/routes/**/*.php');
 		const callback = async () => await (new Router).update();
 		watcher.onDidCreate(callback);
 		watcher.onDidChange(callback);
@@ -40,6 +40,7 @@ export class Router {
 	}
 
 	public async update() {
+		info(this.constructor.name, 'isUpdating', Router.isUpdating.toString());
 		if (Router.isUpdating) {
 			return;
 		}
@@ -50,17 +51,22 @@ export class Router {
 
 		const uris = await workspace.findFiles(join('**', 'artisan'), 1);
 		if (uris.length === 0) {
-			warn('artisan not found');
+			warn(this.constructor.name, 'artisan not found');
+			Router.isUpdating = false;
 			return;
 		}
 
-		const raw = workspace.spawnSync('php', [uris[0].fsPath, 'route:list', '--json']);
+		const args = [uris[0].fsPath, 'route:list', '--json'];
+		info(this.constructor.name, 'artisan command', 'php', args.join(' '));
+		const raw = workspace.spawnSync('php', args);
 		if (raw.status !== 0) {
-			error('route:list failed', raw.stdout.toString());
+			error(this.constructor.name, 'route:list failed', raw.stdout.toString());
+			Router.isUpdating = false;
 			return;
 		}
 		try {
 			const routeRows = JSON.parse(raw.stdout.toString()) as IRouteRow[];
+			info(this.constructor.name, 'route count', routeRows.length.toString());
 			routeRows.forEach(route => {
 				const [path, action] = route.action.split('@');
 				// Closure routes do not have a controller
@@ -76,7 +82,7 @@ export class Router {
 			});
 		} catch (err) {
 				if (err instanceof Error) {
-					error('collect routes failed', err.message);
+					error(this.constructor.name, 'collect routes failed', err.message);
 				}
 			return;
 		} finally {

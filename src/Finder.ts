@@ -128,9 +128,6 @@ export class Finder {
 	 *
 	 */
 	bladePlace(place: Place,document: vscode.TextDocument): Place {
-		if (document.languageId !== 'blade') {
-			return place;
-		}
 		const blade = new Blade;
 
 		return blade.getPlace(this.path, this.line, this.lines);
