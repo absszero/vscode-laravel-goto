@@ -52,7 +52,7 @@ export class Language {
 					uris.push(uri);
 				}
 			} catch (error) {
-				warn('lang file not found', uri.fsPath);
+				warn(this.constructor.name, 'lang file not found', uri.fsPath);
 			}
 
 			place.paths.set('lang/' + filepath, uris);
@@ -66,7 +66,7 @@ export class Language {
 	 */
 	public async init() {
 		this.base = await workspace.findFolder('**/lang');
-		info('lang base', this.base);
+		info(this.constructor.name, 'lang base', this.base);
 		if (this.base === '') {
 			return;
 		}
@@ -74,6 +74,6 @@ export class Language {
 		(await readdir(this.base)).forEach((folder) => {
 			this.langs.push(folder);
 		});
-		info('lang langs', ...this.langs);
+		info(this.constructor.name, 'lang langs', ...this.langs);
 	}
 }
