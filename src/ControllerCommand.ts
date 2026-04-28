@@ -3,9 +3,10 @@ import { Router } from './Router';
 import { findFiles } from './Workspace';
 import { fireGotoSymbolEvent } from './Locator';
 import { RouteItem } from './RouteItem';
-import { error } from './LogManager';
+import { LogManager } from './LogManager';
 
 export default async function () {
+	const logManager = new LogManager('ControllerCommand');
 	const uris = (new Router).uris();
 	const quickPick = vscode.window.createQuickPick<RouteItem>();
 	quickPick.matchOnDetail = true;
@@ -26,7 +27,7 @@ export default async function () {
 	quickPick.items = items;
 
 	if (0 === quickPick.items.length) {
-		error('Go to Controller', 'No routes found.');
+		logManager.error('No routes found.');
 		await vscode.window.showInformationMessage('No routes found.');
 		return;
 	}
