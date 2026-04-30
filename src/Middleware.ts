@@ -1,10 +1,11 @@
 import { Place } from './Place';
 import { class2path, getFileContent } from './Workspace';
-import { warn } from './LogManager';
+import { LogManager } from './LogManager';
 
 
 export class Middleware {
 	httpKernel: string | undefined;
+	private logManager: LogManager = new LogManager('Middleware');
 /**
  * [export description]
  *
@@ -16,7 +17,7 @@ export class Middleware {
 		if (this.httpKernel === undefined) {
 			this.httpKernel = await getFileContent('**/Http/Kernel.php');
 		}
-		warn(this.constructor.name, 'http kernel found');
+		this.logManager.warn('http kernel found');
 
 		if (!this.httpKernel) {
 			return middlewares;

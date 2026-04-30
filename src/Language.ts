@@ -1,12 +1,14 @@
 import { Place } from './Place';
 import * as workspace from './Workspace';
-import { info, warn } from './LogManager';
+import { LogManager } from './LogManager';
 import { readdir, stat } from 'fs/promises';
 import { Uri } from 'vscode';
 
 export class Language {
-    static filename = (vendor: string, file: string) => `lang/${vendor}${file}.php`;
-    static langFilename = (vendor: string, lang: string, file: string) => `${vendor}${lang}/${file}.php`;
+	private logManager: LogManager = new LogManager('Language');
+
+	static filename = (vendor: string, file: string) => `lang/${vendor}${file}.php`;
+	static langFilename = (vendor: string, lang: string, file: string) => `${vendor}${lang}/${file}.php`;
 	base: string | undefined;
 	langs: string[] = [];
 
@@ -52,7 +54,7 @@ export class Language {
 					uris.push(uri);
 				}
 			} catch (error) {
-				warn(this.constructor.name, 'lang file not found', uri.fsPath);
+				this.logManager.warn('lang file not found', uri.fsPath);
 			}
 
 			place.paths.set('lang/' + filepath, uris);
@@ -66,7 +68,7 @@ export class Language {
 	 */
 	public async init() {
 		this.base = await workspace.findFolder('**/lang');
-		info(this.constructor.name, 'lang base', this.base);
+		this.logManager.info('lang base', this.base);
 		if (this.base === '') {
 			return;
 		}
@@ -74,6 +76,6 @@ export class Language {
 		(await readdir(this.base)).forEach((folder) => {
 			this.langs.push(folder);
 		});
-		info(this.constructor.name, 'lang langs', ...this.langs);
+		this.logManager.info('lang langs', ...this.langs);
 	}
 }
