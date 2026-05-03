@@ -1,20 +1,24 @@
 # Laravel Goto
 
 [![Visual Studio Marketplace](https://img.shields.io/visual-studio-marketplace/v/absszero.vscode-laravel-goto?style=for-the-badge&label=VS%20Marketplace&logo=visual-studio-code)](https://marketplace.visualstudio.com/items?itemName=absszero.vscode-laravel-goto)
-![Open VSX Version](https://img.shields.io/open-vsx/v/absszero/vscode-laravel-goto?style=for-the-badge)
-![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/absszero/vscode-laravel-goto/test.yaml?style=for-the-badge)
+[![Open VSX Version](https://img.shields.io/open-vsx/v/absszero/vscode-laravel-goto?style=for-the-badge)](https://open-vsx.org/extension/absszero/vscode-laravel-goto)
 
-Go to various Laravel files.
+Quick navigation extension for Laravel projects. Jump to views, controllers, configs, language files and more with a single click.
 
 ![](doc/example.gif)
 
+## Usage
+
+**Method 1:** Hover over any supported text and click the link or press <kbd>Alt</kbd> + <kbd>;</kbd>
+
+**Method 2:** Select text → Right-click → Choose `Laravel Goto`
 
 ## Features
 
-### Go to Blade
+### Views & Components
 
-Go to blade template files.
-
+#### Blade Templates
+Jump to blade view files from:
 ```php
 view('hello_view', ['name' => 'James']);
 
@@ -27,65 +31,77 @@ Route::view('/', 'pages.public.index');
 @extends('layouts.app')
 ```
 
-Go to blade Component files.
-
+#### Blade Components
 ```php
 <x-alert:hello />
 ```
 
-### Go to Controller
+#### Inertia.js
+```php
+Route::inertia('/about', 'About/AboutComponent');
 
-Go to controllers and highlight method.
+Inertia::render('MyComponent');
 
+inertia('About/AboutComponent');
+```
+
+#### Livewire
+```php
+@livewire('nav.show-post')
+
+<livewire:nav.show-post />
+```
+
+---
+
+### Controllers & Routes
+
+#### Controller Actions
+Jump to controllers with method highlighting:
 ```php
 Route::get('/', 'HelloController@index');
 
-Route::resource('photo', 'HelloController', ['only' => [
-  'index', 'show'
-]]);
+Route::resource('photo', 'HelloController', ['only' => ['index', 'show']]);
 ```
 
-### Go to Controller via Uris
+#### Middleware
+![](doc/middleware.gif)
 
-Go to the controller via the `Laravel Goto: Go to Controller via Uris` command.
+#### Route Helpers
+![](doc/route.gif)
+
+#### URI-based Navigation
+Use command `Laravel Goto: Go to Controller via Uris` to browse all routes:
 
 ![](doc/go-to-controller.gif)
 
-### Go to Controller from route helper
+---
 
-![](doc/route.gif)
+### Configuration
 
-### Go to Log file
-
-Go to the log file via the `Laravel Goto: Go to Log file` command.
-
-![](doc/go-to-log.png)
-
-### Go to Middleware
-
-![](doc/middleware.gif)
-
-### Go to Config
-
-Go to config files and highlight option.
-
+#### Config Files
+Jump to config files with option highlighting:
 ```php
 Config::get('app.timezone');
+
 Config::set('app.timezone', 'UTC');
 ```
 
-### Go to Filesystem config
-
-Go to filesystem config file and highlight option.
-
+#### Filesystem Disks
 ```php
 Storage::disk('local')->put('example.txt', 'Contents');
 ```
 
+#### Environment Variables
+```php
+env('APP_DEBUG', false);
+```
 
-### Go to Language
+---
 
-Go to single language file.
+### 🌐 Localization
+
+Jump to language files:
 ```php
 __('messages.welcome');
 
@@ -96,41 +112,18 @@ trans('messages.welcome');
 trans_choice('messages.apples', 10);
 ```
 
-Open all and highlight option.
+Open all matching language files with highlighting:
 
 ![](doc/language.gif)
 
-### Go to .env
+---
 
-```
-env('APP_DEBUG', false);
-```
+### Other Features
 
-### Go to Command
-
+#### Artisan Commands
 ![](doc/command.gif)
 
-
-### Go to Inertia.js
-
-```php
-Route::inertia('/about', 'About/AboutComponent');
-
-Inertia::render('MyComponent');
-
-inertia('About/AboutComponent');
-```
-
-### Go to Livewire
-
-```php
-@livewire('nav.show-post')
-
-<livewire:nav.show-post />
-```
-
-### Go to path helper
-
+#### Path Helpers
 ```php
 app_path('User.php');
 
@@ -147,42 +140,28 @@ resource_path('sass/app.scss');
 storage_path('logs/laravel.log');
 ```
 
-### Go to Static files
-
+#### Static Files
+Jump to static assets:
 ```php
 $file = 'js/hello.js';
 ```
 
-Default supported static file extensions:
+**Supported extensions:** js, ts, jsx, vue, css, scss, sass, less, styl, htm, html, xhtml, xml, log
 
-- js
-- ts
-- jsx
-- vue
-- css
-- scss
-- sass
-- less
-- styl
-- htm
-- html
-- xhtml
-- xml
-- log
+#### Log Files
+Use command `Laravel Goto: Go to Log file`:
 
+![](doc/go-to-log.png)
+
+---
 
 ## Requirements
 
-#### Enable `Go to Symbol in File` for PHP
+### Optional: Enable Symbol Navigation
 
-To enable moving to Method directly after a Controller is opened. Make sure one of these extensions is installed.
+For direct method navigation when opening controllers, install one of these extensions:
 
-- https://marketplace.visualstudio.com/items?itemName=linyang95.php-symbols
+- [PHP Symbols](https://marketplace.visualstudio.com/items?itemName=linyang95.php-symbols)
+- [PHP Intelephense](https://marketplace.visualstudio.com/items?itemName=bmewburn.vscode-intelephense-client)
 
-- https://marketplace.visualstudio.com/items?itemName=bmewburn.vscode-intelephense-client
-
-
-## Usage
-
-- Move cursor on a text, and click the hover content, or press <kbd>Alt</kbd> + <kbd>;</kbd> to run the command.
-- Or Select a text, `Right-Click` to open content menu, Choose `Laravel Goto`.
+---
