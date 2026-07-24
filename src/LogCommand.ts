@@ -111,7 +111,7 @@ export async function findLogFiles(pathExpression: string): Promise<Uri[]> {
 	}
 
 	const relativePath = storagePathMatch[1].slice(0, -4) + '*.log';
-	const logs = await findFiles('**/storage/' + relativePath);
+	const logs = await findFiles('**/storage/' + relativePath, 999);
 	if (logs.length === 0) {
 		return [];
 	}
