@@ -126,6 +126,10 @@ suite('Finder Test Suite', () => {
 	test('.env', async () => {
 		await replace(editor, `env(   'APP_DEB|UG', false);`);
 		await assertPath(".env");
+
+		// case insensitive
+		await replace(editor, `eNv(   'APP_DEB|UG', false);`);
+		await assertPath(".env");
 	});
 
 	test('language', async () => {
@@ -147,6 +151,10 @@ suite('Finder Test Suite', () => {
 		await assertPath("lang/messages.php", undefined, "@lang");
 
 		await replace(editor, `trans('messages.w|elcome');`);
+		await assertPath("lang/messages.php", undefined, "trans");
+
+		// case insensitive
+		await replace(editor, `tRANs('messages.w|elcome');`);
 		await assertPath("lang/messages.php", undefined, "trans");
 
 		await replace(editor, `trans_choice('message|s.apples', 10);`);
@@ -213,6 +221,10 @@ suite('Finder Test Suite', () => {
 		await assertPath('SayHello.php');
 
 		await replace(editor, `command('app:say|-hello --args');`);
+		await assertPath('SayHello.php');
+
+		// case insensitive
+		await replace(editor, `coMMand('app:say|-hello --args');`);
 		await assertPath('SayHello.php');
 	});
 

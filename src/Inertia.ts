@@ -6,8 +6,8 @@ export class Inertia {
 		/Route::inertia\s*\([^,]+,\s*component\s*:\s*['"]([^'"]+)/,
 		/Inertia::render\s*\(\s*['"]([^'"]+)/,
 		/Inertia::render\s*\(\s*component\s*:\s*['"]([^'"]+)/,
-		/inertia\s*\(\s*['"]([^'"]+)/,
-		/inertia\s*\(\s*component\s*:\s*['"]([^'"]+)/,
+		/inertia\s*\(\s*['"]([^'"]+)/i,
+		/inertia\s*\(\s*component\s*:\s*['"]([^'"]+)/i,
 	];
 
 	public getPlace(path: string, line: string, lines = ''): Place {

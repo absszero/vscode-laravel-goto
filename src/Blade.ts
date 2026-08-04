@@ -2,14 +2,14 @@ import { Place } from './Place';
 
 export class Blade {
 	static readonly patterns = [
-		/\b(?:view|markdown)\b\(\s*(['"])([^'"]*)\1/,
-		/[lL]ayout\(\s*(['"])([^'"]*)\1/,
+		/\b(?:view|markdown)\b\(\s*(['"])([^'"]*)\1/i,
+		/[lL]ayout\(\s*(['"])([^'"]*)\1/i,
 		/\$view\s*=\s*(['"])([^'"]*)\1/,
 		/View::exists\(\s*(['"])([^'"]*)\1/,
 		/View::composer[^'"]*(['"])([^'"]*)\1/,
 		/View::creator[^'"]*(['"])([^'"]*)\1/,
-		/\b(?:view|text|html|markdown)\b\s*:\s*(['"])([^'"]*)\1/,
-		/view\(\s*['"][^'"]*['"],\s*(['"])([^'"]*)\1/,
+		/\b(?:view|text|html|markdown)\b\s*:\s*(['"])([^'"]*)\1/i,
+		/view\(\s*['"][^'"]*['"],\s*(['"])([^'"]*)\1/i,
 		/['"]layout['"]\s*=>\s*(['"])([^'"]*)\1/,
 		/@include(Isolated|If\b)?\(\s*(['"])([^'"]*)\2/,
 		/@extends\(\s*(['"])([^'"]*)\1/,
@@ -20,19 +20,19 @@ export class Blade {
 	static readonly multiViewsPatterns = [
 		/View::first\(\[(\s*['"][^'"]+['"]\s*[,]?\s*){2,}\]/,
 		/View::composer\(\[(\s*['"][^'"]+['"]\s*[,]?\s*){2,}\]/,
-		/view\(\[(\s*['"][^'"]+['"]\s*[,]?\s*){2,}\]/,
+		/view\(\[(\s*['"][^'"]+['"]\s*[,]?\s*){2,}\]/i,
 		/@includeFirst\(\[(\s*['"][^'"]+['"]\s*[,]?\s*){2,}\]/,
 		/@each\(['"][^'"]+['"]\s*,[^,]+,[^,]+,[^)]+/,
 	];
 
 	static readonly fragmentPatterns = [
-		/->fragment\(\s*['"]([^'"]+)/,
-		/->fragmentIf\(\s*.*,\s*['"]([^'"]+)/
+		/->fragment\(\s*['"]([^'"]+)/i,
+		/->fragmentIf\(\s*.*,\s*['"]([^'"]+)/i
 	];
 
 	static readonly multiFragmentsPatterns = [
-		/->fragments\(\s*\[(\s*['"][^'"]+['"]\s*[,]?\s*){2,}\s*\]/,
-		/->fragmentsIf\(\s*.*,\s*\[(\s*['"][^'"]+['"]\s*[,]?\s*){2,}\s*\]/,
+		/->fragments\(\s*\[(\s*['"][^'"]+['"]\s*[,]?\s*){2,}\s*\]/i,
+		/->fragmentsIf\(\s*.*,\s*\[(\s*['"][^'"]+['"]\s*[,]?\s*){2,}\s*\]/i,
 	];
 
 	public getPlace(path: string, line: string, lines = ''): Place {

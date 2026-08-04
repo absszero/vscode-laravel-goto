@@ -8,6 +8,10 @@ suite('Blade Test Suite', () => {
 		let place = blade.getPlace('hello_view',  "view('hello_view', ['name' => 'James']);");
 		assert.strictEqual(place.path, 'hello_view.blade.php');
 
+		// case insensitive
+		place = blade.getPlace('hello_view',  "vIEw('hello_view', ['name' => 'James']);");
+		assert.strictEqual(place.path, 'hello_view.blade.php');
+
 		// view file with Namespace
 		place = blade.getPlace('Namespace::hello_view', "view('Namespace::hello_view');");
 		assert.strictEqual(place.path, "hello_view.blade.php");

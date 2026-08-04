@@ -33,6 +33,10 @@ suite('Config Test Suite', () => {
 		let place = config.getPlace('app', `config('app');`);
 		assert.strictEqual(place.path, "config/app.php");
 
+		// case insensitive
+		place = config.getPlace('app', `conFig('app');`);
+		assert.strictEqual(place.path, "config/app.php");
+
 		place = config.getPlace('app.{$var}', "config('app.{$var}');");
 		assert.strictEqual(place.path, "config/app.php");
 

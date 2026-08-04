@@ -5,7 +5,11 @@ suite('Helper Test Suite', () => {
 	const helper = new Helper;
 
 	test('app_path', async () => {
-		const place = await helper.getPlace('User.php', `app_path('User.php');`);
+		let place = await helper.getPlace('User.php', `app_path('User.php');`);
+		assert.strictEqual(place.path, "app/User.php");
+
+		// case insensitive
+		place = await helper.getPlace('User.php', `APP_PATH('User.php');`);
 		assert.strictEqual(place.path, "app/User.php");
 	});
 
@@ -40,8 +44,12 @@ suite('Helper Test Suite', () => {
 	});
 
 	test('to_action', async () => {
-		const place = await helper.getPlace('show', `to_action([UserController::class, 'show'], ['user' => 1]);`);
+		let place = await helper.getPlace('show', `to_action([UserController::class, 'show'], ['user' => 1]);`);
 		assert.strictEqual(place.path, "UserController.php");
 		assert.strictEqual(place.location, "@show");
+
+		// case insensitive
+		place = await helper.getPlace('show', `to_acTIon([UserController::class, 'show'], ['user' => 1]);`);
+		assert.strictEqual(place.path, "UserController.php");
 	});
 });
