@@ -16,6 +16,11 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Install Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+
       - run: |
           npm install
           npx eslint -c eslint.config.mjs $(git diff --name-only ${{ github.event.pull_request.base.sha }} |egrep '\.ts$')

@@ -51,5 +51,6 @@ suite('Helper Test Suite', () => {
 		// case insensitive
 		place = await helper.getPlace('show', `to_acTIon([UserController::class, 'show'], ['user' => 1]);`);
 		assert.strictEqual(place.path, "UserController.php");
+		assert.strictEqual(place.location, "@show");
 	});
 });
