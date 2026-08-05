@@ -8,6 +8,10 @@ suite('inertia Test Suite', () => {
 		let place = inertia.getPlace('About/AboutComponent', 'inertia("About/AboutComponent");');
 		assert.strictEqual(place.path, "About/AboutComponent");
 
+		// case insensitive
+		place = inertia.getPlace('About/AboutComponent', 'InErTiA("About/AboutComponent");');
+		assert.strictEqual(place.path, "About/AboutComponent");
+
 		place = inertia.getPlace('About/AboutComponent', 'inertia(component: "About/AboutComponent");');
 		assert.strictEqual(place.path, "About/AboutComponent");
 	});

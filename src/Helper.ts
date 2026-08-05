@@ -3,11 +3,12 @@ import { Place } from './Place';
 export class Helper {
 	public getPlace(path: string, line: string, lines = ''): Place {
 		const place = new Place({ path: '', paths: new Map, location: '', uris: [] });
-		let pattern = /([\w^_]+)_path\(\s*(['"])([^'"]*)\2/;
+		let pattern = /([\w^_]+)_path\(\s*(['"])([^'"]*)\2/i;
 		let match = pattern.exec(line) ?? pattern.exec(lines);
 
 		if ((match && match[3] === path)) {
 			let prefix = match[1] + '/';
+			prefix = prefix.toLowerCase();
 			if ('base/' === prefix) {
 				prefix = '';
 			} else if ('resource/' === prefix) {
@@ -18,7 +19,7 @@ export class Helper {
 			return place;
 		}
 
-		pattern = /to_action\(\s*\[([^,]+),\s*['"]([^'"]+)/;
+		pattern = /to_action\(\s*\[([^,]+),\s*['"]([^'"]+)/i;
 		match = pattern.exec(line) ?? pattern.exec(lines);
 
 		if ((match && match[2] === path)) {

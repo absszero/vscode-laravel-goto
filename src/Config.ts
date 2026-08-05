@@ -3,7 +3,7 @@ import { Place } from './Place';
 export class Config {
 	static readonly patterns = [
 		/Config::[^'"]*(['"])([^'"]*)\1/g,
-		/config\([^'"]*(['"])([^'"]*)\1/g
+		/config\([^'"]*(['"])([^'"]*)\1/ig
 	];
 
 	public getPlace(path: string, line: string, lines = ''): Place {

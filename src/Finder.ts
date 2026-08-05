@@ -212,8 +212,8 @@ export class Finder {
 		const patterns = [
 			/__\([^'"]*(['"])([^'"]*)\1/,
 			/@lang\([^'"]*(['"])([^'"]*)\1/,
-			/trans\([^'"]*(['"])([^'"]*)\1/,
-			/trans_choice\([^'"]*(['"])([^'"]*)\1/,
+			/trans\([^'"]*(['"])([^'"]*)\1/i,
+			/trans_choice\([^'"]*(['"])([^'"]*)\1/i,
 		];
 
 		for (const pattern of patterns) {
@@ -230,7 +230,7 @@ export class Finder {
 	 * get env place
 	 */
 	envPlace(place: Place): Place {
-		const pattern = /env\(\s*(['"])([^'"]*)\1/;
+		const pattern = /env\(\s*(['"])([^'"]*)\1/i;
 		const match = pattern.exec(this.line) ?? pattern.exec(this.lines);
 
 		if ((match && match[2] === this.path)) {
@@ -325,7 +325,7 @@ export class Finder {
 	async commandPlace(place: Place): Promise<Place> {
 		const patterns = [
 			/Artisan::call\(\s*['"]([^\s'"]+)/,
-			/command\(\s*['"]([^\s'"]+)/,
+			/command\(\s*['"]([^\s'"]+)/i,
 		];
 
 		let commands;
@@ -354,7 +354,7 @@ export class Finder {
 	 */
 	async routePlace(place: Place): Promise<Place> {
 		const patterns = [
-			/route\(\s*['"]([^'"]+)/,
+			/route\(\s*['"]([^'"]+)/i,
 			/['"]route['"]\s*=>\s*(['"])([^'"]+)/
 		];
 
